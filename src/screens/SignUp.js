@@ -1,44 +1,53 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
-import MaterialRightIconTextbox1 from "../components/MaterialRightIconTextbox1";
+import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
-import MaterialButtonWithVioletText1 from "../components/MaterialButtonWithVioletText1";
+import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
+import { useFonts } from 'expo-font';
 
-function SignUp(props) {
+function SignUp({navigation}) {
+  const [loaded] = useFonts({
+    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
+    'roboto-700': require('../assets/fonts/roboto-700.ttf'),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>SIGN UP</Text>
       <View style={styles.group}>
         <MaterialFixedLabelTextbox
-          label="FixedLabel"
-          label="Username"
+          placeholder="Username"
           style={styles.usernameinput}
         ></MaterialFixedLabelTextbox>
         <MaterialFixedLabelTextbox
-          label="Email@abc.com"
+          placeholder="abc@xyz.com"
           style={styles.emailinput}
         ></MaterialFixedLabelTextbox>
-        <MaterialRightIconTextbox1
-          inputStyle="Label"
-          inputStyle="    Password"
+        <MaterialRightIconTextbox
+          placeholder="Password"
           style={styles.passinput}
-        ></MaterialRightIconTextbox1>
-        <MaterialRightIconTextbox1
-          inputStyle="Label"
-          inputStyle="    Retype Password"
+        ></MaterialRightIconTextbox>
+        <MaterialRightIconTextbox
+          placeholder="Retype Password"
           style={styles.passinput2}
-        ></MaterialRightIconTextbox1>
+        ></MaterialRightIconTextbox>
       </View>
       <MaterialButtonSuccess
         caption="Sign Up"
         style={styles.materialButtonSuccess1}
+        onPress={()=>{navigation.navigate('EmailConfirmation')}}
       ></MaterialButtonSuccess>
-      <View style={styles.materialButtonWithVioletText1Stack}>
-        <MaterialButtonWithVioletText1
-          button="Sign In"
+      <View style={styles.alreadyContainer}>
+        <MaterialButtonWithOrangeText
+          caption="Sign In"
           style={styles.materialButtonWithVioletText1}
-        ></MaterialButtonWithVioletText1>
+          onPress={()=>{navigation.navigate('Login')}}
+        ></MaterialButtonWithOrangeText>
         <Text style={styles.notAUser1}>Already have an account?</Text>
       </View>
     </View>
@@ -109,11 +118,12 @@ const styles = StyleSheet.create({
     fontFamily: "roboto-regular",
     color: "#121212"
   },
-  materialButtonWithVioletText1Stack: {
+  alreadyContainer: {
     width: 238,
     height: 36,
     marginTop: 76,
-    marginLeft: 79
+    marginLeft: 79,
+    flexDirection: "column",
   }
 });
 

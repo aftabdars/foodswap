@@ -4,9 +4,8 @@ import { StyleSheet, View, Text, TextInput } from "react-native";
 function MaterialFixedLabelTextbox(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.label}>{props.label || "FixedLabel"}</Text>
       <TextInput
-        placeholder={props.inputStyle || undefined}
+        placeholder={props.placeholder || undefined}
         style={styles.inputStyle}
       ></TextInput>
     </View>
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     paddingTop: 14,
     paddingBottom: 8,
-    paddingLeft: 30
+    paddingLeft: 0
   }
 });
 

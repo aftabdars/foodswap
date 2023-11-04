@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
-import MaterialRightIconTextbox1 from "../components/MaterialRightIconTextbox1";
+import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 
-function Forgot3(props) {
+function Forgot3({navigation}) {
   return (
     <View style={styles.container}>
       <Text style={styles.congratulations}>Congratulations!</Text>
@@ -13,6 +13,7 @@ function Forgot3(props) {
       <MaterialButtonSuccess
         caption="Next"
         style={styles.nextbtn}
+        onPress={()=>{navigation.navigate('Login')}}
       ></MaterialButtonSuccess>
       <Text style={styles.loremIpsum3}>Please enter the new Password</Text>
       <Image
@@ -21,16 +22,14 @@ function Forgot3(props) {
         style={styles.image2}
       ></Image>
       <View style={styles.group}>
-        <MaterialRightIconTextbox1
-          inputStyle="Label"
-          inputStyle="Password"
+        <MaterialRightIconTextbox
+          placeholder="Password"
           style={styles.passinput}
-        ></MaterialRightIconTextbox1>
-        <MaterialRightIconTextbox1
-          inputStyle="Label"
-          inputStyle="Retype Password"
+        ></MaterialRightIconTextbox>
+        <MaterialRightIconTextbox
+          placeholder="Retype Password"
           style={styles.passinput2}
-        ></MaterialRightIconTextbox1>
+        ></MaterialRightIconTextbox>
       </View>
     </View>
   );

@@ -4,37 +4,37 @@ import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
 
-function Forgot({navigation}) {
+function EmailConfirmation({navigation}) {
   const [loaded] = useFonts({
+    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
     'abeezee-regular': require('../assets/fonts/abeezee-regular.ttf'),
   });
 
   if (!loaded) {
     return null;
   }
-  
 
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/images/lock.png")}
+        source={require("../assets/images/key.png")}
         resizeMode="contain"
-        style={styles.locklogo}
+        style={styles.keylogo}
       ></Image>
-      <Text style={styles.loremIpsum}>Forgot Your Password?</Text>
-      <Text style={styles.loremIpsum2}>Please enter your email below</Text>
+      <Text style={styles.loremIpsum1}>Your account has been created</Text>
+      <Text style={styles.loremIpsum2}>
+        Please enter the activation code we just emailed you
+      </Text>
       <MaterialFixedLabelTextbox
-        label="Email@xyz.com"
-        style={styles.emailinput}
+        label="000000"
+        style={styles.materialFixedLabelTextbox1}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
-        caption="Next"
+        caption="Confirm"
         style={styles.nextbtn}
-        onPress={()=>{navigation.navigate('Forgot2')}}
+        onPress={()=>{navigation.navigate('Login')}}
       ></MaterialButtonSuccess>
-      <Text style={styles.errormsg}>
-        Sorry that email doesn&#39;t match an account
-      </Text>
+      <Text style={styles.errormsg}>Sorry that&#39;s not the right code</Text>
     </View>
   );
 }
@@ -44,31 +44,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(215,215,215,1)"
   },
-  locklogo: {
-    width: 219,
-    height: 219,
-    marginTop: 97,
-    marginLeft: 78
+  keylogo: {
+    width: 244,
+    height: 244,
+    marginTop: 91,
+    alignSelf: "center"
   },
-  loremIpsum: {
+  loremIpsum1: {
     fontFamily: "abeezee-regular",
     color: "rgba(39,45,47,1)",
     fontSize: 24,
-    marginTop: 62,
+    marginTop: 43,
     alignSelf: "center"
   },
   loremIpsum2: {
     fontFamily: "roboto-regular",
     color: "#121212",
-    marginTop: 14,
-    marginLeft: 95
+    marginTop: 16,
+    marginLeft: 0,
+    textAlign: "center"
   },
-  emailinput: {
+  materialFixedLabelTextbox1: {
     height: 43,
     width: 278,
     backgroundColor: "rgba(230, 230, 230,1)",
     borderRadius: 9,
-    marginTop: 47,
+    marginTop: 45,
     marginLeft: 49
   },
   nextbtn: {
@@ -82,8 +83,8 @@ const styles = StyleSheet.create({
     fontFamily: "roboto-regular",
     color: "rgba(254,114,76,1)",
     marginTop: -69,
-    marginLeft: 57
+    marginLeft: 97
   }
 });
 
-export default Forgot;
+export default EmailConfirmation;

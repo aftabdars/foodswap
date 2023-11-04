@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 
-function Forgot2(props) {
+function Forgot2({navigation}) {
   return (
     <View style={styles.container}>
       <Image
@@ -22,6 +22,7 @@ function Forgot2(props) {
       <MaterialButtonSuccess
         caption="Next"
         style={styles.nextbtn}
+        onPress={()=>{navigation.navigate('Forgot3')}}
       ></MaterialButtonSuccess>
       <Text style={styles.errormsg}>Sorry that&#39;s not the right code</Text>
     </View>

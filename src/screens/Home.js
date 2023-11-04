@@ -6,8 +6,18 @@ import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
 import MaterialSpinner from "../components/MaterialSpinner";
 import Categorybutton from "../components/Categorybutton";
 import Nearyoubtn from "../components/Nearyoubtn";
+import { useFonts } from 'expo-font';
 
 function Home(props) {
+  const [loaded] = useFonts({
+    'roboto-700': require('../assets/fonts/roboto-700.ttf'),
+    'roboto-regular': require('../assets/fonts/roboto-regular.ttf')
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <CupertinoFooter1 style={styles.cupertinoFooter1}></CupertinoFooter1>
@@ -16,8 +26,6 @@ function Home(props) {
         <MaterialButtonShare style={styles.logoButton}></MaterialButtonShare>
       </View>
       <CupertinoSearchBarBasic
-        inputStyle="Search"
-        inputBox="#EFEFF4"
         inputStyle="Search for food"
         inputBox="rgba(255,255,255,1)"
         style={styles.foodsearch}

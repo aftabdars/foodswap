@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 
-function MaterialButtonWithVioletText1(props) {
+function MaterialButtonWithOrangeText(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
-      <Text style={styles.button}>{props.button || "BUTTON"}</Text>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
+      <Text style={styles.button}>{props.caption || "BUTTON"}</Text>
     </TouchableOpacity>
   );
 }
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MaterialButtonWithVioletText1;
+export default MaterialButtonWithOrangeText;

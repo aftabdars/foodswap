@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 function MaterialButtonShare(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
       <Icon name="share-variant" style={styles.icon}></Icon>
     </TouchableOpacity>
   );

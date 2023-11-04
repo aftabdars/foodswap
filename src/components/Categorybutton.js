@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 function Categorybutton(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
       <Icon name="ios-trash" style={styles.icon}></Icon>
       <Text style={styles.category}>Category</Text>
     </TouchableOpacity>

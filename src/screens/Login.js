@@ -4,9 +4,18 @@ import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonWithVioletText from "../components/MaterialButtonWithVioletText";
-import MaterialButtonWithVioletText1 from "../components/MaterialButtonWithVioletText1";
+import { useFonts } from 'expo-font';
+import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
 
-function Login(props) {
+function Login({navigation}) {
+  const [loaded] = useFonts({
+    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+  
   return (
     <View style={styles.container}>
       <Image
@@ -15,35 +24,38 @@ function Login(props) {
         style={styles.foodswaplogo}
       ></Image>
       <MaterialFixedLabelTextbox
-        label="FixedLabel"
-        label="Username"
+        placeholder="Username"
         style={styles.usernameinput}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
-        caption="BUTTON"
         caption="Login"
         style={styles.loginbtn}
+        onPress={()=>{navigation.navigate('Home')}}
       ></MaterialButtonSuccess>
       <MaterialRightIconTextbox
-        inputStyle="Label"
-        inputStyle="    Password"
+        placeholder="Password"
         style={styles.passwordinput}
       ></MaterialRightIconTextbox>
       <MaterialButtonWithVioletText
         caption="Forgot Password?"
         style={styles.forgotpasswordbtn}
+        onPress={()=>{navigation.navigate('Forgot')}}
       ></MaterialButtonWithVioletText>
+      <Text style={styles.errormsg}>
+        Incorrect username or password
+      </Text>
       <View style={styles.notAUserRow}>
         <Text style={styles.notAUser}>Not a user ?</Text>
-        <MaterialButtonWithVioletText1
-          caption="BUTTON"
-          button="Sign up"
+        <MaterialButtonWithOrangeText
+          caption="Sign Up"
           style={styles.signupbtn}
-        ></MaterialButtonWithVioletText1>
+          onPress={()=>{navigation.navigate('SignUp')}}
+        ></MaterialButtonWithOrangeText>
       </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -80,9 +92,9 @@ const styles = StyleSheet.create({
   },
   forgotpasswordbtn: {
     height: 36,
-    width: 100,
+    width: 200,
     marginTop: 50,
-    marginLeft: 138
+    marginLeft: 88
   },
   notAUser: {
     fontFamily: "roboto-regular",
@@ -96,10 +108,17 @@ const styles = StyleSheet.create({
   notAUserRow: {
     height: 36,
     flexDirection: "row",
-    marginTop: 40,
+    marginTop: 20,
     marginLeft: 114,
     marginRight: 87
-  }
+  },
+  errormsg: {
+    fontFamily: "roboto-regular",
+    color: "rgba(254,114,76,1)",
+    marginTop: 20,
+    marginRight: 15,
+    textAlign: "center"
+  },
 });
 
 export default Login;

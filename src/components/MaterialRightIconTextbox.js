@@ -3,13 +3,16 @@ import { StyleSheet, View, TextInput } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 function MaterialRightIconTextbox(props) {
+  const [secure, setSecure] = React.useState(props.secure);
+
   return (
     <View style={[styles.container, props.style]}>
       <TextInput
-        placeholder={props.inputStyle || "Label"}
+        secureTextEntry={!secure}
+        placeholder={props.placeholder || "Label"}
         style={styles.inputStyle}
       ></TextInput>
-      <Icon name="eye" style={styles.iconStyle}></Icon>
+      <Icon name="eye" style={styles.iconStyle} onPress={() => setSecure(!secure)} ></Icon>
     </View>
   );
 }
@@ -20,7 +23,8 @@ const styles = StyleSheet.create({
     borderColor: "#D9D5DC",
     backgroundColor: "transparent",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    paddingLeft: 16
   },
   inputStyle: {
     color: "#000",
@@ -30,7 +34,8 @@ const styles = StyleSheet.create({
     flex: 1,
     lineHeight: 16,
     paddingTop: 14,
-    paddingBottom: 8
+    paddingBottom: 8,
+    paddingLeft: 0
   },
   iconStyle: {
     color: "#616161",

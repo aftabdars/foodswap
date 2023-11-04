@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
 
 function Nearyoubtn(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
       <View style={styles.group}>
         <Image
           source={require("../assets/images/image_2023-10-27_183534741.png")}
