@@ -1,18 +1,41 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import CupertinoFooter1 from "../components/CupertinoFooter1";
-import MaterialButtonShare from "../components/MaterialButtonShare";
+import MaterialButtonProfile from "../components/MaterialButtonProfile";
 import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
 import MaterialSpinner from "../components/MaterialSpinner";
 import Categorybutton from "../components/Categorybutton";
 import Nearyoubtn from "../components/Nearyoubtn";
 import { useFonts } from 'expo-font';
 
+import { getProfile } from '../api/backend/User';
+import { getUserToken } from "../storage/Token";
+
+
 function Home(props) {
+  // States
+  const [userData, setUserData] = useState({username: 'Anonymous'});  
+  
+  // Gets user profile
+  useEffect(() => {
+    const getUserProfile = async () => {
+      const token = await getUserToken();
+      getProfile(token.token)
+      .then(response => {
+        if (response.status == 200) setUserData(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    }
+    getUserProfile();
+  }, []);
+
   const [loaded] = useFonts({
     'roboto-700': require('../assets/fonts/roboto-700.ttf'),
     'roboto-regular': require('../assets/fonts/roboto-regular.ttf')
   });
+
 
   if (!loaded) {
     return null;
@@ -22,8 +45,8 @@ function Home(props) {
     <View style={styles.container}>
       <CupertinoFooter1 style={styles.cupertinoFooter1}></CupertinoFooter1>
       <View style={styles.hiAftabRow}>
-        <Text style={styles.hiAftab}>Hi, Aftab</Text>
-        <MaterialButtonShare style={styles.logoButton}></MaterialButtonShare>
+        <Text style={styles.hiAftab}>Hi, {userData && userData.username}</Text>
+        <MaterialButtonProfile style={styles.profileIcon}></MaterialButtonProfile>
       </View>
       <CupertinoSearchBarBasic
         inputStyle="Search for food"
@@ -67,10 +90,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 9
   },
-  logoButton: {
-    height: 46,
-    width: 46,
-    marginLeft: 183
+  profileIcon: {
+    marginLeft: 190
   },
   hiAftabRow: {
     height: 46,

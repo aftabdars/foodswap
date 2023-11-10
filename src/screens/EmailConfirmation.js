@@ -30,10 +30,9 @@ function EmailConfirmation({navigation}) {
         style={styles.materialFixedLabelTextbox1}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
-        caption="Confirm"
         style={styles.nextbtn}
         onPress={()=>{navigation.navigate('Login')}}
-      ></MaterialButtonSuccess>
+      >Confirm</MaterialButtonSuccess>
       <Text style={styles.errormsg}>Sorry that&#39;s not the right code</Text>
     </View>
   );

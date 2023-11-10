@@ -38,10 +38,9 @@ function SignUp({navigation}) {
         ></MaterialRightIconTextbox>
       </View>
       <MaterialButtonSuccess
-        caption="Sign Up"
         style={styles.materialButtonSuccess1}
         onPress={()=>{navigation.navigate('EmailConfirmation')}}
-      ></MaterialButtonSuccess>
+      >Sign Up</MaterialButtonSuccess>
       <View style={styles.alreadyContainer}>
         <MaterialButtonWithOrangeText
           caption="Sign In"

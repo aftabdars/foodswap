@@ -1,5 +1,6 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import { React, useState, useEffect } from "react";
+import { StyleSheet, View, KeyboardAvoidingView, Image, Text, Platform } from "react-native";
+import { CommonActions } from '@react-navigation/native';
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
@@ -7,17 +8,73 @@ import MaterialButtonWithVioletText from "../components/MaterialButtonWithViolet
 import { useFonts } from 'expo-font';
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
 
+import { postLogin } from "../api/backend/Auth";
+import { getUserToken, setUserToken } from "../storage/Token";
+
+
 function Login({navigation}) {
   const [loaded] = useFonts({
     'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
   });
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [showError, setShowError] = useState(false);
 
   if (!loaded) {
     return null;
   }
-  
+
+  // Check if user already has token is in storage, if so then route to Home otherwise Login
+  const checkUserToken = async () => {
+    try {
+      const token = await getUserToken();
+      if (token && token !== null) {
+        // Navigate to home forgetting login and previous screens
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  checkUserToken();
+
+  const handleLogin = async () => {
+    body = {
+      'username': username,
+      'password': password
+    }
+    postLogin(body)
+    .then(response => {
+      console.log(response.status);
+      console.log(response.data);
+      if (response.status == 200) {
+        // Save token in cache and local storage
+        setUserToken(response.data);
+
+        // Navigate to home forgetting login and previous screens
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          })
+        );
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      setShowError(true)
+      //console.log(error.response.status);
+      //console.log(error.response.data);
+    })
+  }
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Image
         source={require("../assets/images/logo.png")}
         resizeMode="contain"
@@ -26,24 +83,27 @@ function Login({navigation}) {
       <MaterialFixedLabelTextbox
         placeholder="Username"
         style={styles.usernameinput}
+        onChangeText={(text) => setUsername(text)}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
-        caption="Login"
         style={styles.loginbtn}
-        onPress={()=>{navigation.navigate('Home')}}
-      ></MaterialButtonSuccess>
+        onPress={ handleLogin }
+      >Login</MaterialButtonSuccess>
       <MaterialRightIconTextbox
         placeholder="Password"
         style={styles.passwordinput}
+        onChangeText={(text) => setPassword(text)}
       ></MaterialRightIconTextbox>
       <MaterialButtonWithVioletText
         caption="Forgot Password?"
         style={styles.forgotpasswordbtn}
         onPress={()=>{navigation.navigate('Forgot')}}
       ></MaterialButtonWithVioletText>
-      <Text style={styles.errormsg}>
-        Incorrect username or password
-      </Text>
+      {showError && (
+        <Text style={styles.errormsg}>
+          Incorrect username or password
+        </Text>
+      )}
       <View style={styles.notAUserRow}>
         <Text style={styles.notAUser}>Not a user ?</Text>
         <MaterialButtonWithOrangeText
@@ -52,7 +112,7 @@ function Login({navigation}) {
           onPress={()=>{navigation.navigate('SignUp')}}
         ></MaterialButtonWithOrangeText>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -108,7 +168,7 @@ const styles = StyleSheet.create({
   notAUserRow: {
     height: 36,
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 100,
     marginLeft: 114,
     marginRight: 87
   },

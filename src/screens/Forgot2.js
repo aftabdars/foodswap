@@ -20,10 +20,9 @@ function Forgot2({navigation}) {
         style={styles.materialFixedLabelTextbox1}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
-        caption="Next"
         style={styles.nextbtn}
         onPress={()=>{navigation.navigate('Forgot3')}}
-      ></MaterialButtonSuccess>
+      >Next</MaterialButtonSuccess>
       <Text style={styles.errormsg}>Sorry that&#39;s not the right code</Text>
     </View>
   );

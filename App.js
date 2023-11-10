@@ -5,7 +5,10 @@ import Forgot from './src/screens/Forgot';
 import Forgot2 from './src/screens/Forgot2';
 import Forgot3 from './src/screens/Forgot3';
 import Home from './src/screens/Home';
-import * as React from 'react';
+import CameraScreen from './src/screens/CameraScreen';
+import FoodPictureConfirmation from './src/screens/FoodPictureConfirmation';
+import FoodUploadForm from './src/screens/FoodUploadForm';
+import Settings from './src/screens/Settings';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -15,7 +18,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName={"Login"}>
         <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
         <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
@@ -23,6 +26,10 @@ export default function App() {
         <Stack.Screen name="Forgot2" component={Forgot2} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Forgot3" component={Forgot3} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
+        <Stack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown:false}}/>
+        <Stack.Screen name="FoodPictureConfirmation" component={FoodPictureConfirmation} options={{title:'Confirm Photo', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
+        <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{title:'Food Upload', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
+        <Stack.Screen name="Settings" component={Settings} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

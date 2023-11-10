@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, Image } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-function MaterialButtonShare(props) {
+function MaterialButtonProfile(props) {
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-      <Icon name="share-variant" style={styles.icon}></Icon>
+      <Icon name="account" style={styles.icon}></Icon>
     </TouchableOpacity>
   );
 }
@@ -25,7 +25,9 @@ const styles = StyleSheet.create({
     shadowRadius: 1.2,
     elevation: 2,
     minWidth: 40,
-    minHeight: 40
+    minHeight: 40,
+    width: 32,
+    height: 32,
   },
   icon: {
     color: "#fff",
@@ -34,4 +36,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MaterialButtonShare;
+export default MaterialButtonProfile;

@@ -11,10 +11,9 @@ function Forgot3({navigation}) {
         Sorry the two passwords don&#39;t match
       </Text>
       <MaterialButtonSuccess
-        caption="Next"
         style={styles.nextbtn}
         onPress={()=>{navigation.navigate('Login')}}
-      ></MaterialButtonSuccess>
+      >Next</MaterialButtonSuccess>
       <Text style={styles.loremIpsum3}>Please enter the new Password</Text>
       <Image
         source={require("../assets/images/unlock.png")}

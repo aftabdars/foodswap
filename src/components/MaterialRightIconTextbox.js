@@ -11,6 +11,7 @@ function MaterialRightIconTextbox(props) {
         secureTextEntry={!secure}
         placeholder={props.placeholder || "Label"}
         style={styles.inputStyle}
+        onChangeText={props.onChangeText}
       ></TextInput>
       <Icon name="eye" style={styles.iconStyle} onPress={() => setSecure(!secure)} ></Icon>
     </View>

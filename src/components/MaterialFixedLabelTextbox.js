@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import { StyleSheet, TextInput, KeyboardAvoidingView } from "react-native";
 
 function MaterialFixedLabelTextbox(props) {
   return (
-    <View style={[styles.container, props.style]}>
+    <KeyboardAvoidingView style={[styles.container, props.style]}>
       <TextInput
         placeholder={props.placeholder || undefined}
         style={styles.inputStyle}
+        onChangeText={props.onChangeText || undefined}
       ></TextInput>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -28,10 +28,9 @@ function Forgot({navigation}) {
         style={styles.emailinput}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
-        caption="Next"
         style={styles.nextbtn}
         onPress={()=>{navigation.navigate('Forgot2')}}
-      ></MaterialButtonSuccess>
+      >Next</MaterialButtonSuccess>
       <Text style={styles.errormsg}>
         Sorry that email doesn&#39;t match an account
       </Text>

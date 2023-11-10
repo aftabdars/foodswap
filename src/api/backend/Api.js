@@ -1,0 +1,74 @@
+import axios from "axios";
+import { BACKEND_API_ENDPOINT, TOKEN_KEYWORD } from "../config";
+
+
+export async function makeGetRequest(url, token = undefined, params = undefined) {
+    const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
+    console.log(`Making API GET request to: ${fullUrl}`);
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+    };
+
+    try {
+        const response = await axios.get(fullUrl, { headers, params });
+        return response
+    } catch (error) {
+        console.error(`Error making GET request to ${BACKEND_API_ENDPOINT}${url}`, error);
+        throw error
+    }
+}
+
+export async function makePostRequest(url, token = undefined, body = {}, contentType = 'application/json') {
+    const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
+    console.log(`Making API POST request to: ${fullUrl}`);
+
+    const headers = {
+        'Content-Type': contentType,
+        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+    };
+
+    try {
+        const response = await axios.post(fullUrl, body, { headers });
+        return response
+    } catch (error) {
+        console.error(`Error making POST request to ${BACKEND_API_ENDPOINT}${url}`, error);
+        throw error
+    }
+}
+
+export async function makePutRequest(url, token = undefined, body = {}, contentType = 'application/json') {
+    const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
+    console.log(`Making API PUT request to: ${fullUrl}`);
+
+    const headers = {
+        'Content-Type': contentType,
+        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+    };
+
+    try {
+        const response = await axios.put(fullUrl, body, { headers });
+        return response
+    } catch (error) {
+        console.error(`Error making PUT request to ${BACKEND_API_ENDPOINT}${url}`, error);
+        throw error
+    }
+}
+
+export async function makeDeleteRequest(url, token = undefined) {
+    const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
+    console.log(`Making API DELETE request to: ${fullUrl}`);
+
+    const headers = {
+        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+    };
+
+    try {
+        const response = await axios.delete(fullUrl, { headers });
+        return response
+    } catch (error) {
+        console.error(`Error making DELETE request to ${fullUrl}`, error);
+        throw error
+    }
+}

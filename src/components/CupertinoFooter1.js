@@ -1,9 +1,32 @@
 import React, { Component } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, PermissionsAndroid } from "react-native";
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import { Camera, CameraType } from 'expo-camera';
+import { useNavigation } from '@react-navigation/native';
+
 
 function CupertinoFooter1(props) {
-  const [active, setActive] = React.useState('settings');
+  const [active, setActive] = React.useState('home');
+  const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions();
+
+  const navigation = useNavigation();
+
+  // If camera button is pressed
+  const cameraPressed = () => {
+    requestCameraPermission();
+    if(cameraPermission && cameraPermission.granted) {
+      console.log('Has permission to use camera');
+
+      // Navigate to camera screen
+      navigation.navigate('CameraScreen');
+    }
+  }
+  // If settings button is pressed
+  const settingsPressed = () => {
+      // Navigate to settings screen
+      navigation.navigate('Settings');
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <TouchableOpacity style={styles.btnWrapper} onPress={() => setActive('home')}>
@@ -25,7 +48,7 @@ function CupertinoFooter1(props) {
          style={[styles.font, {color: (active == 'profile') ? "#009688" : "#616161"}]}>
         Profile</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btnWrapper} onPress={() => setActive('camera')}>
+      <TouchableOpacity style={styles.btnWrapper} onPress={() => {setActive('camera' ); cameraPressed();}}>
         <MaterialCommunityIconsIcon
           name="camera"
           style={[styles.icon, {color: (active == 'camera') ? "#009688" : "#616161"}]}
@@ -43,7 +66,7 @@ function CupertinoFooter1(props) {
         ></MaterialCommunityIconsIcon>
         <Text style={[styles.font, {color: (active == 'messages') ? "#009688" : "#616161"}]}>Messages</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btnWrapper} onPress={() => setActive('settings')}>
+      <TouchableOpacity style={styles.btnWrapper} onPress={() => { setActive('settings'); settingsPressed(); }}>
         <MaterialCommunityIconsIcon
           name="account-settings"
           style={[styles.icon, {color: (active == 'settings') ? "#009688" : "#616161"}]}
