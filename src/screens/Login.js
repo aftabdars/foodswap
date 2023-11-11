@@ -13,35 +13,31 @@ import { getUserToken, setUserToken } from "../storage/Token";
 
 
 function Login({navigation}) {
-  const [loaded] = useFonts({
-    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
-  });
+  // States
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [showError, setShowError] = useState(false);
-
-  if (!loaded) {
-    return null;
-  }
-
-  // Check if user already has token is in storage, if so then route to Home otherwise Login
-  const checkUserToken = async () => {
-    try {
-      const token = await getUserToken();
-      if (token && token !== null) {
-        // Navigate to home forgetting login and previous screens
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'Home' }],
-          })
-        );
+  
+  // Check if user already has a token in storage, if so then route to Home otherwise Login
+  useEffect(() => {
+    const checkUserToken = async () => {
+      try {
+        const token = await getUserToken();
+        if (token && token !== null) {
+          // Navigate to home forgetting login and previous screens
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'Home' }],
+            })
+          );
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  checkUserToken();
+    };
+    checkUserToken();
+  }, []);
 
   const handleLogin = async () => {
     body = {
@@ -71,6 +67,14 @@ function Login({navigation}) {
       //console.log(error.response.status);
       //console.log(error.response.data);
     })
+  }
+
+  const [loaded] = useFonts({
+    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
+  });
+
+  if (!loaded) {
+    return null;
   }
 
   return (

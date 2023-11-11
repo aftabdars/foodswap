@@ -6,7 +6,7 @@ export const getUserToken = async () => {
     token = await getCachedData('token');
     token = JSON.parse(token);
     // Check if token has expired
-    if (token && token.expiry <= Date.now()) {
+    if (token && new Date(token.expiry) <= Date.now()) {
         removeUserToken();
         throw new Error('Token has expired');
     }
