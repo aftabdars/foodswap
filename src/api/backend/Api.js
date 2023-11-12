@@ -27,6 +27,7 @@ export async function makePostRequest(url, token = undefined, body = {}, content
     const headers = {
         'Content-Type': contentType,
         'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+        'X-CSRFToken': await getCSRFToken(), //"guUhQZzjOwyEQ3q7k5byTAIT8FqW3MFY",
     };
 
     try {
@@ -45,6 +46,7 @@ export async function makePutRequest(url, token = undefined, body = {}, contentT
     const headers = {
         'Content-Type': contentType,
         'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+        'X-CSRFToken': await getCSRFToken(),
     };
 
     try {
@@ -62,6 +64,7 @@ export async function makeDeleteRequest(url, token = undefined) {
 
     const headers = {
         'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+        'X-CSRFToken': await getCSRFToken(),
     };
 
     try {
@@ -72,3 +75,16 @@ export async function makeDeleteRequest(url, token = undefined) {
         throw error
     }
 }
+
+
+const getCSRFToken = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_API_ENDPOINT}/get_csrf_token/`);
+      return response.headers['x-csrftoken'];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+  
+  export default getCSRFToken;

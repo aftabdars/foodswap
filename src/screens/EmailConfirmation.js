@@ -1,10 +1,14 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Image, Text, KeyboardAvoidingView } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
+import { postVerifyAccount } from "../api/backend/Auth";
 
 function EmailConfirmation({navigation}) {
+  const [code, setCode] = useState();
+  const [showError, setShowError] = useState();
+
   const [loaded] = useFonts({
     'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
     'abeezee-regular': require('../assets/fonts/abeezee-regular.ttf'),
@@ -14,8 +18,31 @@ function EmailConfirmation({navigation}) {
     return null;
   }
 
+  const onClickConfirm = () => {
+    if (!code) {
+      setShowError("Please fill out the code field");
+    }
+    else {
+      postVerifyAccount({"code": code})
+      .then(response => {
+        console.log(response.status);
+        console.log(response.data);
+  
+        if(response.status == 200) {
+          navigation.navigate('Login');
+        }
+      })
+      .catch(error => {
+        console.log(error.response.status);
+        console.log(error.response.data);
+        errorMessage = error.response.data[Object.keys(error.response.data)[0]];
+        setShowError(errorMessage);
+      });
+    }
+  }
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Image
         source={require("../assets/images/key.png")}
         resizeMode="contain"
@@ -28,13 +55,16 @@ function EmailConfirmation({navigation}) {
       <MaterialFixedLabelTextbox
         label="000000"
         style={styles.materialFixedLabelTextbox1}
+        onChangeText={(text) => setCode(text)}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
         style={styles.nextbtn}
-        onPress={()=>{navigation.navigate('Login')}}
+        onPress={ onClickConfirm }
       >Confirm</MaterialButtonSuccess>
-      <Text style={styles.errormsg}>Sorry that&#39;s not the right code</Text>
-    </View>
+      {showError &&
+        <Text style={styles.errormsg}>{ showError }</Text>
+      }
+    </KeyboardAvoidingView>
   );
 }
 

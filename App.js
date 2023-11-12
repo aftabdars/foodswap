@@ -20,7 +20,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName={"Login"}>
         <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
-        <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
+        <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Account Verification', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
         <Stack.Screen name="Forgot" component={Forgot} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Forgot2" component={Forgot2} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>

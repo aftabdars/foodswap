@@ -1,6 +1,12 @@
 import { makePostRequest } from "./Api";
 
 
+// Verifies user account from the provided code
+export async function postVerifyAccount(body) {
+    const url = `/accounts/verify/`;
+    return await makePostRequest(url, undefined, body);
+}
+
 // Logs user in and returns a user token
 export async function postLogin(body) {
     const url = `/accounts/login/`;

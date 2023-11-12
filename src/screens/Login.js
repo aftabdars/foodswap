@@ -16,7 +16,7 @@ function Login({navigation}) {
   // States
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState();
   
   // Check if user already has a token in storage, if so then route to Home otherwise Login
   useEffect(() => {
@@ -40,6 +40,11 @@ function Login({navigation}) {
   }, []);
 
   const handleLogin = async () => {
+    // Check if all of the fields are not empty
+    if (!username || !password) {
+      setShowError("Please fill out all the fields");
+    }
+
     body = {
       'username': username,
       'password': password
@@ -63,9 +68,15 @@ function Login({navigation}) {
     })
     .catch(error => {
       console.log(error)
-      setShowError(true)
-      //console.log(error.response.status);
-      //console.log(error.response.data);
+      console.log(error.response.data)
+      errorMessages = error.response.data;
+
+      if (error.response.status == 401) { // Unauthorized
+        navigation.navigate('EmailConfirmation');
+      }
+      else {
+        setShowError(errorMessages[Object.keys(errorMessages)[0]][0]);
+      }
     })
   }
 
@@ -105,7 +116,7 @@ function Login({navigation}) {
       ></MaterialButtonWithVioletText>
       {showError && (
         <Text style={styles.errormsg}>
-          Incorrect username or password
+          { showError }
         </Text>
       )}
       <View style={styles.notAUserRow}>
@@ -172,7 +183,7 @@ const styles = StyleSheet.create({
   notAUserRow: {
     height: 36,
     flexDirection: "row",
-    marginTop: 100,
+    marginTop: 60,
     marginLeft: 114,
     marginRight: 87
   },

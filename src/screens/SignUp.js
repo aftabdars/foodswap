@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
@@ -6,51 +6,116 @@ import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
 import { useFonts } from 'expo-font';
 
+import { postSignup } from "../api/backend/User";
+import { setUserToken } from "../storage/Token";
+
+
 function SignUp({navigation}) {
-  const [loaded] = useFonts({
-    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
-    'roboto-700': require('../assets/fonts/roboto-700.ttf'),
-  });
+    // States
+    const [username, setUsername] = useState();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [rePassword, setRePassword] = useState();
+    const [showError, setShowError] = useState(false);
 
-  if (!loaded) {
-    return null;
-  }
+    const onPressSignup = async () => {
+      // Check if all of the fields are not empty
+      if (!username || !email || !password) {
+        setShowError("Please fill out all the fields");
+      }
+      // Check if re-typed password matches password
+      else if (password != rePassword) {
+        setShowError('Re-typed password does not match');
+      }
+      else {
+        body = {
+          'username': username,
+          'email': email,
+          'password': password
+        }
+        
+        // Register the user and navigate to verification screen for confirmation
+        postSignup(body)
+        .then(response => {
+          console.log(response.status);
+          console.log(response.data);
+          if (response.status == 201) { // 201 => Created
+            navigation.navigate('EmailConfirmation');
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          console.log(error.response.data)
+          errorMessage = error.response.data;
+          if ("username" in errorMessage) {
+            setShowError(error.response.data["username"][0])
+          }
+          else if ("email" in errorMessage) {
+            setShowError(error.response.data["email"][0])
+          }
+          else {
+            setShowError("Unknown error")
+          }
+        })
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>SIGN UP</Text>
-      <View style={styles.group}>
-        <MaterialFixedLabelTextbox
-          placeholder="Username"
-          style={styles.usernameinput}
-        ></MaterialFixedLabelTextbox>
-        <MaterialFixedLabelTextbox
-          placeholder="abc@xyz.com"
-          style={styles.emailinput}
-        ></MaterialFixedLabelTextbox>
-        <MaterialRightIconTextbox
-          placeholder="Password"
-          style={styles.passinput}
-        ></MaterialRightIconTextbox>
-        <MaterialRightIconTextbox
-          placeholder="Retype Password"
-          style={styles.passinput2}
-        ></MaterialRightIconTextbox>
+      }
+    }
+
+    const [loaded] = useFonts({
+      'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
+      'roboto-700': require('../assets/fonts/roboto-700.ttf'),
+    });
+
+    if (!loaded) {
+      return null;
+    }
+
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>SIGN UP</Text>
+        <View style={styles.group}>
+          <MaterialFixedLabelTextbox
+            placeholder="Username"
+            style={styles.usernameinput}
+            onChangeText={(text) => setUsername(text)}
+          ></MaterialFixedLabelTextbox>
+          <MaterialFixedLabelTextbox
+            placeholder="abc@xyz.com"
+            style={styles.emailinput}
+            onChangeText={(text) => setEmail(text)}
+          ></MaterialFixedLabelTextbox>
+          <MaterialRightIconTextbox
+            placeholder="Password"
+            style={styles.passinput}
+            onChangeText={(text) => setPassword(text)}
+          ></MaterialRightIconTextbox>
+          <MaterialRightIconTextbox
+            placeholder="Retype Password"
+            style={styles.passinput2}
+            onChangeText={(text) => setRePassword(text)}
+          ></MaterialRightIconTextbox>
+        </View>
+        <MaterialButtonSuccess
+          style={styles.materialButtonSuccess1}
+          onPress={ onPressSignup }
+        >Sign Up</MaterialButtonSuccess>
+
+        {showError && (
+          <Text style={styles.errormsg}>
+            { showError }
+          </Text>
+        )}
+
+        <View style={styles.alreadyContainer}>
+          <MaterialButtonWithOrangeText
+            caption="Sign In"
+            style={styles.materialButtonWithVioletText1}
+            onPress={() => {navigation.navigate('Login')}}
+          ></MaterialButtonWithOrangeText>
+          <Text style={styles.notAUser1}>Already have an account?</Text>
+        </View>
       </View>
-      <MaterialButtonSuccess
-        style={styles.materialButtonSuccess1}
-        onPress={()=>{navigation.navigate('EmailConfirmation')}}
-      >Sign Up</MaterialButtonSuccess>
-      <View style={styles.alreadyContainer}>
-        <MaterialButtonWithOrangeText
-          caption="Sign In"
-          style={styles.materialButtonWithVioletText1}
-          onPress={()=>{navigation.navigate('Login')}}
-        ></MaterialButtonWithOrangeText>
-        <Text style={styles.notAUser1}>Already have an account?</Text>
-      </View>
-    </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
@@ -123,7 +188,14 @@ const styles = StyleSheet.create({
     marginTop: 76,
     marginLeft: 79,
     flexDirection: "column",
-  }
+  },
+  errormsg: {
+    fontFamily: "roboto-regular",
+    color: "rgba(254,114,76,1)",
+    marginTop: 20,
+    marginRight: 15,
+    textAlign: "center"
+  },
 });
 
 export default SignUp;

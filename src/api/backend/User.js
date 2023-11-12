@@ -7,9 +7,9 @@ import {
 from "./Api";
 
 
-// Creates user account and returns a token
-export async function postUser(body) {
-    const url = `/accounts/`;
+// Creates user account and returns user object
+export async function postSignup(body) {
+    const url = `/accounts/signup/`;
     const contentType = 'multipart/form-data';
     return await makePostRequest(url, undefined, body, contentType);
 }
