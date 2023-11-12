@@ -6,6 +6,7 @@ import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonWithVioletText from "../components/MaterialButtonWithVioletText";
 import { useFonts } from 'expo-font';
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
+import EventEmitter from "../assets/EventEmitter";
 
 function Login({navigation}) {
   const [loaded] = useFonts({
@@ -15,7 +16,7 @@ function Login({navigation}) {
   if (!loaded) {
     return null;
   }
-  
+
   return (
     <View style={styles.container}>
       <Image
@@ -30,7 +31,7 @@ function Login({navigation}) {
       <MaterialButtonSuccess
         caption="Login"
         style={styles.loginbtn}
-        onPress={()=>{navigation.navigate('Home')}}
+        onPress={()=>{loginHandler({username: 'aftab', password: 'dars'})}}
       ></MaterialButtonSuccess>
       <MaterialRightIconTextbox
         placeholder="Password"
@@ -56,6 +57,14 @@ function Login({navigation}) {
   );
 }
 
+function loginHandler (props) {
+  if ((props.username == 'aftab') && (props.password == 'dars')) {
+    EventEmitter.notify("onLogin", true)
+  }
+  else {
+    EventEmitter.notify("onLogin", false)
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
