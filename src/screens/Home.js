@@ -7,7 +7,7 @@ import MaterialSpinner from "../components/MaterialSpinner";
 import Categorybutton from "../components/Categorybutton";
 import FoodPreview from "../components/FoodPreview.js";
 import { useFonts } from 'expo-font';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from "react-native-snap-carousel";
 
 import { getProfile } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
@@ -19,7 +19,7 @@ function Home(props) {
   // States
   const [userData, setUserData] = useState({username: 'Anonymous'}); 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [foodItems, setFoodItems] = useState();
+  const [foodItems, setFoodItems] = useState([{"id": 0, "name": "food", "descripttion": "Gealthy food", "status": "up"}]);
   const [foodCategories, setFoodCategories] = useState();
   
   // References
@@ -29,6 +29,7 @@ function Home(props) {
   useEffect(() => {
     const getUserProfile = async () => {
       const token = await getUserToken();
+      console.log(token);
       getProfile(token.token)
       .then(response => {
         if (response.status == 200) setUserData(response.data);
@@ -88,7 +89,7 @@ function Home(props) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View style={styles.hiUserRow}>
+        <View style={styles.header}>
           <Text style={styles.hiUser}>Hi, {userData && userData.username}</Text>
           <MaterialButtonProfile style={styles.profileIcon}></MaterialButtonProfile>
         </View>
@@ -102,7 +103,7 @@ function Home(props) {
 
         <Text style={styles.categoriesHeading}>Categories</Text>
         <ScrollView horizontal={true} style={styles.categoryButtonsContainer}>
-          {foodCategories && sfoodCategories.map(foodCategory => (
+          {foodCategories && foodCategories.map(foodCategory => (
             <Categorybutton key={foodCategory.id} style={styles.categorybutton} categoryData={foodCategory} />
           ))}
         </ScrollView>
@@ -152,12 +153,15 @@ const styles = StyleSheet.create({
     fontFamily: "roboto-700",
     color: "#121212",
     fontSize: 24,
+    position: 'absolute',
+    left: 0,
     marginTop: 9
   },
   profileIcon: {
-    marginLeft: 100
+    position: 'absolute',
+    right: 0
   },
-  hiUserRow: {
+  header: {
     height: 46,
     flexDirection: "row",
     marginTop: 0,

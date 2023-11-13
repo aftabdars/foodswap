@@ -39,7 +39,7 @@ function Login({navigation}) {
     checkUserToken();
   }, []);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     // Check if all of the fields are not empty
     if (!username || !password) {
       setShowError("Please fill out all the fields");
@@ -54,9 +54,8 @@ function Login({navigation}) {
       console.log(response.status);
       console.log(response.data);
       if (response.status == 200) {
-        // Save token in cache and local storage
         setUserToken(response.data);
-
+        
         // Navigate to home forgetting login and previous screens
         navigation.dispatch(
           CommonActions.reset({

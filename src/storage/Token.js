@@ -19,6 +19,6 @@ export const setUserToken = async (token) => {
 };
 
 // Removes user token
-export const removeUserToken = async () => {
-    return await removeCachedData('token');
+export const removeUserToken = () => {
+    return removeCachedData('token');
 };

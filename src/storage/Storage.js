@@ -23,9 +23,9 @@ export const getCachedData = async (key) => {
 };
 
 // Sets or updates(if data already exists) data in cache and storage
-export const setCachedData = async (key, data) => {
+export const setCachedData = (key, data) => {
   console.log('Setting ' + key + ': ' + data)
-  await AsyncStorage.setItem(key, data);
+  AsyncStorage.setItem(key, data);
   const item = { data, timestamp: Date.now() };
   cache.set(key, item);
   if (cache.size > MAX_CACHE_SIZE) {
