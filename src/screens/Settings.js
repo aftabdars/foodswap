@@ -1,11 +1,40 @@
 import React from "react";
 import  {useState} from "react";
 import { View, Text, StyleSheet, Switch } from "react-native";
+import MaterialButtonDanger from "../components/MaterialButtonDanger";
+import { useNavigation, CommonActions } from '@react-navigation/native';
 
+import { getUserToken, removeUserToken } from "../storage/Token";
+import { postLogout } from "../api/backend/Auth";
 
 function Settings() {
   const[notificationEnabled,setNotificationEnabled] = useState(false);
   const [themeEnabled, setThemeEnabled] = useState(false);
+
+  const navigation = useNavigation();
+
+  const handleLogout = async () => {
+    const token = await getUserToken();
+      postLogout(token.token)
+      .then(response => { // Response status 204 if deleted
+        console.log(response.status);
+        console.log(response.data);
+
+        // Remove user's token from cache and local storage
+        removeUserToken();
+
+        // Navigate to initial page like Login (forgetting current screens)
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          })
+        );
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
 
   return (
     <View style={styles.container}>
@@ -27,7 +56,10 @@ function Settings() {
                 value={themeEnabled}
                 onValueChange={() => setThemeEnabled(!themeEnabled)}      
             /> 
-        </View>       
+        </View>
+        <MaterialButtonDanger style={styles.logoutButton} onPress={handleLogout}>
+            Logout
+          </MaterialButtonDanger>     
     </View>
    
   );
@@ -115,6 +147,14 @@ const styles = StyleSheet.create({
    position:'absolute',
    marginTop:123,
    marginLeft:12
+  },
+  logoutButton: {
+    position:'absolute',
+    width: 40,
+    height: 30,
+    marginHorizontal: 150,
+    marginVertical: 20,
+    bottom: 0,
   }
 });
 

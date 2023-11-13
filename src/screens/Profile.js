@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import Editbutton from "../components/Editbutton";
-import MaterialButtonWithVioletText1 from "../components/MaterialButtonWithVioletText1";
+import MaterialButtonWithVioletText1 from "../components/MaterialButtonWithVioletText"
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import OcticonsIcon from "react-native-vector-icons/Octicons";

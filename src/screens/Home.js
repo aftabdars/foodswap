@@ -1,21 +1,30 @@
-import React, { Component, useState, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, { useRef, useState, useEffect } from "react";
+import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
 import CupertinoFooter1 from "../components/CupertinoFooter1";
 import MaterialButtonProfile from "../components/MaterialButtonProfile";
 import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
 import MaterialSpinner from "../components/MaterialSpinner";
 import Categorybutton from "../components/Categorybutton";
-import Nearyoubtn from "../components/Nearyoubtn";
+import FoodPreview from "../components/FoodPreview.js";
 import { useFonts } from 'expo-font';
+import Carousel from 'react-native-snap-carousel';
 
 import { getProfile } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
+import { getFoodCategories, getFoods } from "../api/backend/Food.js";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 function Home(props) {
   // States
-  const [userData, setUserData] = useState({username: 'Anonymous'});  
+  const [userData, setUserData] = useState({username: 'Anonymous'}); 
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [foodItems, setFoodItems] = useState();
+  const [foodCategories, setFoodCategories] = useState();
   
+  // References
+  const carouselRef = useRef(null);
+
   // Gets user profile
   useEffect(() => {
     const getUserProfile = async () => {
@@ -31,72 +40,127 @@ function Home(props) {
     getUserProfile();
   }, []);
 
+  // Get food items
+  useEffect(() => {
+    const getFoodItems = async () => {
+      getFoods() // In future add params, status = 'up'
+      .then(response => {
+        console.log(response.data);
+        setFoodItems(response.data.results);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    };
+    getFoodItems();
+  }, []);
+
+  
+  // Get food categories
+  useEffect(() => {
+    const getMeFoodCategories = async () => {
+      getFoodCategories()
+      .then(response => {
+        console.log(response.data);
+        setFoodCategories(response.data.results);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    };
+    getMeFoodCategories();
+  }, []);
+
+  // Render food items in carousel
+  const renderItem = ({ item, index }) => (
+    <FoodPreview foodData={item}></FoodPreview>
+  );
+
   const [loaded] = useFonts({
     'roboto-700': require('../assets/fonts/roboto-700.ttf'),
     'roboto-regular': require('../assets/fonts/roboto-regular.ttf')
   });
-
 
   if (!loaded) {
     return null;
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <View style={styles.hiUserRow}>
+          <Text style={styles.hiUser}>Hi, {userData && userData.username}</Text>
+          <MaterialButtonProfile style={styles.profileIcon}></MaterialButtonProfile>
+        </View>
+
+        <CupertinoSearchBarBasic
+          inputStyle="Search for food"
+          inputBox="rgba(255,255,255,1)"
+          style={styles.foodsearch}
+        ></CupertinoSearchBarBasic>
+        <MaterialSpinner style={styles.materialSpinner}></MaterialSpinner>
+
+        <Text style={styles.categoriesHeading}>Categories</Text>
+        <ScrollView horizontal={true} style={styles.categoryButtonsContainer}>
+          {foodCategories && sfoodCategories.map(foodCategory => (
+            <Categorybutton key={foodCategory.id} style={styles.categorybutton} categoryData={foodCategory} />
+          ))}
+        </ScrollView>
+
+        <Text style={styles.heading}>Near You</Text>
+        <View style={styles.foodCarousel}>
+          <Carousel
+            layout="default"
+            ref={carouselRef}
+            data={foodItems}
+            sliderWidth={300}
+            itemWidth={330}
+            renderItem={renderItem}
+            onSnapToItem={(index) => setActiveIndex(index)}
+          />
+        </View>
+
+        <Text style={styles.heading}>Find in map</Text>
+        <View style={{ width: 340, height: 250, marginBottom: 20, alignSelf: 'center', borderWidth: 1, borderColor: '#fff' }}>
+          <Image
+            source={require("../assets/images/map_preview.png")}
+            //resizeMode="contain"
+            style={{width: '100%', height: '100%'}}
+          ></Image>
+        </View>
+      </ScrollView>
+
       <CupertinoFooter1 style={styles.cupertinoFooter1}></CupertinoFooter1>
-      <View style={styles.hiAftabRow}>
-        <Text style={styles.hiAftab}>Hi, {userData && userData.username}</Text>
-        <MaterialButtonProfile style={styles.profileIcon}></MaterialButtonProfile>
-      </View>
-      <CupertinoSearchBarBasic
-        inputStyle="Search for food"
-        inputBox="rgba(255,255,255,1)"
-        style={styles.foodsearch}
-      ></CupertinoSearchBarBasic>
-      <MaterialSpinner style={styles.materialSpinner}></MaterialSpinner>
-      <Text style={styles.categories}>Categories</Text>
-      <View style={styles.categorybuttons}>
-        <Categorybutton style={styles.categorybutton}></Categorybutton>
-        <Categorybutton style={styles.categorybutton1}></Categorybutton>
-        <Categorybutton style={styles.categorybutton3}></Categorybutton>
-        <Categorybutton style={styles.categorybutton2}></Categorybutton>
-      </View>
-      <Text style={styles.nearYou}>Near You</Text>
-      <View style={styles.nearyoubtn1Row}>
-        <Nearyoubtn style={styles.nearyoubtn1}></Nearyoubtn>
-        <Nearyoubtn style={styles.nearyoubtn2}></Nearyoubtn>
-      </View>
-      <View style={styles.nearyoubtn3Row}>
-        <Nearyoubtn style={styles.nearyoubtn3}></Nearyoubtn>
-        <Nearyoubtn style={styles.nearyoubtn4}></Nearyoubtn>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)"
+    backgroundColor: "rgba(215,215,215,1)",
+    paddingTop: 20,
+    paddingBottom: 50 + 5, // This is the height of Footer + 5
   },
   cupertinoFooter1: {
-    height: 49,
+    position: 'absolute',
+    height: 50,
     width: 375,
-    marginTop: 725
+    bottom: 0
   },
-  hiAftab: {
+  hiUser: {
     fontFamily: "roboto-700",
     color: "#121212",
     fontSize: 24,
     marginTop: 9
   },
   profileIcon: {
-    marginLeft: 190
+    marginLeft: 100
   },
-  hiAftabRow: {
+  hiUserRow: {
     height: 46,
     flexDirection: "row",
-    marginTop: -717,
+    marginTop: 0,
     marginLeft: 29,
     marginRight: 23
   },
@@ -113,75 +177,38 @@ const styles = StyleSheet.create({
     height: 31,
     marginLeft: 29
   },
-  categories: {
+  categoriesHeading: {
     fontFamily: "roboto-700",
     color: "#121212",
     fontSize: 22,
     marginTop: 23,
     marginLeft: 29
   },
-  categorybuttons: {
+  categoryButtonsContainer: {
     width: 323,
     height: 61,
     flexDirection: "row",
-    justifyContent: "space-between",
+    //justifyContent: "space-between",
     marginLeft: 26
   },
   categorybutton: {
     height: 61,
-    width: 63
+    width: 63,
+    marginRight: 25
   },
-  categorybutton1: {
-    height: 61,
-    width: 63
-  },
-  categorybutton3: {
-    height: 61,
-    width: 63
-  },
-  categorybutton2: {
-    height: 61,
-    width: 63
-  },
-  nearYou: {
+  heading: {
     fontFamily: "roboto-700",
     color: "#121212",
     fontSize: 22,
     marginTop: 56,
+    marginBottom: 10,
     marginLeft: 29
   },
-  nearyoubtn1: {
-    width: 139,
-    height: 130
-  },
-  nearyoubtn2: {
-    width: 139,
-    height: 130,
-    marginLeft: 23
-  },
-  nearyoubtn1Row: {
-    height: 130,
-    flexDirection: "row",
-    marginTop: 14,
-    marginLeft: 29,
-    marginRight: 45
-  },
-  nearyoubtn3: {
-    width: 139,
-    height: 130
-  },
-  nearyoubtn4: {
-    width: 139,
-    height: 130,
-    marginLeft: 22
-  },
-  nearyoubtn3Row: {
-    height: 130,
-    flexDirection: "row",
-    marginTop: 16,
-    marginLeft: 29,
-    marginRight: 46
-  }
+  foodCarousel: {
+    flex: 1, 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+   }
 });
 
 export default Home;

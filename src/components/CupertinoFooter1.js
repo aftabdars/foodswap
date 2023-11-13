@@ -11,6 +11,12 @@ function CupertinoFooter1(props) {
 
   const navigation = useNavigation();
 
+    // If profille button is pressed
+    const profilePressed = () => {
+      // Navigate to settings screen
+      navigation.navigate('Profile');
+  }
+
   // If camera button is pressed
   const cameraPressed = () => {
     requestCameraPermission();
@@ -39,7 +45,7 @@ function CupertinoFooter1(props) {
           Home
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btnWrapper} onPress={() => setActive('profile')}>
+      <TouchableOpacity style={styles.btnWrapper} onPress={() => {setActive('profile'); profilePressed(); }}>
         <MaterialCommunityIconsIcon
           name="account-circle"
           style={[styles.icon, {color: (active == 'profile') ? "#009688" : "#616161"}]}
