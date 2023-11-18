@@ -45,11 +45,10 @@ function Login({navigation}) {
       setShowError("Please fill out all the fields");
     }
 
-    body = {
-      'username': username,
-      'password': password
-    }
-    postLogin(body)
+    const credentials = new FormData();
+    credentials.append('username', username);
+    credentials.append('password', password);
+    postLogin(credentials)
     .then(response => {
       console.log(response.status);
       console.log(response.data);
@@ -77,14 +76,6 @@ function Login({navigation}) {
         setShowError(errorMessages[Object.keys(errorMessages)[0]][0]);
       }
     })
-  }
-
-  const [loaded] = useFonts({
-    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
-  });
-
-  if (!loaded) {
-    return null;
   }
 
   return (

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
+import { StyleSheet, View, Text, ScrollView, Image, RefreshControl } from "react-native";
 import CupertinoFooter1 from "../components/CupertinoFooter1";
 import MaterialButtonProfile from "../components/MaterialButtonProfile";
 import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
@@ -17,12 +17,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 function Home(props) {
   // States
+  const [refreshing, setRefreshing] = useState(false);
   const [userData, setUserData] = useState({username: 'Anonymous'}); 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [foodItems, setFoodItems] = useState([{"id": 0, "name": "food", "descripttion": "Gealthy food", "status": "up"}]);
+  const [foodItems, setFoodItems] = useState([{"id": 0, "name": "food", "descripttion": "Healthy food", "status": "up"}]);
   const [foodCategories, setFoodCategories] = useState();
   
-  // References
+  // References and others
   const carouselRef = useRef(null);
 
   // Gets user profile
@@ -72,23 +73,30 @@ function Home(props) {
     getMeFoodCategories();
   }, []);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    // What things to refresh here
+    setRefreshing(false);
+  };
+
   // Render food items in carousel
   const renderItem = ({ item, index }) => (
     <FoodPreview foodData={item}></FoodPreview>
   );
 
-  const [loaded] = useFonts({
-    'roboto-700': require('../assets/fonts/roboto-700.ttf'),
-    'roboto-regular': require('../assets/fonts/roboto-regular.ttf')
-  });
-
-  if (!loaded) {
-    return null;
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#009688', '#009688']}
+            tintColor={'#009688'}
+          />
+        }
+      >
+
         <View style={styles.header}>
           <Text style={styles.hiUser}>Hi, {userData && userData.username}</Text>
           <MaterialButtonProfile style={styles.profileIcon}></MaterialButtonProfile>

@@ -1,3 +1,4 @@
+import { useFonts } from 'expo-font';
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import EmailConfirmation from './src/screens/EmailConfirmation';
@@ -6,8 +7,7 @@ import Forgot2 from './src/screens/Forgot2';
 import Forgot3 from './src/screens/Forgot3';
 import Home from './src/screens/Home';
 import Profile from './src/screens/Profile';
-import CameraScreen from './src/screens/CameraScreen';
-import FoodPictureConfirmation from './src/screens/FoodPictureConfirmation';
+import FoodImageSelection from './src/screens/FoodImageSelection';
 import FoodUploadForm from './src/screens/FoodUploadForm';
 import Settings from './src/screens/Settings';
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,6 +17,15 @@ const Stack = createNativeStackNavigator();
 
 //the home will be outside of navigation and a state will be used (or itll bug out)
 export default function App() {
+  const [loaded] = useFonts({
+    'roboto-700': require('./src/assets/fonts/roboto-700.ttf'),
+    'roboto-regular': require('./src/assets/fonts/roboto-regular.ttf')
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={"Login"}>
@@ -28,8 +37,7 @@ export default function App() {
         <Stack.Screen name="Forgot3" component={Forgot3} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
         <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
-        <Stack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown:false}}/>
-        <Stack.Screen name="FoodPictureConfirmation" component={FoodPictureConfirmation} options={{title:'Confirm Photo', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
+        <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{title:'Food Image Selection', headerStyle: {backgroundColor:'#333'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{title:'Food Upload', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown:false}}/>
       </Stack.Navigator>

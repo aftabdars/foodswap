@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useRoute } from '@react-navigation/native';
@@ -6,25 +6,98 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
 
+import { getFoodCategories, postFood } from '../api/backend/Food';
+import { getUserToken } from '../storage/Token';
+import { SerializeImage } from '../utils/Serialize';
 
 function FoodUploadForm() {
     const navigation = useNavigation();
     const route = useRoute(); // Use useRoute to access route parameters
 
+    // States
     const image = route.params?.image;
-    const [title, setTitle] = React.useState("");
-    const [description, setDescription] = React.useState("");
-    const [category, setCategory] = React.useState("category");
-    const [foodFor, setFoodFor] = React.useState("swap");
+    const [showError, setShowError] = useState();
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState(-1);
+    const [foodFor, setFoodFor] = useState("swap");
+    const [foodCategories, setFoodCategories] = useState();
+    const [filteredCategories, setFilteredCategories] = React.useState();
+    const [searchText, setSearchText] = React.useState('');
 
+    //if (image)
+        //console.log(image, typeof(image));
+
+    // Get food categories
+    useEffect(() => {
+        const getMeFoodCategories = async () => {
+        getFoodCategories()
+        .then(response => {
+            console.log(response.data);
+            setFoodCategories(response.data.results);
+            setFilteredCategories(response.data.results);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+        };
+        getMeFoodCategories();
+    }, []);
+
+    const handleSearch = (text) => {
+        setSearchText(text);
+        const filtered = foodCategories.filter((category) =>
+            category.name.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredCategories(filtered);
+    }
     const handleDiscard = () => {
         console.log('Food Upload Discarded');
         if (navigation.canGoBack()) {
             navigation.navigate('Home');
         }
     }
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         console.log('Food Upload confirmed');
+
+        if (category == -1) {
+            setShowError("Please select category");
+        }
+        else if (!title) {
+            setShowError("Title cannot be empty");
+        }
+        else
+        {
+            console.log(image)
+
+            const token = await getUserToken();
+            
+            if (token) {
+                const data = new FormData();
+                data.append('name', title);
+                data.append('description', description);
+                data.append('image', SerializeImage(image, title));
+                data.append('category', category);
+                data.append('up_for', foodFor);
+    
+                postFood(token.token, data)
+                .then(response => {
+                    console.log(response.status);
+                    console.log(response.data);
+                    navigation.navigate('Home');
+                })
+                .catch(error => {
+                    const errorMessages = error.response.data;
+                    console.log(error)
+                    console.log(errorMessages)
+                    const errorMessage = errorMessages[Object.keys(errorMessages)[0]];
+                    setShowError(errorMessage)
+                })
+            }
+            else{
+                console.log('Something wrong with fetching token');
+            }
+        }
     }
 
     return (
@@ -45,6 +118,8 @@ function FoodUploadForm() {
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Search for category"
+                    value={searchText}
+                    onChangeText={handleSearch}
                 />
                 <Picker
                     placeholder='Select Category'
@@ -52,9 +127,11 @@ function FoodUploadForm() {
                     selectedValue={category}
                     onValueChange={(itemValue, itemIndex) => setCategory(itemValue) }
                 >
-                    <Picker.Item label="Select Category" value="select" />
-                    <Picker.Item label="Category 1" value="category1" />
-                    <Picker.Item label="Category 2" value="category2" />
+                    <Picker.Item label="Select Category" value={-1} />
+                    {filteredCategories &&
+                        filteredCategories.map(foodCategory => (
+                            <Picker.Item key={foodCategory.id} label={foodCategory.name} value={foodCategory.id} />
+                    ))}
                 </Picker>
                 <Text styles={styles.foodForText}>
                     Food For:
@@ -67,6 +144,12 @@ function FoodUploadForm() {
                     <Picker.Item label="Swap" value="swap" />
                     <Picker.Item label="Share" value="share" />
                 </Picker>
+                {showError && (
+                    <Text style={styles.errormsg}>
+                        { showError }
+                    </Text>
+                )}
+      
             </View>
         <View style={styles.buttonContainer}>
             <MaterialButtonDanger style={styles.button} onPress={handleDiscard}>
@@ -104,30 +187,53 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     titleInput: {
-        borderBottomWidth: 1,
+        height: 43,
+        width: 300,
+        backgroundColor: "rgba(230, 230, 230,1)",
+        borderRadius: 9,
+        paddingHorizontal: 10,
         fontSize: 18,
         marginBottom: 50,
     },
     descriptionInput: {
-        borderBottomWidth: 1,
+        height: 150,
+        width: 300,
+        backgroundColor: "rgba(230, 230, 230,1)",
+        borderRadius: 9,
+        paddingHorizontal: 10,
         fontSize: 16,
         marginBottom: 50,
-        height: 120,
         //multiline: true,
     },
     searchInput: {
-        borderBottomWidth: 1,
+        height: 43,
+        width: 300,
+        backgroundColor: "rgba(230, 230, 230,1)",
+        borderRadius: 9,
+        paddingHorizontal: 10,
         fontSize: 18,
-        marginBottom: 20,
+        marginBottom: 5,
     },
     categoryPicker: {
+        width: 300,
+        backgroundColor: "rgba(230, 230, 230,1)",
         marginBottom: 50,
     },
     foodForText: {
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     foodForPicker: {
-        marginBottom: 50,
+        width: 300,
+        backgroundColor: "rgba(230, 230, 230,1)",
+        marginBottom: 30,
     },
+    errormsg: {
+        fontFamily: "roboto-regular",
+        color: "rgba(254,114,76,1)",
+        marginBottom: 10,
+        textAlign: "center"
+      },
 });
 
 export default FoodUploadForm;

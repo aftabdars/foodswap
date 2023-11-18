@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BACKEND_API_ENDPOINT, TOKEN_KEYWORD } from "../config";
+//import { removeUserToken } from "../../storage/Token";
 
 
 export async function makeGetRequest(url, token = undefined, params = undefined) {
@@ -16,6 +17,14 @@ export async function makeGetRequest(url, token = undefined, params = undefined)
         return response
     } catch (error) {
         console.error(`Error making GET request to ${BACKEND_API_ENDPOINT}${url}`, error);
+
+        // Handle invalid token
+        /*
+        const detail = error.response.data['detail']? error.response.data['detail'] : undefined;
+        if (detail && typeof detail == "string" && detail.toLowerCase() == 'invalid token.') {
+            removeUserToken();
+        }*/
+
         throw error
     }
 }

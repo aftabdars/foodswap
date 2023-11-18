@@ -1,33 +1,26 @@
 import React, { Component } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, PermissionsAndroid } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Camera, CameraType } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
 
 
 function CupertinoFooter1(props) {
   const [active, setActive] = React.useState('home');
-  const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions();
 
   const navigation = useNavigation();
 
-    // If profille button is pressed
+    const homePressed = () => {
+      navigation.navigate('Home');
+  }
     const profilePressed = () => {
       // Navigate to settings screen
       navigation.navigate('Profile');
   }
 
-  // If camera button is pressed
   const cameraPressed = () => {
-    requestCameraPermission();
-    if(cameraPermission && cameraPermission.granted) {
-      console.log('Has permission to use camera');
-
-      // Navigate to camera screen
-      navigation.navigate('CameraScreen');
-    }
+      // Navigate to selection for food photo screen
+      navigation.navigate('FoodImageSelection');
   }
-  // If settings button is pressed
   const settingsPressed = () => {
       // Navigate to settings screen
       navigation.navigate('Settings');
@@ -35,7 +28,7 @@ function CupertinoFooter1(props) {
 
   return (
     <View style={[styles.container, props.style]}>
-      <TouchableOpacity style={styles.btnWrapper} onPress={() => setActive('home')}>
+      <TouchableOpacity style={styles.btnWrapper} onPress={() => { setActive('home'); homePressed(); }}>
         <MaterialCommunityIconsIcon
           name="home-minus"
           style={[styles.icon, {color: (active == 'home') ? "#009688" : "#616161"}]}

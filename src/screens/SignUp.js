@@ -28,11 +28,10 @@ function SignUp({navigation}) {
         setShowError('Re-typed password does not match');
       }
       else {
-        body = {
-          'username': username,
-          'email': email,
-          'password': password
-        }
+        const body = new FormData();
+        body.append('username', username);
+        body.append('email', email);
+        body.append('password', password);
         
         // Register the user and navigate to verification screen for confirmation
         postSignup(body)
@@ -54,7 +53,9 @@ function SignUp({navigation}) {
             setShowError(error.response.data["email"][0])
           }
           else {
-            setShowError("Unknown error")
+            const errorMessages = error.response.data;
+            const errorMessage = errorMessages[Object.keys(errorMessages)[0]];
+            setShowError(errorMessage)
           }
         })
 
