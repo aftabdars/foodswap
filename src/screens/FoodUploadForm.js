@@ -8,7 +8,7 @@ import MaterialButtonDanger from "../components/MaterialButtonDanger";
 
 import { getFoodCategories, postFood } from '../api/backend/Food';
 import { getUserToken } from '../storage/Token';
-import { SerializeImage } from '../utils/Serialize';
+import { SerializeImage } from '../api/backend/utils/Serialize';
 
 function FoodUploadForm() {
     const navigation = useNavigation();
