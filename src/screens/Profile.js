@@ -6,28 +6,71 @@ import EntypoIcon from "react-native-vector-icons/Entypo";
 import OcticonsIcon from "react-native-vector-icons/Octicons";
 import { useFonts } from 'expo-font';
 import ProgressBar from '../components/ProgressBar'
-import { getProfile } from '../api/backend/User';
+import { getProfile, getUserStats } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
+import { getLevels } from "../api/backend/Gamification";
 
 function Profile(props) {
-  //fetchuser
-  const [userData, setUserData] = useState({username: 'Anonymous'}); 
+    //fetchuser
+    const [userData, setUserData] = useState({username: 'Anonymous'});
+    const [userStats, setUserStats] = useState();
+    const [levelData, setLevelData] = useState();
 
-  // Gets user profile
-  useEffect(() => {
-    const getUserProfile = async () => {
-      const token = await getUserToken();
-      console.log(token);
-      getProfile(token.token)
-      .then(response => {
-        if (response.status == 200) setUserData(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      })
-    }
-    getUserProfile();
-  }, []);
+    // Gets user profile
+    useEffect(() => {
+      const getUserProfile = async () => {
+        const token = await getUserToken();
+        console.log(token);
+        getProfile(token.token)
+        .then(response => {
+          if (response.status == 200) {
+            setUserData(response.data);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+      }
+      getUserProfile();
+    }, []);
+
+    // Gets user stats
+    useEffect(() => {
+      if (userData && userData.id) {
+        const getMeUserStats = async () => {
+          getUserStats(userData.id)
+          .then(response => {
+            console.log(response.data);
+            if (response.status == 200) setUserStats(response.data);
+          })
+          .catch(error => {
+            console.log(error);
+          })
+        }
+        getMeUserStats();
+      }
+    }, [userData]);
+
+    // Gets user level and level's data from user's current XP
+    useEffect(() => {
+      if (userStats) {
+        const getLevelData = async () => {
+          const params = { // Retrieves level row having xp_start >= user_xp <= xp_end
+            'xp_start__lte': userStats? userStats.xp: 0,
+            'xp_end__gte': userStats? userStats.xp: 199
+          }
+          getLevels(params)
+          .then(response => {
+            console.log(response.data);
+            if (response.status == 200) setLevelData(response.data.results[0]);
+          })
+          .catch(error => {
+            console.log(error);
+          })
+        }
+        getLevelData();
+      }
+    }, [userStats]);
 
     //TABBED VIEW/////////////////////////////////
     const layout = useWindowDimensions();
@@ -55,7 +98,7 @@ function Profile(props) {
       <View style={styles.profilecontainer}>
         <View style={styles.imageStack}>
           <Image
-            source={require("../assets/images/image_(1).png")}
+            source={userData.profile_picture || require("../assets/images/image_(1).png")}
             resizeMode="contain"
             style={styles.image}
           ></Image>
@@ -92,11 +135,11 @@ function Profile(props) {
         </View>
         <View style={styles.detailsgroup}>
         <EntypoIcon name="add-user" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>Following {userData.following_count}</Text>
+          <Text style={styles.detailsfont}>Following {userStats? userStats.following_count : 0}</Text>
         </View>
         <View style={styles.detailsgroup}>
         <EntypoIcon name="remove-user" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>Followers {userData.follower_count}</Text>
+          <Text style={styles.detailsfont}>Followers {userStats? userStats.follower_count : 0}</Text>
         </View>
       </View>
 
@@ -104,32 +147,32 @@ function Profile(props) {
         <Text style={styles.headings}>Stats</Text>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{color: '#272727', left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
-          <ProgressBar xp={[30,60]} />
+          <Text style={{color: '#272727', left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>{levelData? String(levelData.level).padStart(3, '0') : '000'}</Text>
+          <ProgressBar xp={[userStats? userStats.xp : 0, levelData? levelData.xp_end : 1]} />
         </View>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="arrow-bold-up" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>69 foods uploaded</Text>
+          <Text style={styles.detailsfont}>{userStats? userStats.food_count : 0} food uploaded</Text>
         </View>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="swap" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>420 foods swapped</Text>
+          <Text style={styles.detailsfont}>{userStats? userStats.foodswap_count : 0} food items swapped</Text>
         </View>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="level-down" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>42 food items shared</Text>
+          <Text style={styles.detailsfont}>{userStats? userStats.foodshare_count : 0} food items shared</Text>
         </View>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="level-up" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>8 food items taken</Text>
+          <Text style={styles.detailsfont}>{userStats? userStats.food_taken_count : 0} food items taken</Text>
         </View>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="bowl" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>8 foodies earned</Text>
+          <Text style={styles.detailsfont}>{userStats? userStats.total_foodiez : 0} foodiez earned</Text>
         </View>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="trophy" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>8 Achievements completed</Text>
+          <Text style={styles.detailsfont}>{userStats? userStats.achievements_completed : 0} Achievements completed</Text>
         </View>
       </View>
 
