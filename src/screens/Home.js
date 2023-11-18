@@ -11,6 +11,7 @@ import { getProfile } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
 import FoodCarousel from "../components/FoodCarousel.js";
+import Colors from '../assets/Colors'
 
 
 function Home(props) {
@@ -126,7 +127,7 @@ function Home(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)",
+    backgroundColor: Colors.background,
     paddingTop: 20,
     paddingBottom: 50 + 5, // This is the height of Footer + 5
   },
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   },
   hiUser: {
     fontFamily: "roboto-700",
-    color: "#121212",
+    color: Colors.foreground,
     fontSize: 24,
     position: 'absolute',
     left: 0,
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
   foodsearch: {
     height: 44,
     width: 323,
-    backgroundColor: "rgba(255,255,255,1)",
+    backgroundColor: Colors.background,
     borderRadius: 9,
     marginTop: 9,
     marginLeft: 29
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
   },
   categoriesHeading: {
     fontFamily: "roboto-700",
-    color: "#121212",
+    color: Colors.foreground,
     fontSize: 22,
     marginTop: 23,
     marginLeft: 29
@@ -185,11 +186,12 @@ const styles = StyleSheet.create({
   categorybutton: {
     height: 61,
     width: 63,
-    marginRight: 25
+    marginRight: 25,
+    color: Colors.foreground
   },
   heading: {
     fontFamily: "roboto-700",
-    color: "#121212",
+    color: Colors.foreground,
     fontSize: 22,
     marginTop: 56,
     marginBottom: 10,

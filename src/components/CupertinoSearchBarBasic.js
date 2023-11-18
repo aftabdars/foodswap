@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Colors from '../assets/Colors'
 
 function CupertinoSearchBarBasic(props) {
   return (
@@ -9,13 +10,14 @@ function CupertinoSearchBarBasic(props) {
         style={[
           styles.inputBox,
           {
-            backgroundColor: props.inputBox || "#EFEFF4"
+            backgroundColor: Colors.background2 || "#EFEFF4"
           }
         ]}
       >
         <Icon name="magnify" style={styles.inputLeftIcon}></Icon>
         <TextInput
           placeholder={props.inputStyle || "Search"}
+          placeholderTextColor={Colors.foreground}
           style={styles.inputStyle}
         ></TextInput>
       </View>
@@ -27,7 +29,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#CECED2",
     padding: 8
   },
   inputBox: {
@@ -35,10 +36,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 5,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: Colors.background2,
   },
   inputLeftIcon: {
-    color: "#000",
+    color: Colors.foreground,
     fontSize: 20,
     alignSelf: "center",
     paddingLeft: 5,
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     fontSize: 15,
     lineHeight: 15,
-    color: "#000",
+    color: Colors.foreground,
     flex: 1
   }
 });

@@ -9,6 +9,7 @@ import ProgressBar from '../components/ProgressBar'
 import { getProfile, getUserStats } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
 import { getLevels } from "../api/backend/Gamification";
+import Colors from '../assets/Colors'
 
 function Profile(props) {
     //fetchuser
@@ -220,13 +221,13 @@ const renderScene = SceneMap({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)",
+    backgroundColor: Colors.background,
     opacity: 0.77
   },
   profilecontainer: {
     minWidth: 100,
     minHeight: 340,
-    backgroundColor: "rgba(243,114,76,1)",
+    backgroundColor: Colors.highlight1,
     flex : 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -254,7 +255,7 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontFamily: "roboto-700",
-    color: "rgba(255,255,255,1)",
+    color: Colors.foreground,
     fontSize: 22,
     textAlign: "center",
   },
@@ -266,7 +267,7 @@ const styles = StyleSheet.create({
   },
   headings: {
     fontFamily: "roboto-700",
-    color: "#121212",
+    color: Colors.foreground,
     fontSize: 22,
     marginLeft: 0
   },
@@ -286,12 +287,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   icon: {
-    color: "rgba(243,114,76,1)",
+    color: Colors.highlight1,
     fontSize: 40
   },
   detailsfont: {
     fontFamily: "roboto-700",
-    color: "rgba(18,18,18,1)",
+    color: Colors.foreground,
     fontSize: 15,
     left: 25
   },

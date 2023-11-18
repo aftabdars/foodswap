@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
+import Colors from '../assets/Colors'
 
 function FoodPreview(props) {
   // Food preview click functionaly will be implemented here
@@ -24,7 +25,7 @@ function FoodPreview(props) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 9,
-    backgroundColor: 'floralwhite',
+    backgroundColor: Colors.background2,
     borderRadius: 5,
     height: 250,
     padding: 15,
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "roboto-regular",
-    color: "#121212",
+    color: Colors.foreground,
     fontSize: 20,
     textAlign: 'center', 
   }
