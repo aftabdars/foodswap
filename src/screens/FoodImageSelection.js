@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import Colors from '../assets/Colors'
 
 function FoodImageSelection() {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#000',
+        backgroundColor: Colors.background,
     },
     image: {
         width: 350,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     text: {
-        color: '#fff',
+        color: Colors.background,
         fontSize: 18,
     },
 });

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
+import Colors from '../assets/Colors'
 
 function Forgot2({navigation}) {
   return (
@@ -16,7 +17,7 @@ function Forgot2({navigation}) {
         Please enter the code we just emailed you
       </Text>
       <MaterialFixedLabelTextbox
-        label="000000"
+        placeholder="000000"
         style={styles.materialFixedLabelTextbox1}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
@@ -31,7 +32,7 @@ function Forgot2({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)"
+    backgroundColor: Colors.background
   },
   keylogo: {
     width: 244,
@@ -41,21 +42,22 @@ const styles = StyleSheet.create({
   },
   loremIpsum1: {
     fontFamily: "abeezee-regular",
-    color: "rgba(39,45,47,1)",
+    color: Colors.foreground,
     fontSize: 24,
     marginTop: 43,
     alignSelf: "center"
   },
   loremIpsum2: {
     fontFamily: "roboto-regular",
-    color: "#121212",
+    color: Colors.foreground,
     marginTop: 16,
     marginLeft: 57
   },
   materialFixedLabelTextbox1: {
     height: 43,
     width: 278,
-    backgroundColor: "rgba(230, 230, 230,1)",
+    backgroundColor: Colors.background,
+    color: Colors.foreground,
     borderRadius: 9,
     marginTop: 45,
     marginLeft: 49
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
   },
   errormsg: {
     fontFamily: "roboto-regular",
-    color: "rgba(254,114,76,1)",
+    color: Colors.error,
     marginTop: -69,
     marginLeft: 97
   }

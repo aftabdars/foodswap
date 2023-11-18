@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
+import Colors from '../assets/Colors'
 
 function Forgot({navigation}) {
   const [loaded] = useFonts({
@@ -24,7 +25,7 @@ function Forgot({navigation}) {
       <Text style={styles.loremIpsum}>Forgot Your Password?</Text>
       <Text style={styles.loremIpsum2}>Please enter your email below</Text>
       <MaterialFixedLabelTextbox
-        label="Email@xyz.com"
+        placeholder="Email@xyz.com"
         style={styles.emailinput}
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
@@ -41,7 +42,7 @@ function Forgot({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)"
+    backgroundColor: Colors.background
   },
   locklogo: {
     width: 219,
@@ -51,21 +52,22 @@ const styles = StyleSheet.create({
   },
   loremIpsum: {
     fontFamily: "abeezee-regular",
-    color: "rgba(39,45,47,1)",
+    color: Colors.foreground,
     fontSize: 24,
     marginTop: 62,
     alignSelf: "center"
   },
   loremIpsum2: {
     fontFamily: "roboto-regular",
-    color: "#121212",
+    color: Colors.foreground,
     marginTop: 14,
     marginLeft: 95
   },
   emailinput: {
     height: 43,
     width: 278,
-    backgroundColor: "rgba(230, 230, 230,1)",
+    backgroundColor: Colors.background,
+    color: Colors.foreground,
     borderRadius: 9,
     marginTop: 47,
     marginLeft: 49
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
   },
   errormsg: {
     fontFamily: "roboto-regular",
-    color: "rgba(254,114,76,1)",
+    color: Colors.error,
     marginTop: -69,
     marginLeft: 57
   }

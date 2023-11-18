@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, Text } from "react-native";
 function MaterialButtonWithVioletText(props) {
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-      <Text style={styles.caption}>{props.caption}</Text>
+      <Text style={{fontSize: 14, color: props.style.color}}>{props.caption}</Text>
     </TouchableOpacity>
   );
 }

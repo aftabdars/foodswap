@@ -8,6 +8,7 @@ import { useFonts } from 'expo-font';
 
 import { postSignup } from "../api/backend/User";
 import { setUserToken } from "../storage/Token";
+import Colors from '../assets/Colors'
 
 
 function SignUp({navigation}) {
@@ -78,22 +79,22 @@ function SignUp({navigation}) {
         <View style={styles.group}>
           <MaterialFixedLabelTextbox
             placeholder="Username"
-            style={styles.usernameinput}
+            style={styles.input}
             onChangeText={(text) => setUsername(text)}
           ></MaterialFixedLabelTextbox>
           <MaterialFixedLabelTextbox
             placeholder="abc@xyz.com"
-            style={styles.emailinput}
+            style={styles.input}
             onChangeText={(text) => setEmail(text)}
           ></MaterialFixedLabelTextbox>
           <MaterialRightIconTextbox
             placeholder="Password"
-            style={styles.passinput}
+            style={styles.input}
             onChangeText={(text) => setPassword(text)}
           ></MaterialRightIconTextbox>
           <MaterialRightIconTextbox
             placeholder="Retype Password"
-            style={styles.passinput2}
+            style={styles.input}
             onChangeText={(text) => setRePassword(text)}
           ></MaterialRightIconTextbox>
         </View>
@@ -123,11 +124,11 @@ function SignUp({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)"
+    backgroundColor: Colors.background
   },
   text: {
     fontFamily: "roboto-700",
-    color: "#121212",
+    color: Colors.foreground,
     fontSize: 24,
     marginTop: 92,
     marginLeft: 49
@@ -139,28 +140,11 @@ const styles = StyleSheet.create({
     marginTop: 64,
     marginLeft: 49
   },
-  usernameinput: {
+  input: {
     height: 43,
     width: 278,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    borderRadius: 9
-  },
-  emailinput: {
-    height: 43,
-    width: 278,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    borderRadius: 9
-  },
-  passinput: {
-    height: 43,
-    width: 277,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    borderRadius: 9
-  },
-  passinput2: {
-    height: 43,
-    width: 277,
-    backgroundColor: "rgba(230, 230, 230,1)",
+    backgroundColor: Colors.background2,
+    color: Colors.foreground,
     borderRadius: 9
   },
   materialButtonSuccess1: {
@@ -182,7 +166,7 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
     fontFamily: "roboto-regular",
-    color: "#121212"
+    color: Colors.foreground,
   },
   alreadyContainer: {
     width: 238,
@@ -193,7 +177,7 @@ const styles = StyleSheet.create({
   },
   errormsg: {
     fontFamily: "roboto-regular",
-    color: "rgba(254,114,76,1)",
+    color: Colors.error,
     marginTop: 20,
     marginRight: 15,
     textAlign: "center"

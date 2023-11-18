@@ -10,6 +10,7 @@ import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrange
 
 import { postLogin } from "../api/backend/Auth";
 import { getUserToken, setUserToken } from "../storage/Token";
+import Colors from '../assets/Colors'
 
 
 function Login({navigation}) {
@@ -126,7 +127,7 @@ function Login({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)"
+    backgroundColor: Colors.background
   },
   foodswaplogo: {
     width: 375,
@@ -136,7 +137,8 @@ const styles = StyleSheet.create({
   usernameinput: {
     height: 43,
     width: 278,
-    backgroundColor: "rgba(230, 230, 230,1)",
+    backgroundColor: Colors.background2,
+    color: Colors.foreground,
     borderRadius: 9,
     marginTop: 37,
     marginLeft: 49
@@ -152,7 +154,8 @@ const styles = StyleSheet.create({
     height: 43,
     width: 278,
     borderRadius: 9,
-    backgroundColor: "rgba(230, 230, 230,1)",
+    backgroundColor: Colors.background2,
+    color: Colors.foreground,
     marginTop: -93,
     marginLeft: 49
   },
@@ -160,11 +163,12 @@ const styles = StyleSheet.create({
     height: 36,
     width: 200,
     marginTop: 50,
-    marginLeft: 88
+    marginLeft: 88,
+    color: Colors.highlight2
   },
   notAUser: {
     fontFamily: "roboto-regular",
-    color: "#121212",
+    color: Colors.foreground,
     marginTop: 9
   },
   signupbtn: {
@@ -180,7 +184,7 @@ const styles = StyleSheet.create({
   },
   errormsg: {
     fontFamily: "roboto-regular",
-    color: "rgba(254,114,76,1)",
+    color: Colors.error,
     marginTop: 20,
     marginRight: 15,
     textAlign: "center"
