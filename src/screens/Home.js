@@ -1,30 +1,24 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ScrollView, Image, RefreshControl } from "react-native";
 import CupertinoFooter1 from "../components/CupertinoFooter1";
 import MaterialButtonProfile from "../components/MaterialButtonProfile";
 import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
 import MaterialSpinner from "../components/MaterialSpinner";
 import Categorybutton from "../components/Categorybutton";
-import FoodPreview from "../components/FoodPreview.js";
-import { useFonts } from 'expo-font';
-import Carousel from "react-native-snap-carousel";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { getProfile } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import FoodCarousel from "../components/FoodCarousel.js";
 
 
 function Home(props) {
   // States
   const [refreshing, setRefreshing] = useState(false);
   const [userData, setUserData] = useState({username: 'Anonymous'}); 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [foodItems, setFoodItems] = useState([{"id": 0, "name": "food", "descripttion": "Healthy food", "status": "up"}]);
+  const [foodItems, setFoodItems] = useState();
   const [foodCategories, setFoodCategories] = useState();
-  
-  // References and others
-  const carouselRef = useRef(null);
 
   // Gets user profile
   useEffect(() => {
@@ -79,11 +73,6 @@ function Home(props) {
     setRefreshing(false);
   };
 
-  // Render food items in carousel
-  const renderItem = ({ item, index }) => (
-    <FoodPreview foodData={item}></FoodPreview>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -117,17 +106,7 @@ function Home(props) {
         </ScrollView>
 
         <Text style={styles.heading}>Near You</Text>
-        <View style={styles.foodCarousel}>
-          <Carousel
-            layout="default"
-            ref={carouselRef}
-            data={foodItems}
-            sliderWidth={300}
-            itemWidth={330}
-            renderItem={renderItem}
-            onSnapToItem={(index) => setActiveIndex(index)}
-          />
-        </View>
+        <FoodCarousel foodItems={foodItems}/>
 
         <Text style={styles.heading}>Find in map</Text>
         <View style={{ width: 340, height: 250, marginBottom: 20, alignSelf: 'center', borderWidth: 1, borderColor: '#fff' }}>
@@ -216,11 +195,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 29
   },
-  foodCarousel: {
-    flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: 'center', 
-   }
 });
 
 export default Home;
