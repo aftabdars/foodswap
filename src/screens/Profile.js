@@ -1,14 +1,57 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import React, { Component, useState, useEffect } from "react";
+import { StyleSheet, View, Image, Text, ScrollView, useWindowDimensions } from "react-native";
+import { TabView, SceneMap } from 'react-native-tab-view';
 import Editbutton from "../components/Editbutton";
-import MaterialButtonWithVioletText1 from "../components/MaterialButtonWithVioletText"
-import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import OcticonsIcon from "react-native-vector-icons/Octicons";
+import { useFonts } from 'expo-font';
+import ProgressBar from '../components/ProgressBar'
+import { getProfile } from '../api/backend/User';
+import { getUserToken } from "../storage/Token";
 
 function Profile(props) {
+  //fetchuser
+  const [userData, setUserData] = useState({username: 'Anonymous'}); 
+
+  // Gets user profile
+  useEffect(() => {
+    const getUserProfile = async () => {
+      const token = await getUserToken();
+      console.log(token);
+      getProfile(token.token)
+      .then(response => {
+        if (response.status == 200) setUserData(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    }
+    getUserProfile();
+  }, []);
+
+    //TABBED VIEW/////////////////////////////////
+    const layout = useWindowDimensions();
+
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+      { key: 'first', title: 'Active Foods' },
+      { key: 'second', title: 'Swapped Foods' },
+      { key: 'third', title: 'Shared Foods' },
+    ]);
+    /////////////////////////////////////////////
+
+
+  const [loaded] = useFonts({
+    'roboto-700': require('../assets/fonts/roboto-700.ttf'),
+    'roboto-regular': require('../assets/fonts/roboto-regular.ttf')
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.profilecontainer}>
         <View style={styles.imageStack}>
           <Image
@@ -16,36 +59,120 @@ function Profile(props) {
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <Editbutton style={styles.cupertinoButtonDelete}></Editbutton>
+          <Editbutton style={styles.editProfilePicture}></Editbutton>
         </View>
-        <Text style={styles.aftabHussain}>Aftab Hussain</Text>
+        <Text style={styles.profileName}>{userData.first_name} {userData.last_name}</Text>
+        <Text style={styles.profileName}>{userData.username}</Text>
       </View>
-      <MaterialButtonWithVioletText1
-        button="Log out"
-        style={styles.materialButtonWithVioletText1}
-      ></MaterialButtonWithVioletText1>
-      <Text style={styles.details}>Details</Text>
-      <View style={styles.group5}>
-        <View style={styles.group}>
-          <FontAwesomeIcon name="phone" style={styles.icon}></FontAwesomeIcon>
-          <Text style={styles.aftabHussain1}>+923173820608</Text>
-        </View>
-        <View style={styles.group2}>
-          <EntypoIcon name="location-pin" style={styles.icon2}></EntypoIcon>
-          <Text style={styles.b26ShabazTown}>B-26, Shabaz Town</Text>
-        </View>
-        <View style={styles.group3}>
-          <EntypoIcon name="email" style={styles.icon3}></EntypoIcon>
-          <Text style={styles.aftabdarsGmailCom}>aftabdars@gmail.com</Text>
-        </View>
-        <View style={styles.group4}>
-          <OcticonsIcon name="key" style={styles.icon4}></OcticonsIcon>
-          <Text style={styles.aftabdarsGmailCom1}>*******************</Text>
+      
+      <View style={styles.detailscontainer}>
+        <Text style={styles.headings}>About</Text>
+        <View style={styles.detailsgroup}>
+        <Text style={styles.detailsfont}>{userData.about || 'Hidden'}</Text>
         </View>
       </View>
-    </View>
+
+      <View style={styles.detailscontainer}>
+        <Text style={styles.headings}>Details</Text>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="phone" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>{userData.phone || 'Hidden'}</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="location-pin" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>{userData.address || 'Hidden'}</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="email" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>{userData.email || 'Hidden'}</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+        <EntypoIcon name="calendar" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>Member Since {userData.date_joined? userData.date_joined.substring(0,4): 'Hidden'}</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+        <EntypoIcon name="add-user" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>Following {userData.following_count}</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+        <EntypoIcon name="remove-user" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>Followers {userData.follower_count}</Text>
+        </View>
+      </View>
+
+      <View style={styles.detailscontainer}>
+        <Text style={styles.headings}>Stats</Text>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
+          <Text style={{color: '#272727', left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
+          <ProgressBar xp={[30,60]} />
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="arrow-bold-up" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>69 foods uploaded</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="swap" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>420 foods swapped</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="level-down" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>42 food items shared</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="level-up" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>8 food items taken</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="bowl" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>8 foodies earned</Text>
+        </View>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="trophy" style={styles.icon}></EntypoIcon>
+          <Text style={styles.detailsfont}>8 Achievements completed</Text>
+        </View>
+      </View>
+
+      <TabView style={styles.tabbedcontainer}
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+    />
+      {/* Acheivments */}
+      <View style={styles.detailscontainer}>
+        <Text style={styles.headings}>Achievements</Text>
+        <View style={styles.detailsgroup}>
+          <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
+          <Text style={{color: '#272727', left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
+          <ProgressBar xp={[30,60]} />
+        </View>
+      </View>
+    </ScrollView>
   );
 }
+
+//TABBED VIEWS////////////////////////////////////////////////
+
+const FirstRoute = () => (
+  <View style={{ flex: 1, backgroundColor: '#d7d7d7' }} />
+);
+
+const SecondRoute = () => (
+  <View style={{ flex: 1, backgroundColor: '#d7d7d7' }} />
+);
+
+const ThirdRoute = () => (
+  <View style={{ flex: 1, backgroundColor: '#d7d7d7' }} />
+);
+
+const renderScene = SceneMap({
+  first: FirstRoute,
+  second: SecondRoute,
+  third: ThirdRoute
+});
+//////////////////////////////////////////////////////////////
+
 
 const styles = StyleSheet.create({
   container: {
@@ -54,128 +181,83 @@ const styles = StyleSheet.create({
     opacity: 0.77
   },
   profilecontainer: {
-    width: 375,
-    height: 378,
+    minWidth: 100,
+    minHeight: 340,
     backgroundColor: "rgba(243,114,76,1)",
-    borderRadius: 100,
-    marginTop: -55
+    flex : 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    marginTop: 0
   },
   image: {
-    top: 0,
-    left: 0,
     width: 155,
     height: 155,
-    position: "absolute",
+    position: "relative",
     borderRadius: 100
   },
-  cupertinoButtonDelete: {
+  editProfilePicture: {
     height: 44,
     width: 44,
-    position: "absolute",
-    left: 137,
-    top: 0
+    position: "relative",
+    bottom: 155,
+    left: 130
   },
   imageStack: {
     width: 181,
     height: 155,
-    marginTop: 112,
-    marginLeft: 110
+    left: 13
   },
-  aftabHussain: {
+  profileName: {
     fontFamily: "roboto-700",
     color: "rgba(255,255,255,1)",
     fontSize: 22,
     textAlign: "center",
-    marginTop: 7,
-    marginLeft: 118
   },
-  materialButtonWithVioletText1: {
+  ignorethis: {
     height: 36,
     width: 100,
     marginTop: 352,
     marginLeft: 138
   },
-  details: {
+  headings: {
     fontFamily: "roboto-700",
     color: "#121212",
     fontSize: 22,
-    marginTop: -365,
-    marginLeft: 42
+    marginLeft: 0
   },
-  group5: {
+  detailscontainer: {
     width: 265,
-    height: 237,
+    height: 'auto',
     justifyContent: "space-between",
     marginTop: 33,
     marginLeft: 55
   },
-  group: {
-    width: 166,
+  detailsgroup: {
+    minWidth: 200,
     height: 40,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginTop: 10,
   },
   icon: {
     color: "rgba(243,114,76,1)",
     fontSize: 40
   },
-  aftabHussain1: {
+  detailsfont: {
     fontFamily: "roboto-700",
     color: "rgba(18,18,18,1)",
     fontSize: 15,
-    textAlign: "center"
+    left: 25
   },
-  group2: {
-    width: 191,
-    height: 44,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  icon2: {
-    color: "rgba(243,114,76,1)",
-    fontSize: 40
-  },
-  b26ShabazTown: {
-    fontFamily: "roboto-700",
-    color: "rgba(18,18,18,1)",
-    fontSize: 15,
-    textAlign: "center"
-  },
-  group3: {
-    width: 211,
-    height: 44,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  icon3: {
-    color: "rgba(243,114,76,1)",
-    fontSize: 40
-  },
-  aftabdarsGmailCom: {
-    fontFamily: "roboto-700",
-    color: "rgba(18,18,18,1)",
-    fontSize: 15,
-    textAlign: "center"
-  },
-  group4: {
-    width: 191,
-    height: 44,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  icon4: {
-    color: "rgba(243,114,76,1)",
-    fontSize: 40
-  },
-  aftabdarsGmailCom1: {
-    fontFamily: "roboto-700",
-    color: "rgba(18,18,18,1)",
-    fontSize: 15,
-    textAlign: "center"
+  tabbedcontainer: {
+    width: '100%',
+    height: 360,
+    justifyContent: "space-between",
+    marginTop: 33,
+    marginLeft: 0,
   }
 });
 

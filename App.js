@@ -36,7 +36,7 @@ export default function App() {
         <Stack.Screen name="Forgot2" component={Forgot2} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Forgot3" component={Forgot3} options={{title:'Forgot', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
-        <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
+        <Stack.Screen name="Profile" options={{headerShown:false}}>{(props) => <Profile {...props} username=''/>}</Stack.Screen>
         <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{title:'Food Image Selection', headerStyle: {backgroundColor:'#333'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{title:'Food Upload', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown:false}}/>
