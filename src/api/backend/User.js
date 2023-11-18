@@ -44,3 +44,21 @@ export async function updateUser(id, token, body) {
     const contentType = 'multipart/form-data';
     return await makePutRequest(url, token, body, contentType);
 }
+
+// Get user stats
+export async function getUserStats(id) {
+    const url = `/accounts/stats/${id}`;
+    return await makeGetRequest(url);
+}
+
+// Get user settings
+export async function getUserSettings(id) {
+    const url = `/accounts/settings/${id}`;
+    return await makeGetRequest(url);
+}
+
+// Update user settings
+export async function updateUserSettings(id, token, body) {
+    const url = `/accounts/settings/${id}`;
+    return await makePutRequest(url, token, body);
+}

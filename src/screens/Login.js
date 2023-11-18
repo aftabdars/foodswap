@@ -45,10 +45,11 @@ function Login({navigation}) {
       setShowError("Please fill out all the fields");
     }
 
-    const credentials = new FormData();
-    credentials.append('username', username);
-    credentials.append('password', password);
-    postLogin(credentials)
+    body = {
+      'username': username,
+      'password': password
+    }
+    postLogin(body)
     .then(response => {
       console.log(response.status);
       console.log(response.data);

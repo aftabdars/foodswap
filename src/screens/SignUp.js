@@ -28,10 +28,11 @@ function SignUp({navigation}) {
         setShowError('Re-typed password does not match');
       }
       else {
-        const body = new FormData();
-        body.append('username', username);
-        body.append('email', email);
-        body.append('password', password);
+        body = {
+          'username': username,
+          'email': email,
+          'password': password
+        }
         
         // Register the user and navigate to verification screen for confirmation
         postSignup(body)

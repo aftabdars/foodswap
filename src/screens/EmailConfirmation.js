@@ -23,10 +23,7 @@ function EmailConfirmation({navigation}) {
       setShowError("Please fill out the code field");
     }
     else {
-      const body = new FormData();
-      body.append('code', code);
-      
-      postVerifyAccount(body)
+      postVerifyAccount({"code": code})
       .then(response => {
         console.log(response.status);
         console.log(response.data);
