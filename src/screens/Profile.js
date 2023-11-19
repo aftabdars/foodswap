@@ -98,7 +98,7 @@ function Profile(props) {
       <View style={styles.profilecontainer}>
         <View style={styles.imageStack}>
           <Image
-            source={userData.profile_picture || require("../assets/images/image_(1).png")}
+            source={{uri: userData.profile_picture} || require("../assets/images/image_(1).png")}
             resizeMode="contain"
             style={styles.image}
           ></Image>

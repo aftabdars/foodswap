@@ -25,6 +25,9 @@ function CupertinoFooter1(props) {
       // Navigate to settings screen
       navigation.navigate('Settings');
   }
+  const messagesPressed = () => {
+    navigation.navigate('Messages');
+}
 
   return (
     <View style={[styles.container, props.style]}>
@@ -58,7 +61,7 @@ function CupertinoFooter1(props) {
           Share Food
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btnWrapper} onPress={() => setActive('messages')}>
+      <TouchableOpacity style={styles.btnWrapper} onPress={() => { setActive('messages'); messagesPressed(); }}>
         <MaterialCommunityIconsIcon
           name="message-processing"
           style={[styles.icon, {color: (active == 'messages') ? "#009688" : "#616161"}]}

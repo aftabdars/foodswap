@@ -12,6 +12,8 @@ import FoodUploadForm from './src/screens/FoodUploadForm';
 import Settings from './src/screens/Settings';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Inbox from './src/screens/Messages';
+import Chat from './src/screens/Chat';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +42,8 @@ export default function App() {
         <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{title:'Food Image Selection', headerStyle: {backgroundColor:'#333'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{title:'Food Upload', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown:false}}/>
+        <Stack.Screen name="Messages" component={Inbox} options={{title:'Messages', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
+        <Stack.Screen name="Chat" component={Chat} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
