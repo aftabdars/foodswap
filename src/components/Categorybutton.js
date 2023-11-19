@@ -5,8 +5,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 function Categorybutton(props) {
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-      <Icon name="ios-restaurant" style={styles.icon}></Icon>
-      <Text style={styles.category}>{props.categoryData ? props.categoryData.name : "Category"}</Text>
+      <Icon name="ios-restaurant" style={[styles.icon, {color: props.style.color}]}></Icon>
+      <Text style={[styles.category, {color: props.style.color}]}>{props.categoryData ? props.categoryData.name : "Category"}</Text>
     </TouchableOpacity>
   );
 }
@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   icon: {
-    color: "#000",
     fontSize: 24,
     height: 26,
     width: 13

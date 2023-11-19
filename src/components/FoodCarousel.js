@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   foodCarousel: {
     flex: 1, 
     flexDirection: 'row', 
-    justifyContent: 'center', 
+    justifyContent: 'center',
    }
 });
 

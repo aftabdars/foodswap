@@ -6,7 +6,8 @@ function MaterialFixedLabelTextbox(props) {
     <KeyboardAvoidingView style={[styles.container, props.style]}>
       <TextInput
         placeholder={props.placeholder || undefined}
-        style={styles.inputStyle}
+        placeholderTextColor={props.style.color}
+        style={[styles.inputStyle, {color: props.style.color}]}
         onChangeText={props.onChangeText || undefined}
       ></TextInput>
     </KeyboardAvoidingView>
@@ -26,12 +27,10 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     paddingTop: 16,
     paddingBottom: 8,
-    color: "#000",
     opacity: 0.5,
     alignSelf: "flex-start"
   },
   inputStyle: {
-    color: "#000",
     paddingRight: 5,
     fontSize: 16,
     alignSelf: "stretch",

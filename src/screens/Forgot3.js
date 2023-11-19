@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
+import Colors from '../assets/Colors'
 
 function Forgot3({navigation}) {
   return (
@@ -37,18 +38,18 @@ function Forgot3({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(215,215,215,1)"
+    backgroundColor: Colors.background
   },
   congratulations: {
     fontFamily: "abeezee-regular",
-    color: "rgba(39,45,47,1)",
+    color: Colors.foreground,
     fontSize: 24,
     marginTop: 378,
     marginLeft: 93
   },
   errormsg: {
     fontFamily: "roboto-regular",
-    color: "rgba(254,114,76,1)",
+    color: Colors.foreground,
     marginTop: 188,
     marginLeft: 70
   },
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
   },
   loremIpsum3: {
     fontFamily: "roboto-regular",
-    color: "#121212",
+    color: Colors.foreground,
     marginTop: -257,
     marginLeft: 90
   },
@@ -81,13 +82,15 @@ const styles = StyleSheet.create({
   passinput: {
     height: 43,
     width: 283,
-    backgroundColor: "rgba(230, 230, 230,1)",
+    backgroundColor: Colors.background,
+    color: Colors.foreground,
     borderRadius: 9
   },
   passinput2: {
     height: 43,
     width: 283,
-    backgroundColor: "rgba(230, 230, 230,1)",
+    backgroundColor: Colors.background,
+    color: Colors.foreground,
     borderRadius: 9
   }
 });
