@@ -1,18 +1,20 @@
-import React, { Component, Image } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import React, { Component } from "react";
+import { StyleSheet, TouchableOpacity, Image } from "react-native";
 function MaterialButtonProfile(props) {
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-      <Icon name="account" style={styles.icon}></Icon>
+      <Image
+            source={{uri: props.userData.profile_picture} || require("../assets/images/image_(1).png")}
+            resizeMode="contain"
+            style={styles.icon}
+          ></Image>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#3F51B5",
+    backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 28,
@@ -26,13 +28,13 @@ const styles = StyleSheet.create({
     elevation: 2,
     minWidth: 40,
     minHeight: 40,
-    width: 32,
-    height: 32,
+    width: 55,
+    height: 55,
   },
   icon: {
-    color: "#fff",
-    fontSize: 24,
-    alignSelf: "center"
+    width: '100%',
+    height: '100%',
+    alignSelf: "center",
   }
 });
 

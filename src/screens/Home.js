@@ -91,7 +91,7 @@ function Home(props) {
 
         <View style={styles.header}>
           <Text style={styles.hiUser}>Hi, {userData && userData.username}</Text>
-          <MaterialButtonProfile style={styles.profileIcon}></MaterialButtonProfile>
+          <MaterialButtonProfile style={styles.profileIcon} userData={userData}></MaterialButtonProfile>
         </View>
 
         <CupertinoSearchBarBasic
@@ -99,7 +99,7 @@ function Home(props) {
           inputBox="rgba(255,255,255,1)"
           style={styles.foodsearch}
         ></CupertinoSearchBarBasic>
-        <MaterialSpinner style={styles.materialSpinner}></MaterialSpinner>
+        {/* <MaterialSpinner style={styles.materialSpinner}></MaterialSpinner> */}
 
         <Text style={styles.categoriesHeading}>Categories</Text>
         <ScrollView horizontal={true} style={styles.categoryButtonsContainer}>
