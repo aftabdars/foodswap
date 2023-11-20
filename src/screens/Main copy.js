@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import {View} from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Home from './Home';
 import Profile from './Profile';
 import CupertinoFooter1 from '../components/CupertinoFooter1';
@@ -15,7 +14,7 @@ import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommun
 import Colors from '../assets/Colors'
 
 
-const Tab = createMaterialTopTabNavigator();
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function MessagesContainer () {
@@ -30,7 +29,7 @@ function MessagesContainer () {
 const Main = () => {
   return (
 
-      <Tab.Navigator tabBarPosition='bottom'
+      <Tab.Navigator 
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -43,14 +42,12 @@ const Main = () => {
             case 'Settings' : iconName = 'account-settings'; break;
           }
 
-          return <MaterialCommunityIconsIcon name={iconName} size={23} color={color} />;
+          return <MaterialCommunityIconsIcon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: Colors.highlight1,
         tabBarInactiveTintColor: Colors.foreground,
         tabBarActiveBackgroundColor: Colors.background,
-        tabBarInactiveBackgroundColor: Colors.background,
-        tabBarLabelStyle: {fontSize :11},
-        tabBarItemStyle: {padding:0, margin: 0}
+        tabBarInactiveBackgroundColor: Colors.background
       })}
       >
         
