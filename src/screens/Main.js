@@ -9,6 +9,7 @@ import FoodImageSelection from '../screens/FoodImageSelection';
 import Settings from '../screens/Settings';
 import Inbox from '../screens/Messages';
 import Chat from '../screens/Chat';
+import Colors from '../assets/Colors'
 
 
 const Tab = createBottomTabNavigator();
@@ -17,7 +18,7 @@ const Stack = createNativeStackNavigator();
 function MessagesContainer () {
     return (
         <Stack.Navigator initialRouteName={"Messages"}>
-            <Stack.Screen name="Messages" component={Inbox} options={{headerStyle: {backgroundColor: '#007bff'}}}/>
+            <Stack.Screen name="Messages" component={Inbox} options={{headerTintColor:'#fff',headerStyle: {backgroundColor: '#007bff'}}}/>
             <Stack.Screen name="Chat" component={Chat} options={{headerShown:false}}/>
         </Stack.Navigator>
     )

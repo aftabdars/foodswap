@@ -4,6 +4,7 @@ import { StyleSheet, View, Text,TouchableOpacity } from "react-native";
 import { Avatar, Icon } from 'react-native-elements'; 
 import { getUserToken } from "../storage/Token";
 import { getUserInbox } from "../api/backend/Social";
+import Colors from '../assets/Colors'
 
 
 function Inbox() {
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
         
         flex: 1,
         padding:16,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: Colors.background,
     },
 
     notificationContainer: {
@@ -119,10 +120,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop:0,
         paddingHorizontal: 16,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background2,
         borderRadius: 10,
         elevation: 3,
-        shadowColor: '#000',
+        shadowColor: Colors.foreground,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
@@ -139,16 +140,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 4,
-        color: '#333',
+        color: Colors.foreground,
     },
     message: {
         fontSize: 16,
-        color: '#666',
+        color: Colors.foreground,
         marginBottom:4,
         },
 
     time: {
-    color:'#999',
+    color: Colors.foreground,
     fontSize: 12,       
     },
 

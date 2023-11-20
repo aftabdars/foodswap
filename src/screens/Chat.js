@@ -10,6 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { getUserToken } from '../storage/Token';
 import { getMessages, postMessage } from '../api/backend/Social';
 import { SerializeImage } from '../api/backend/utils/Serialize';
+import Colors from '../assets/Colors'
 
 
 
@@ -125,6 +126,7 @@ function Chat() {
                     <TextInput
                     style={styles.input}
                     placeholder="Type your message..."
+                    placeholderTextColor={Colors.foreground}
                     value={newMessage}
                     onChangeText={(text) => setNewMessage(text)}
                 />
@@ -181,12 +183,12 @@ const styles = StyleSheet.create({
     senderName: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: 'black',
+        color: "#fff",
     },
     messagesContainer: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#f4f4f4',
+        backgroundColor: Colors.background,
     },
     yourMessage: {
         alignSelf: 'flex-end',
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
     sender: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'blue',
+        color: '#bbe',
         marginBottom: 8,
     },
     message: {
@@ -224,9 +226,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingVertical: 12,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background,
         borderTopWidth: 1,
-        borderTopColor: '#ddd',
+        borderTopColor: Colors.background2,
     },
     imagePickerButton:{
         padding: 8,
@@ -241,11 +243,12 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 40,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: Colors.background2,
         borderRadius: 20,
         paddingHorizontal: 16,
         marginRight: 8,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: Colors.background,
+        color: Colors.foreground
     },
     
     sendButton: {
