@@ -5,7 +5,7 @@ import EmailConfirmation from './src/screens/EmailConfirmation';
 import Forgot from './src/screens/Forgot';
 import Forgot2 from './src/screens/Forgot2';
 import Forgot3 from './src/screens/Forgot3';
-import Home from './src/screens/Home';
+import Main from './src/screens/Main';
 import Profile from './src/screens/Profile';
 import FoodImageSelection from './src/screens/FoodImageSelection';
 import FoodUploadForm from './src/screens/FoodUploadForm';
@@ -38,13 +38,8 @@ export default function App() {
         <Stack.Screen name="Forgot" component={Forgot} options={{title:'Forgot', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Forgot2" component={Forgot2} options={{title:'Forgot', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
         <Stack.Screen name="Forgot3" component={Forgot3} options={{title:'Forgot', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
-        <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
-        <Stack.Screen name="Profile" options={{headerShown:false}}>{(props) => <Profile {...props} username=''/>}</Stack.Screen>
-        <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{title:'Food Image Selection', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
+        <Stack.Screen name="Main" component={Main} options={{headerShown:false}}/>
         <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{title:'Food Upload', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
-        <Stack.Screen name="Settings" component={Settings} options={{headerShown:false}}/>
-        <Stack.Screen name="Messages" component={Inbox} options={{title:'Messages', headerStyle: {backgroundColor:'#f4511e'}, headerTintColor: '#fff'}}/>
-        <Stack.Screen name="Chat" component={Chat} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

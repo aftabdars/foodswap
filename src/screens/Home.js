@@ -119,7 +119,7 @@ function Home(props) {
         </View>
       </ScrollView>
 
-      <CupertinoFooter1 style={styles.cupertinoFooter1}></CupertinoFooter1>
+      {/* <CupertinoFooter1 style={styles.cupertinoFooter1}></CupertinoFooter1> */}
     </SafeAreaView>
   );
 }
