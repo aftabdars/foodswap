@@ -148,7 +148,7 @@ function Profile(props) {
         <Text style={styles.headings}>Stats</Text>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{color: '#272727', left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>{levelData? String(levelData.level).padStart(3, '0') : '000'}</Text>
+          <Text style={{color: Colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>{levelData? String(levelData.level).padStart(3, '0') : '000'}</Text>
           <ProgressBar xp={[userStats? userStats.xp : 0, levelData? levelData.xp_end : 1]} />
         </View>
         <View style={styles.detailsgroup}>
@@ -188,7 +188,7 @@ function Profile(props) {
         <Text style={styles.headings}>Achievements</Text>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{color: '#272727', left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
+          <Text style={{color: Colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
           <ProgressBar xp={[30,60]} />
         </View>
       </View>
@@ -199,15 +199,15 @@ function Profile(props) {
 //TABBED VIEWS////////////////////////////////////////////////
 
 const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#d7d7d7' }} />
+  <View style={{ flex: 1, backgroundColor: Colors.background }} />
 );
 
 const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#d7d7d7' }} />
+  <View style={{ flex: 1, backgroundColor: Colors.background }} />
 );
 
 const ThirdRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#d7d7d7' }} />
+  <View style={{ flex: 1, backgroundColor: Colors.background }} />
 );
 
 const renderScene = SceneMap({
