@@ -27,7 +27,7 @@ function CupertinoFooter1(props) {
       navigation.navigate('Settings');
   }
   const messagesPressed = () => {
-    navigation.navigate('Messages');
+    navigation.navigate('MessagesContainer');
 }
 
   return (

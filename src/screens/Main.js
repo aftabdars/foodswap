@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './Home';
 import Profile from './Profile';
@@ -11,6 +12,16 @@ import Chat from '../screens/Chat';
 
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function MessagesContainer () {
+    return (
+        <Stack.Navigator initialRouteName={"Messages"}>
+            <Stack.Screen name="Messages" component={Inbox} options={{headerStyle: {backgroundColor: '#007bff'}}}/>
+            <Stack.Screen name="Chat" component={Chat} options={{headerShown:false}}/>
+        </Stack.Navigator>
+    )
+}
 
 const Main = () => {
   return (
@@ -20,9 +31,7 @@ const Main = () => {
         <Tab.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
         <Tab.Screen name="FoodImageSelection" component={FoodImageSelection} options={{headerShown:false}}/>
         <Tab.Screen name="Settings" component={Settings} options={{headerShown:false}}/>
-        <Tab.Screen name="Messages" component={Inbox} options={{headerShown:false}}/>
-        <Tab.Screen name="Chat" component={Chat} options={{headerShown:false}}/>
-        
+        <Tab.Screen name="MessagesContainer" component={MessagesContainer} options={{headerShown:false}}/>
       </Tab.Navigator>
 
   );
