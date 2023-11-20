@@ -12,7 +12,7 @@ import Settings from '../screens/Settings';
 import Inbox from '../screens/Messages';
 import Chat from '../screens/Chat';
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -28,6 +28,7 @@ function MessagesContainer () {
 }
 
 const Main = () => {
+  const { colors } = useTheme();
   return (
 
       <Tab.Navigator tabBarPosition='bottom'
@@ -45,10 +46,10 @@ const Main = () => {
 
           return <MaterialCommunityIconsIcon name={iconName} size={23} color={color} />;
         },
-        tabBarActiveTintColor: Colors.highlight1,
-        tabBarInactiveTintColor: Colors.foreground,
-        tabBarActiveBackgroundColor: Colors.background,
-        tabBarInactiveBackgroundColor: Colors.background,
+        tabBarActiveTintColor: colors.highlight1,
+        tabBarInactiveTintColor: colors.foreground,
+        tabBarActiveBackgroundColor: colors.background,
+        tabBarInactiveBackgroundColor: colors.background,
         tabBarLabelStyle: {fontSize :11},
         tabBarItemStyle: {padding:0, margin: 0}
       })}

@@ -2,9 +2,11 @@ import React, {useState, useEffect} from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 function FoodImageSelection() {
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
     const [selectedImage, setSelectedImage] = useState(null);
     const navigation = useNavigation();
 
@@ -85,43 +87,47 @@ function FoodImageSelection() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: Colors.background,
-    },
-    image: {
-        width: 350,
-        height: 250,
-        marginVertical: 20,
-    },
-    button: {
-        backgroundColor: '#333',
-        paddingVertical: 15,
-        paddingHorizontal: 30,
-        marginVertical: 10,
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    buttonContinue: {
-        backgroundColor: '#009688',
-        position: 'absolute',
-        bottom: 0,
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-        marginVertical: 20,
-        borderRadius: 8,
-    },
-    text: {
-        color: Colors.background,
-        fontSize: 18,
-    },
-});
+function createStyles(colors) {
+    return (
+        {
+            container: {
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: colors.background,
+            },
+            image: {
+                width: 350,
+                height: 250,
+                marginVertical: 20,
+            },
+            button: {
+                backgroundColor: '#333',
+                paddingVertical: 15,
+                paddingHorizontal: 30,
+                marginVertical: 10,
+                borderRadius: 8,
+            },
+            buttonText: {
+                color: '#fff',
+                fontSize: 18,
+                fontWeight: 'bold',
+            },
+            buttonContinue: {
+                backgroundColor: '#009688',
+                position: 'absolute',
+                bottom: 0,
+                paddingVertical: 10,
+                paddingHorizontal: 30,
+                marginVertical: 20,
+                borderRadius: 8,
+            },
+            text: {
+                color: colors.background,
+                fontSize: 18,
+            },
+        }
+    )
+}
 
 export default FoodImageSelection;

@@ -4,9 +4,12 @@ import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
 import { postVerifyAccount } from "../api/backend/Auth";
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 function EmailConfirmation({navigation}) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const [code, setCode] = useState();
   const [showError, setShowError] = useState();
 
@@ -69,53 +72,57 @@ function EmailConfirmation({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background
-  },
-  keylogo: {
-    width: 244,
-    height: 244,
-    marginTop: 91,
-    alignSelf: "center"
-  },
-  loremIpsum1: {
-    fontFamily: "abeezee-regular",
-    color: Colors.foreground,
-    fontSize: 24,
-    marginTop: 43,
-    alignSelf: "center"
-  },
-  loremIpsum2: {
-    fontFamily: "roboto-regular",
-    color: Colors.foreground,
-    marginTop: 16,
-    marginLeft: 0,
-    textAlign: "center"
-  },
-  materialFixedLabelTextbox1: {
-    height: 43,
-    width: 278,
-    backgroundColor: Colors.background,
-    color: Colors.foreground,
-    borderRadius: 9,
-    marginTop: 45,
-    marginLeft: 49
-  },
-  nextbtn: {
-    height: 36,
-    width: 100,
-    borderRadius: 9,
-    marginTop: 49,
-    marginLeft: 138
-  },
-  errormsg: {
-    fontFamily: "roboto-regular",
-    color: Colors.error,
-    marginTop: -69,
-    marginLeft: 97
-  }
-});
-
+const styles = StyleSheet.create();
+function createStyles(colors) {
+  return(
+    {
+      container: {
+        flex: 1,
+        backgroundColor: colors.background
+      },
+      keylogo: {
+        width: 244,
+        height: 244,
+        marginTop: 91,
+        alignSelf: "center"
+      },
+      loremIpsum1: {
+        fontFamily: "abeezee-regular",
+        color: colors.foreground,
+        fontSize: 24,
+        marginTop: 43,
+        alignSelf: "center"
+      },
+      loremIpsum2: {
+        fontFamily: "roboto-regular",
+        color: colors.foreground,
+        marginTop: 16,
+        marginLeft: 0,
+        textAlign: "center"
+      },
+      materialFixedLabelTextbox1: {
+        height: 43,
+        width: 278,
+        backgroundColor: colors.background,
+        color: colors.foreground,
+        borderRadius: 9,
+        marginTop: 45,
+        marginLeft: 49
+      },
+      nextbtn: {
+        height: 36,
+        width: 100,
+        borderRadius: 9,
+        marginTop: 49,
+        marginLeft: 138
+      },
+      errormsg: {
+        fontFamily: "roboto-regular",
+        color: colors.error,
+        marginTop: -69,
+        marginLeft: 97
+      }
+    }
+  )
+}
 export default EmailConfirmation;

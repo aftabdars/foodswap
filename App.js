@@ -15,11 +15,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Inbox from './src/screens/Messages';
 import Chat from './src/screens/Chat';
 import Colors from './src/assets/Colors'
+import { useColorScheme } from 'react-native';
+import {DefaultTheme, DarkTheme} from './src/assets/Colors'
 
 const Stack = createNativeStackNavigator();
 
 //the home will be outside of navigation and a state will be used (or itll bug out)
 export default function App() {
+
+  const scheme = useColorScheme();
+
   const [loaded] = useFonts({
     'roboto-700': require('./src/assets/fonts/roboto-700.ttf'),
     'roboto-regular': require('./src/assets/fonts/roboto-regular.ttf')
@@ -30,7 +35,7 @@ export default function App() {
   }
   
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack.Navigator initialRouteName={"Login"}>
         <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
         <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Account Verification', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>

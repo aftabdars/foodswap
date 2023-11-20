@@ -9,9 +9,11 @@ import ProgressBar from '../components/ProgressBar'
 import { getProfile, getUserStats } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
 import { getLevels } from "../api/backend/Gamification";
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 function Profile(props) {
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
     //fetchuser
     const [userData, setUserData] = useState({username: 'Anonymous'});
     const [userStats, setUserStats] = useState();
@@ -148,7 +150,7 @@ function Profile(props) {
         <Text style={styles.headings}>Stats</Text>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{color: Colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>{levelData? String(levelData.level).padStart(3, '0') : '000'}</Text>
+          <Text style={{color: colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>{levelData? String(levelData.level).padStart(3, '0') : '000'}</Text>
           <ProgressBar xp={[userStats? userStats.xp : 0, levelData? levelData.xp_end : 1]} />
         </View>
         <View style={styles.detailsgroup}>
@@ -188,7 +190,7 @@ function Profile(props) {
         <Text style={styles.headings}>Achievements</Text>
         <View style={styles.detailsgroup}>
           <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{color: Colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
+          <Text style={{color: colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
           <ProgressBar xp={[30,60]} />
         </View>
       </View>
@@ -198,16 +200,16 @@ function Profile(props) {
 
 //TABBED VIEWS////////////////////////////////////////////////
 
-const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: Colors.background }} />
+const FirstRoute = (colors) => (
+  <View style={{ flex: 1, backgroundColor: colors.background }} />
 );
 
-const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: Colors.background }} />
+const SecondRoute = (colors) => (
+  <View style={{ flex: 1, backgroundColor: colors.background }} />
 );
 
-const ThirdRoute = () => (
-  <View style={{ flex: 1, backgroundColor: Colors.background }} />
+const ThirdRoute = (colors) => (
+  <View style={{ flex: 1, backgroundColor: colors.background }} />
 );
 
 const renderScene = SceneMap({
@@ -218,91 +220,94 @@ const renderScene = SceneMap({
 //////////////////////////////////////////////////////////////
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    opacity: 0.77
-  },
-  profilecontainer: {
-    minWidth: 100,
-    minHeight: 340,
-    backgroundColor: Colors.highlight1,
-    flex : 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomLeftRadius: 50,
-    borderBottomRightRadius: 50,
-    marginTop: 0
-  },
-  image: {
-    width: 155,
-    height: 155,
-    position: "relative",
-    borderRadius: 100
-  },
-  editProfilePicture: {
-    height: 44,
-    width: 44,
-    position: "relative",
-    bottom: 155,
-    left: 130
-  },
-  imageStack: {
-    width: 181,
-    height: 155,
-    left: 13
-  },
-  profileName: {
-    fontFamily: "roboto-700",
-    color: Colors.foreground,
-    fontSize: 22,
-    textAlign: "center",
-  },
-  ignorethis: {
-    height: 36,
-    width: 100,
-    marginTop: 352,
-    marginLeft: 138
-  },
-  headings: {
-    fontFamily: "roboto-700",
-    color: Colors.foreground,
-    fontSize: 22,
-    marginLeft: 0
-  },
-  detailscontainer: {
-    width: 265,
-    height: 'auto',
-    justifyContent: "space-between",
-    marginTop: 33,
-    marginLeft: 55
-  },
-  detailsgroup: {
-    minWidth: 200,
-    height: 40,
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    marginTop: 10,
-  },
-  icon: {
-    color: Colors.highlight1,
-    fontSize: 40
-  },
-  detailsfont: {
-    fontFamily: "roboto-700",
-    color: Colors.foreground,
-    fontSize: 15,
-    left: 25
-  },
-  tabbedcontainer: {
-    width: '100%',
-    height: 360,
-    justifyContent: "space-between",
-    marginTop: 33,
-    marginLeft: 0,
-  }
-});
-
+function createStyles(colors) {
+  return (
+    {
+      container: {
+        flex: 1,
+        backgroundColor: colors.background,
+        opacity: 0.77
+      },
+      profilecontainer: {
+        minWidth: 100,
+        minHeight: 340,
+        backgroundColor: colors.highlight1,
+        flex : 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius: 50,
+        marginTop: 0
+      },
+      image: {
+        width: 155,
+        height: 155,
+        position: "relative",
+        borderRadius: 100
+      },
+      editProfilePicture: {
+        height: 44,
+        width: 44,
+        position: "relative",
+        bottom: 155,
+        left: 130
+      },
+      imageStack: {
+        width: 181,
+        height: 155,
+        left: 13
+      },
+      profileName: {
+        fontFamily: "roboto-700",
+        color: colors.foreground,
+        fontSize: 22,
+        textAlign: "center",
+      },
+      ignorethis: {
+        height: 36,
+        width: 100,
+        marginTop: 352,
+        marginLeft: 138
+      },
+      headings: {
+        fontFamily: "roboto-700",
+        color: colors.foreground,
+        fontSize: 22,
+        marginLeft: 0
+      },
+      detailscontainer: {
+        width: 265,
+        height: 'auto',
+        justifyContent: "space-between",
+        marginTop: 33,
+        marginLeft: 55
+      },
+      detailsgroup: {
+        minWidth: 200,
+        height: 40,
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        marginTop: 10,
+      },
+      icon: {
+        color: colors.highlight1,
+        fontSize: 40
+      },
+      detailsfont: {
+        fontFamily: "roboto-700",
+        color: colors.foreground,
+        fontSize: 15,
+        left: 25
+      },
+      tabbedcontainer: {
+        width: '100%',
+        height: 360,
+        justifyContent: "space-between",
+        marginTop: 33,
+        marginLeft: 0,
+      }
+    }
+  )
+}
 export default Profile;

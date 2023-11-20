@@ -11,10 +11,12 @@ import { getProfile } from '../api/backend/User';
 import { getUserToken } from "../storage/Token";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
 import FoodCarousel from "../components/FoodCarousel.js";
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 
 function Home(props) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   // States
   const [refreshing, setRefreshing] = useState(false);
   const [userData, setUserData] = useState({username: 'Anonymous'}); 
@@ -124,79 +126,83 @@ function Home(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    paddingTop: 20,
-    paddingBottom: 50 + 5, // This is the height of Footer + 5
-  },
-  cupertinoFooter1: {
-    position: 'absolute',
-    height: 50,
-    width: 375,
-    bottom: 0
-  },
-  hiUser: {
-    fontFamily: "roboto-700",
-    color: Colors.foreground,
-    fontSize: 24,
-    position: 'absolute',
-    left: 0,
-    marginTop: 9
-  },
-  profileIcon: {
-    position: 'absolute',
-    right: 0
-  },
-  header: {
-    height: 46,
-    flexDirection: "row",
-    marginTop: 0,
-    marginLeft: 29,
-    marginRight: 23
-  },
-  foodsearch: {
-    height: 44,
-    width: 323,
-    backgroundColor: Colors.background,
-    borderRadius: 9,
-    marginTop: 9,
-    marginLeft: 29
-  },
-  materialSpinner: {
-    width: 323,
-    height: 31,
-    marginLeft: 29
-  },
-  categoriesHeading: {
-    fontFamily: "roboto-700",
-    color: Colors.foreground,
-    fontSize: 22,
-    marginTop: 23,
-    marginLeft: 29
-  },
-  categoryButtonsContainer: {
-    width: 323,
-    height: 61,
-    flexDirection: "row",
-    //justifyContent: "space-between",
-    marginLeft: 26
-  },
-  categorybutton: {
-    height: 61,
-    width: 63,
-    marginRight: 25,
-    color: Colors.foreground
-  },
-  heading: {
-    fontFamily: "roboto-700",
-    color: Colors.foreground,
-    fontSize: 22,
-    marginTop: 56,
-    marginBottom: 10,
-    marginLeft: 29
-  },
-});
+function createStyles(colors) {
+  return (
+    {
+      container: {
+        flex: 1,
+        backgroundColor: colors.background,
+        paddingTop: 20,
+        paddingBottom: 50 + 5, // This is the height of Footer + 5
+      },
+      cupertinoFooter1: {
+        position: 'absolute',
+        height: 50,
+        width: 375,
+        bottom: 0
+      },
+      hiUser: {
+        fontFamily: "roboto-700",
+        color: colors.foreground,
+        fontSize: 24,
+        position: 'absolute',
+        left: 0,
+        marginTop: 9
+      },
+      profileIcon: {
+        position: 'absolute',
+        right: 0
+      },
+      header: {
+        height: 46,
+        flexDirection: "row",
+        marginTop: 0,
+        marginLeft: 29,
+        marginRight: 23
+      },
+      foodsearch: {
+        height: 44,
+        width: 323,
+        backgroundColor: colors.background,
+        borderRadius: 9,
+        marginTop: 9,
+        marginLeft: 29
+      },
+      materialSpinner: {
+        width: 323,
+        height: 31,
+        marginLeft: 29
+      },
+      categoriesHeading: {
+        fontFamily: "roboto-700",
+        color: colors.foreground,
+        fontSize: 22,
+        marginTop: 23,
+        marginLeft: 29
+      },
+      categoryButtonsContainer: {
+        width: 323,
+        height: 61,
+        flexDirection: "row",
+        //justifyContent: "space-between",
+        marginLeft: 26
+      },
+      categorybutton: {
+        height: 61,
+        width: 63,
+        marginRight: 25,
+        color: colors.foreground
+      },
+      heading: {
+        fontFamily: "roboto-700",
+        color: colors.foreground,
+        fontSize: 22,
+        marginTop: 56,
+        marginBottom: 10,
+        marginLeft: 29
+      },
+    }
+  )
+}
 
 export default Home;

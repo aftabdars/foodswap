@@ -10,10 +10,12 @@ import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrange
 
 import { postLogin } from "../api/backend/Auth";
 import { getUserToken, setUserToken } from "../storage/Token";
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 
 function Login({navigation}) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   // States
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -123,72 +125,75 @@ function Login({navigation}) {
   );
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background
-  },
-  foodswaplogo: {
-    width: 375,
-    height: 375,
-    marginTop: 58
-  },
-  usernameinput: {
-    height: 43,
-    width: 278,
-    backgroundColor: Colors.background2,
-    color: Colors.foreground,
-    borderRadius: 9,
-    marginTop: 37,
-    marginLeft: 49
-  },
-  loginbtn: {
-    height: 36,
-    width: 100,
-    borderRadius: 9,
-    marginTop: 68,
-    marginLeft: 138
-  },
-  passwordinput: {
-    height: 43,
-    width: 278,
-    borderRadius: 9,
-    backgroundColor: Colors.background2,
-    color: Colors.foreground,
-    marginTop: -93,
-    marginLeft: 49
-  },
-  forgotpasswordbtn: {
-    height: 36,
-    width: 200,
-    marginTop: 50,
-    marginLeft: 88,
-    color: Colors.highlight2
-  },
-  notAUser: {
-    fontFamily: "roboto-regular",
-    color: Colors.foreground,
-    marginTop: 9
-  },
-  signupbtn: {
-    height: 36,
-    width: 100
-  },
-  notAUserRow: {
-    height: 36,
-    flexDirection: "row",
-    marginTop: 60,
-    marginLeft: 114,
-    marginRight: 87
-  },
-  errormsg: {
-    fontFamily: "roboto-regular",
-    color: Colors.error,
-    marginTop: 20,
-    marginRight: 15,
-    textAlign: "center"
-  },
-});
+function createStyles(colors) {
+  return(
+    {
+      container: {
+        flex: 1,
+        backgroundColor: colors.background
+      },
+      foodswaplogo: {
+        width: 375,
+        height: 375,
+        marginTop: 58
+      },
+      usernameinput: {
+        height: 43,
+        width: 278,
+        backgroundColor: colors.background2,
+        color: colors.foreground,
+        borderRadius: 9,
+        marginTop: 37,
+        marginLeft: 49
+      },
+      loginbtn: {
+        height: 36,
+        width: 100,
+        borderRadius: 9,
+        marginTop: 68,
+        marginLeft: 138
+      },
+      passwordinput: {
+        height: 43,
+        width: 278,
+        borderRadius: 9,
+        backgroundColor: colors.background2,
+        color: colors.foreground,
+        marginTop: -93,
+        marginLeft: 49
+      },
+      forgotpasswordbtn: {
+        height: 36,
+        width: 200,
+        marginTop: 50,
+        marginLeft: 88,
+        color: colors.highlight2
+      },
+      notAUser: {
+        fontFamily: "roboto-regular",
+        color: colors.foreground,
+        marginTop: 9
+      },
+      signupbtn: {
+        height: 36,
+        width: 100
+      },
+      notAUserRow: {
+        height: 36,
+        flexDirection: "row",
+        marginTop: 60,
+        marginLeft: 114,
+        marginRight: 87
+      },
+      errormsg: {
+        fontFamily: "roboto-regular",
+        color: colors.error,
+        marginTop: 20,
+        marginRight: 15,
+        textAlign: "center"
+      },
+    }
+  )
+}
 
 export default Login;

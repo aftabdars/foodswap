@@ -10,12 +10,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { getUserToken } from '../storage/Token';
 import { getMessages, postMessage } from '../api/backend/Social';
 import { SerializeImage } from '../api/backend/utils/Serialize';
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 
 
 function Chat() {
-    const navigation = useNavigation();
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
+    
     const route = useRoute(); // Use useRoute to access route parameters
 
     const chatPreviewMessage = route.params?.chatPreviewMessage;
@@ -126,7 +128,7 @@ function Chat() {
                     <TextInput
                     style={styles.input}
                     placeholder="Type your message..."
-                    placeholderTextColor={Colors.foreground}
+                    placeholderTextColor={colors.foreground}
                     value={newMessage}
                     onChangeText={(text) => setNewMessage(text)}
                 />
@@ -139,6 +141,8 @@ function Chat() {
 };
 
 function Message(props) {
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
     const msg = props.msg? props.msg : [];
     const isYourMessage = props.isYourMessage;
 
@@ -154,112 +158,116 @@ function Message(props) {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#007bff',
-    },
-    headerExtraSpaceTop: {
-        marginVertical: 10
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'left',
-        backgroundColor: '#007bff',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1,
-    },
-    profilePic: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        marginLeft: 20,
-        marginRight: 10,
-        marginVertical: 10,
-    },
-    senderName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: "#fff",
-    },
-    messagesContainer: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: Colors.background,
-    },
-    yourMessage: {
-        alignSelf: 'flex-end',
-        backgroundColor: 'grey',
-        borderRadius: 8,
-        maxWidth: '75%',
-        paddingHorizontal: 8,
-        paddingVertical: 5,
-        marginBottom: 8,
-    },
-    otherMessage: {
-        alignSelf: 'flex-start',
-        backgroundColor: '#4caf50',
-        borderRadius: 8,
-        maxWidth: '75%',
-        paddingHorizontal: 8,
-        paddingVertical: 5,
-        marginBottom: 8,
-    },
-    messageContainer: {
-        marginBottom: 16,
-    },
-    sender: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#bbe',
-        marginBottom: 8,
-    },
-    message: {
-        fontSize: 16,
-        color: '#fff',
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        backgroundColor: Colors.background,
-        borderTopWidth: 1,
-        borderTopColor: Colors.background2,
-    },
-    imagePickerButton:{
-        padding: 8,
-        
-    },
-    messageImage: {
-        width: 200, // Adjust the width as needed
-        height: 150, // Adjust the height as needed
-        borderRadius: 8,
-    },
-    input: {
-        flex: 1,
-        height: 40,
-        borderWidth: 1,
-        borderColor: Colors.background2,
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        marginRight: 8,
-        backgroundColor: Colors.background,
-        color: Colors.foreground
-    },
-    
-    sendButton: {
-        backgroundColor: '#4caf50',
-        padding: 8,
-        borderRadius: 20,
-    },
-    sendButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-});
+function createStyles(colors){
+    return (
+        {
+            container: {
+                flex: 1,
+                backgroundColor: '#007bff',
+            },
+            headerExtraSpaceTop: {
+                marginVertical: 10
+            },
+            header: {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'left',
+                backgroundColor: '#007bff',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1,
+            },
+            profilePic: {
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                marginLeft: 20,
+                marginRight: 10,
+                marginVertical: 10,
+            },
+            senderName: {
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: "#fff",
+            },
+            messagesContainer: {
+                flex: 1,
+                padding: 10,
+                backgroundColor: colors.background,
+            },
+            yourMessage: {
+                alignSelf: 'flex-end',
+                backgroundColor: 'grey',
+                borderRadius: 8,
+                maxWidth: '75%',
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                marginBottom: 8,
+            },
+            otherMessage: {
+                alignSelf: 'flex-start',
+                backgroundColor: '#4caf50',
+                borderRadius: 8,
+                maxWidth: '75%',
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                marginBottom: 8,
+            },
+            messageContainer: {
+                marginBottom: 16,
+            },
+            sender: {
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#bbe',
+                marginBottom: 8,
+            },
+            message: {
+                fontSize: 16,
+                color: '#fff',
+            },
+            inputContainer: {
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                backgroundColor: colors.background,
+                borderTopWidth: 1,
+                borderTopColor: colors.background2,
+            },
+            imagePickerButton:{
+                padding: 8,
+                
+            },
+            messageImage: {
+                width: 200, // Adjust the width as needed
+                height: 150, // Adjust the height as needed
+                borderRadius: 8,
+            },
+            input: {
+                flex: 1,
+                height: 40,
+                borderWidth: 1,
+                borderColor: colors.background2,
+                borderRadius: 20,
+                paddingHorizontal: 16,
+                marginRight: 8,
+                backgroundColor: colors.background2,
+                color: colors.foreground
+            },
+            
+            sendButton: {
+                backgroundColor: '#4caf50',
+                padding: 8,
+                borderRadius: 20,
+            },
+            sendButtonText: {
+                color: '#fff',
+                fontWeight: 'bold',
+            },
+        }
+    )
+}
     
 export default Chat;    

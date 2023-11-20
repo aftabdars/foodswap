@@ -3,9 +3,12 @@ import { StyleSheet, View, Image, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 function Forgot({navigation}) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const [loaded] = useFonts({
     'abeezee-regular': require('../assets/fonts/abeezee-regular.ttf'),
   });
@@ -39,52 +42,55 @@ function Forgot({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background
-  },
-  locklogo: {
-    width: 219,
-    height: 219,
-    marginTop: 97,
-    marginLeft: 78
-  },
-  loremIpsum: {
-    fontFamily: "abeezee-regular",
-    color: Colors.foreground,
-    fontSize: 24,
-    marginTop: 62,
-    alignSelf: "center"
-  },
-  loremIpsum2: {
-    fontFamily: "roboto-regular",
-    color: Colors.foreground,
-    marginTop: 14,
-    marginLeft: 95
-  },
-  emailinput: {
-    height: 43,
-    width: 278,
-    backgroundColor: Colors.background,
-    color: Colors.foreground,
-    borderRadius: 9,
-    marginTop: 47,
-    marginLeft: 49
-  },
-  nextbtn: {
-    height: 36,
-    width: 100,
-    borderRadius: 9,
-    marginTop: 49,
-    marginLeft: 138
-  },
-  errormsg: {
-    fontFamily: "roboto-regular",
-    color: Colors.error,
-    marginTop: -69,
-    marginLeft: 57
-  }
-});
-
+function createStyles(colors) {
+  return (
+    {
+      container: {
+        flex: 1,
+        backgroundColor: colors.background
+      },
+      locklogo: {
+        width: 219,
+        height: 219,
+        marginTop: 97,
+        marginLeft: 78
+      },
+      loremIpsum: {
+        fontFamily: "abeezee-regular",
+        color: colors.foreground,
+        fontSize: 24,
+        marginTop: 62,
+        alignSelf: "center"
+      },
+      loremIpsum2: {
+        fontFamily: "roboto-regular",
+        color: colors.foreground,
+        marginTop: 14,
+        marginLeft: 95
+      },
+      emailinput: {
+        height: 43,
+        width: 278,
+        backgroundColor: colors.background2,
+        color: colors.foreground,
+        borderRadius: 9,
+        marginTop: 47,
+        marginLeft: 49
+      },
+      nextbtn: {
+        height: 36,
+        width: 100,
+        borderRadius: 9,
+        marginTop: 49,
+        marginLeft: 138
+      },
+      errormsg: {
+        fontFamily: "roboto-regular",
+        color: colors.error,
+        marginTop: -69,
+        marginLeft: 57
+      }
+    }
+  )
+}
 export default Forgot;

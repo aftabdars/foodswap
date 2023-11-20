@@ -8,10 +8,12 @@ import { useFonts } from 'expo-font';
 
 import { postSignup } from "../api/backend/User";
 import { setUserToken } from "../storage/Token";
-import Colors from '../assets/Colors'
+import { useTheme } from '@react-navigation/native';
 
 
 function SignUp({navigation}) {
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
     // States
     const [username, setUsername] = useState();
     const [email, setEmail] = useState();
@@ -121,67 +123,70 @@ function SignUp({navigation}) {
     );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background
-  },
-  text: {
-    fontFamily: "roboto-700",
-    color: Colors.foreground,
-    fontSize: 24,
-    marginTop: 92,
-    marginLeft: 49
-  },
-  group: {
-    width: 278,
-    height: 306,
-    justifyContent: "space-between",
-    marginTop: 64,
-    marginLeft: 49
-  },
-  input: {
-    height: 43,
-    width: 278,
-    backgroundColor: Colors.background2,
-    color: Colors.foreground,
-    borderRadius: 9
-  },
-  materialButtonSuccess1: {
-    height: 36,
-    width: 100,
-    borderRadius: 9,
-    marginTop: 46,
-    marginLeft: 138
-  },
-  materialButtonWithVioletText1: {
-    height: 36,
-    width: 100,
-    position: "absolute",
-    left: 138,
-    top: 0
-  },
-  notAUser1: {
-    top: 9,
-    left: 0,
-    position: "absolute",
-    fontFamily: "roboto-regular",
-    color: Colors.foreground,
-  },
-  alreadyContainer: {
-    width: 238,
-    height: 36,
-    marginTop: 76,
-    marginLeft: 79,
-    flexDirection: "column",
-  },
-  errormsg: {
-    fontFamily: "roboto-regular",
-    color: Colors.error,
-    marginTop: 20,
-    marginRight: 15,
-    textAlign: "center"
-  },
-});
+function createStyles(colors) {
+  return ({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background
+    },
+    text: {
+      fontFamily: "roboto-700",
+      color: colors.foreground,
+      fontSize: 24,
+      marginTop: 92,
+      marginLeft: 49
+    },
+    group: {
+      width: 278,
+      height: 306,
+      justifyContent: "space-between",
+      marginTop: 64,
+      marginLeft: 49
+    },
+    input: {
+      height: 43,
+      width: 278,
+      backgroundColor: colors.background2,
+      color: colors.foreground,
+      borderRadius: 9
+    },
+    materialButtonSuccess1: {
+      height: 36,
+      width: 100,
+      borderRadius: 9,
+      marginTop: 46,
+      marginLeft: 138
+    },
+    materialButtonWithVioletText1: {
+      height: 36,
+      width: 100,
+      position: "absolute",
+      left: 138,
+      top: 0
+    },
+    notAUser1: {
+      top: 9,
+      left: 0,
+      position: "absolute",
+      fontFamily: "roboto-regular",
+      color: colors.foreground,
+    },
+    alreadyContainer: {
+      width: 238,
+      height: 36,
+      marginTop: 76,
+      marginLeft: 79,
+      flexDirection: "column",
+    },
+    errormsg: {
+      fontFamily: "roboto-regular",
+      color: colors.error,
+      marginTop: 20,
+      marginRight: 15,
+      textAlign: "center"
+    },
+  }
+  )
+}
 
 export default SignUp;
