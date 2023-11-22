@@ -18,10 +18,11 @@ import { useTheme } from '@react-navigation/native';
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function MessagesContainer () {
+function MessagesContainer() {
+    const { colors } = useTheme();
     return (
         <Stack.Navigator initialRouteName={"Messages2"}>
-            <Stack.Screen name="Messages2" component={Inbox} options={{headerTintColor:'#fff',headerStyle: {backgroundColor: '#007bff'}}}/>
+            <Stack.Screen name="Messages2" component={Inbox} options={{headerTintColor:'#fff',headerStyle: {backgroundColor:colors.highlight1}}}/>
             <Stack.Screen name="Chat" component={Chat} options={{headerShown:false}}/>
         </Stack.Navigator>
     )
@@ -29,6 +30,7 @@ function MessagesContainer () {
 
 const Main = () => {
   const { colors } = useTheme();
+  
   return (
 
       <Tab.Navigator tabBarPosition='bottom'

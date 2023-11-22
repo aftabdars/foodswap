@@ -133,7 +133,7 @@ function Chat() {
                     onChangeText={(text) => setNewMessage(text)}
                 />
                 <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-                <Icon name="send" size={18}  color="white" />
+                <Icon name="send" size={18}  color={colors.foreground} />
             </TouchableOpacity>
             </View>
         </View>
@@ -163,7 +163,7 @@ function createStyles(colors){
         {
             container: {
                 flex: 1,
-                backgroundColor: '#007bff',
+                backgroundColor: colors.highlight1,
             },
             headerExtraSpaceTop: {
                 marginVertical: 10
@@ -172,7 +172,7 @@ function createStyles(colors){
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'left',
-                backgroundColor: '#007bff',
+                backgroundColor: colors.highlight1,
                 top: 0,
                 left: 0,
                 right: 0,
@@ -198,7 +198,7 @@ function createStyles(colors){
             },
             yourMessage: {
                 alignSelf: 'flex-end',
-                backgroundColor: 'grey',
+                backgroundColor: colors.background2,
                 borderRadius: 8,
                 maxWidth: '75%',
                 paddingHorizontal: 8,
@@ -207,7 +207,7 @@ function createStyles(colors){
             },
             otherMessage: {
                 alignSelf: 'flex-start',
-                backgroundColor: '#4caf50',
+                backgroundColor: colors.highlight2,
                 borderRadius: 8,
                 maxWidth: '75%',
                 paddingHorizontal: 8,
@@ -220,12 +220,12 @@ function createStyles(colors){
             sender: {
                 fontSize: 16,
                 fontWeight: 'bold',
-                color: '#bbe',
+                color: colors.foreground,
                 marginBottom: 8,
             },
             message: {
                 fontSize: 16,
-                color: '#fff',
+                color: colors.foreground,
             },
             inputContainer: {
                 flexDirection: 'row',
@@ -258,7 +258,7 @@ function createStyles(colors){
             },
             
             sendButton: {
-                backgroundColor: '#4caf50',
+                backgroundColor: colors.highlight2,
                 padding: 8,
                 borderRadius: 20,
             },

@@ -6,14 +6,9 @@ import Forgot from './src/screens/Forgot';
 import Forgot2 from './src/screens/Forgot2';
 import Forgot3 from './src/screens/Forgot3';
 import Main from './src/screens/Main';
-import Profile from './src/screens/Profile';
-import FoodImageSelection from './src/screens/FoodImageSelection';
 import FoodUploadForm from './src/screens/FoodUploadForm';
-import Settings from './src/screens/Settings';
 import { NavigationContainer, Appearance } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Inbox from './src/screens/Messages';
-import Chat from './src/screens/Chat';
 import Colors from './src/assets/Colors'
 import { useColorScheme } from 'react-native';
 import {DefaultTheme, DarkTheme} from './src/assets/Colors'

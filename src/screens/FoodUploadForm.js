@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useRoute } from '@react-navigation/native';
+import { CommonActions, useRoute, useTheme } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
@@ -11,6 +11,10 @@ import { getUserToken } from '../storage/Token';
 import { SerializeImage } from '../api/backend/utils/Serialize';
 
 function FoodUploadForm() {
+    // Theme
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
+
     const navigation = useNavigation();
     const route = useRoute(); // Use useRoute to access route parameters
 
@@ -54,7 +58,12 @@ function FoodUploadForm() {
     const handleDiscard = () => {
         console.log('Food Upload Discarded');
         if (navigation.canGoBack()) {
-            navigation.navigate('Home');
+            navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: 'Main' }],
+                })
+            );
         }
     }
     const handleConfirm = async () => {
@@ -163,77 +172,81 @@ function FoodUploadForm() {
   );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'top',
-        backgroundColor: "rgba(215,215,215,1)"
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '90%',
-        marginTop: 15,
-    },
-    button: {
-        padding: 10,
-        borderRadius: 5,
-        flex: 1,
-        margin: 5,
-    },
-    inputContainer: {
-        width: '80%',
-        marginTop: 30,
-    },
-    titleInput: {
-        height: 43,
-        width: 300,
-        backgroundColor: "rgba(230, 230, 230,1)",
-        borderRadius: 9,
-        paddingHorizontal: 10,
-        fontSize: 18,
-        marginBottom: 50,
-    },
-    descriptionInput: {
-        height: 150,
-        width: 300,
-        backgroundColor: "rgba(230, 230, 230,1)",
-        borderRadius: 9,
-        paddingHorizontal: 10,
-        fontSize: 16,
-        marginBottom: 50,
-        //multiline: true,
-    },
-    searchInput: {
-        height: 43,
-        width: 300,
-        backgroundColor: "rgba(230, 230, 230,1)",
-        borderRadius: 9,
-        paddingHorizontal: 10,
-        fontSize: 18,
-        marginBottom: 5,
-    },
-    categoryPicker: {
-        width: 300,
-        backgroundColor: "rgba(230, 230, 230,1)",
-        marginBottom: 50,
-    },
-    foodForText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    foodForPicker: {
-        width: 300,
-        backgroundColor: "rgba(230, 230, 230,1)",
-        marginBottom: 30,
-    },
-    errormsg: {
-        fontFamily: "roboto-regular",
-        color: "rgba(254,114,76,1)",
-        marginBottom: 10,
-        textAlign: "center"
-      },
-});
+function createStyles(colors) {
+    return(
+        {
+            container: {
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'top',
+                backgroundColor: colors.background
+            },
+            buttonContainer: {
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '90%',
+                marginTop: 15,
+            },
+            button: {
+                padding: 10,
+                borderRadius: 5,
+                flex: 1,
+                margin: 5,
+            },
+            inputContainer: {
+                width: '80%',
+                marginTop: 30,
+            },
+            titleInput: {
+                height: 43,
+                width: 300,
+                backgroundColor: colors.foreground,
+                borderRadius: 9,
+                paddingHorizontal: 10,
+                fontSize: 18,
+                marginBottom: 50,
+            },
+            descriptionInput: {
+                height: 150,
+                width: 300,
+                backgroundColor: colors.foreground,
+                borderRadius: 9,
+                paddingHorizontal: 10,
+                fontSize: 16,
+                marginBottom: 50,
+                //multiline: true,
+            },
+            searchInput: {
+                height: 43,
+                width: 300,
+                backgroundColor: colors.foreground,
+                borderRadius: 9,
+                paddingHorizontal: 10,
+                fontSize: 18,
+                marginBottom: 5,
+            },
+            categoryPicker: {
+                width: 300,
+                backgroundColor: colors.foreground,
+                marginBottom: 50,
+            },
+            foodForText: {
+                fontSize: 18,
+                fontWeight: 'bold',
+            },
+            foodForPicker: {
+                width: 300,
+                backgroundColor: colors.foreground,
+                marginBottom: 30,
+            },
+            errormsg: {
+                fontFamily: "roboto-regular",
+                color: colors.error,
+                marginBottom: 10,
+                textAlign: "center"
+              },
+        }
+    )
+}
 
 export default FoodUploadForm;
