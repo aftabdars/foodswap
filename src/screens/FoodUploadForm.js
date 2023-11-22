@@ -1,18 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import { View, Text, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { CommonActions, useRoute, useTheme } from '@react-navigation/native';
+import { CommonActions, useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
 
 import { getFoodCategories, postFood } from '../api/backend/Food';
-import { getUserToken } from '../storage/Token';
+import { getUserToken } from '../storage/UserToken';
 import { SerializeImage } from '../api/backend/utils/Serialize';
+import { ThemeContext, getColors } from '../assets/Theme';
+
 
 function FoodUploadForm() {
     // Theme
-    const { colors } = useTheme();
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
     const styles = createStyles(colors);
 
     const navigation = useNavigation();
@@ -200,7 +203,7 @@ function createStyles(colors) {
             titleInput: {
                 height: 43,
                 width: 300,
-                backgroundColor: colors.foreground,
+                backgroundColor: colors.background2,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 18,
@@ -209,7 +212,7 @@ function createStyles(colors) {
             descriptionInput: {
                 height: 150,
                 width: 300,
-                backgroundColor: colors.foreground,
+                backgroundColor: colors.background2,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 16,
@@ -219,7 +222,7 @@ function createStyles(colors) {
             searchInput: {
                 height: 43,
                 width: 300,
-                backgroundColor: colors.foreground,
+                backgroundColor: colors.background2,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 18,
@@ -227,7 +230,7 @@ function createStyles(colors) {
             },
             categoryPicker: {
                 width: 300,
-                backgroundColor: colors.foreground,
+                backgroundColor: colors.background2,
                 marginBottom: 50,
             },
             foodForText: {
@@ -236,7 +239,7 @@ function createStyles(colors) {
             },
             foodForPicker: {
                 width: 300,
-                backgroundColor: colors.foreground,
+                backgroundColor: colors.background2,
                 marginBottom: 30,
             },
             errormsg: {

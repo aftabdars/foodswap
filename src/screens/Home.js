@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Text, ScrollView, Image, RefreshControl } from "react-native";
 import CupertinoFooter1 from "../components/CupertinoFooter1";
 import MaterialButtonProfile from "../components/MaterialButtonProfile";
@@ -8,15 +8,18 @@ import Categorybutton from "../components/Categorybutton";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { getProfile } from '../api/backend/User';
-import { getUserToken } from "../storage/Token";
+import { getUserToken } from "../storage/UserToken.js";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
 import FoodCarousel from "../components/FoodCarousel.js";
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
 
 
 function Home(props) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
+    const styles = createStyles(colors);
+
   // States
   const [refreshing, setRefreshing] = useState(false);
   const [userData, setUserData] = useState({username: 'Anonymous'}); 
@@ -127,13 +130,12 @@ function Home(props) {
 }
 
 function createStyles(colors) {
-  return (
-    {
+  return StyleSheet.create({
       container: {
         flex: 1,
         backgroundColor: colors.background,
         paddingTop: 20,
-        paddingBottom: 50 + 5, // This is the height of Footer + 5
+        //paddingBottom: 50 + 5, // This is the height of Footer + 5
       },
       cupertinoFooter1: {
         position: 'absolute',

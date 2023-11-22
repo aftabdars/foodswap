@@ -1,13 +1,15 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import React, { useContext } from "react";
+import { View, Image, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
 
 function Forgot({navigation}) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
+    const styles = createStyles(colors);
 
   const [loaded] = useFonts({
     'abeezee-regular': require('../assets/fonts/abeezee-regular.ttf'),
@@ -17,7 +19,6 @@ function Forgot({navigation}) {
     return null;
   }
   
-
   return (
     <View style={styles.container}>
       <Image
@@ -43,8 +44,7 @@ function Forgot({navigation}) {
 }
 
 function createStyles(colors) {
-  return (
-    {
+  return StyleSheet.create({
       container: {
         flex: 1,
         backgroundColor: colors.background

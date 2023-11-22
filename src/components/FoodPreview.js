@@ -1,11 +1,14 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
 
 
 function FoodPreview(props) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
+    const styles = createStyles(colors);
+    
   // Food preview click functionaly will be implemented here
   // On click it will take the user to that food's screen showing all details
 
@@ -26,8 +29,7 @@ function FoodPreview(props) {
 }
 
 function createStyles(colors) {
-  return (
-    {
+  return StyleSheet.create({
       container: {
         borderRadius: 9,
         backgroundColor: colors.background2,

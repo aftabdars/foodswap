@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Image, Text, Platform } from "react-native";
 import { CommonActions } from '@react-navigation/native';
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
@@ -9,13 +9,17 @@ import { useFonts } from 'expo-font';
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
 
 import { postLogin } from "../api/backend/Auth";
-import { getUserToken, setUserToken } from "../storage/Token";
-import { useTheme } from '@react-navigation/native';
+import { getUserToken, setUserToken } from "../storage/UserToken";
+import { ThemeContext, getColors } from '../assets/Theme';
 
 
 function Login({navigation}) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+  
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
+    const styles = createStyles(colors);
+
   // States
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -126,8 +130,7 @@ function Login({navigation}) {
 }
 
 function createStyles(colors) {
-  return(
-    {
+  return StyleSheet.create({
       container: {
         flex: 1,
         backgroundColor: colors.background

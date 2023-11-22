@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text } from 'react-native';
 import { Bar } from 'react-native-progress';
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
+
 
 const ProgressBar = ({ xp, width = 200, height = 15 }) => {
-  const { colors } = useTheme();
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
   progress = xp[0]/xp[1]
   return (
     <View>

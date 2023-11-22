@@ -1,21 +1,35 @@
-import React from "react";
-import  {useState} from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Switch } from "react-native";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
 import { useNavigation, CommonActions, useTheme } from '@react-navigation/native';
 
-import { getUserToken, removeUserToken } from "../storage/Token";
+import { getUserToken, removeUserToken } from "../storage/UserToken";
 import { postLogout } from "../api/backend/Auth";
+import { getColors, ThemeContext } from "../assets/Theme";
+import { removeUserTheme, setUserTheme } from "../storage/UserSettings";
 
 function Settings() {
   // Theme
-  const { colors } = useTheme();
+  const {
+    theme,
+    setTheme
+  } = useContext(ThemeContext);
+  const colors = getColors(theme);
   const styles = createStyles(colors);
+  const [ themeEnabled, setThemeEnabled ] = useState(theme === 'light'? false : true);
   // States
-  const[notificationEnabled,setNotificationEnabled] = useState(false);
-  const [themeEnabled, setThemeEnabled] = useState(false);
+  const[ notificationEnabled, setNotificationEnabled ] = useState(false);
 
   const navigation = useNavigation();
+
+  const handleSwitchTheme = async () => {
+    const toTheme = (theme === 'light') ? 'dark' : 'light';
+    setThemeEnabled(!themeEnabled); 
+    setTheme(toTheme); // Updates user theme in real-time by changing the theme State
+
+    // Save user theme settings in cache and storage
+    await setUserTheme(toTheme);
+  }
 
   const handleLogout = async () => {
     const token = await getUserToken();
@@ -24,8 +38,9 @@ function Settings() {
         console.log(response.status);
         console.log(response.data);
 
-        // Remove user's token from cache and local storage
+        // Remove user's token and theme settings from cache and local storage
         removeUserToken();
+        removeUserTheme();
 
         // Navigate to initial page like Login (forgetting current screens)
         navigation.dispatch(
@@ -42,8 +57,6 @@ function Settings() {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.settings}>Settings</Text>
-        
         <Text style={styles.subHeading}>Display and notification</Text>
         <View style={styles.parentView}>
             <Text style={[styles.childText,styles.commonStyle]}>Notification</Text>
@@ -59,7 +72,7 @@ function Settings() {
             <Switch  
                 style={[styles.childText4,styles.commonStyle]}
                 value={themeEnabled}
-                onValueChange={() => setThemeEnabled(!themeEnabled)}      
+                onValueChange={ handleSwitchTheme } 
             /> 
         </View>
         <MaterialButtonDanger style={styles.logoutButton} onPress={handleLogout}>
@@ -71,33 +84,25 @@ function Settings() {
 }
 
 function createStyles(colors) {
-  return({
+  return StyleSheet.create({
     container: {
       flex:1,
       backgroundColor: colors.background,
       flexDirection: 'row',
     
     },
-    settings:{
-    fontSize:30,
-    color: colors.foreground,
-    fontWeight:'bold',
-    alignItems:'center',
-    marginLeft:50,
-    marginTop:35
-    },
     subHeading:{
       position:'absolute',
       color: colors.foreground,
       fontWeight:'800',
       marginLeft:45,
-      marginTop:94
+      marginTop:20
     },
     parentView:{
       position:'absolute',
       width:"95%",
       height:230,
-      marginTop: 120,
+      marginTop: 50,
       marginHorizontal:10,
       backgroundColor: colors.background2,
       marginLeft:10,

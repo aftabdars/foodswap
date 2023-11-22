@@ -1,9 +1,12 @@
+import { createContext } from 'react';
 import {Appearance} from 'react-native';
 
-function getColors () {
-    const colorScheme = Appearance.getColorScheme() || 'light';
-    let colors ={}
-    if (colorScheme === 'dark') {
+export const ThemeContext = createContext(null);
+
+export function getColors(scheme) {
+    //const colorScheme = Appearance.getColorScheme() || 'light';
+    let colors = {}
+    if (scheme === 'dark') {
         colors = {
             highlight1: '#fe724c',
             highlight2: '#009688',
@@ -26,6 +29,7 @@ function getColors () {
     return colors
 }
 
+/*
 let Colors = getColors()
 
 export const DefaultTheme = {
@@ -63,3 +67,4 @@ export const DarkTheme = {
   };
 
 export default Colors
+*/

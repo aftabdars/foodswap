@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, View, Image, Text, KeyboardAvoidingView } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
 import { postVerifyAccount } from "../api/backend/Auth";
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
+
 
 function EmailConfirmation({navigation}) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
+    const styles = createStyles(colors);
 
   const [code, setCode] = useState();
   const [showError, setShowError] = useState();
@@ -72,10 +75,8 @@ function EmailConfirmation({navigation}) {
   );
 }
 
-const styles = StyleSheet.create();
 function createStyles(colors) {
-  return(
-    {
+  return StyleSheet.create({
       container: {
         flex: 1,
         backgroundColor: colors.background
@@ -122,7 +123,6 @@ function createStyles(colors) {
         marginTop: -69,
         marginLeft: 97
       }
-    }
-  )
+    })
 }
 export default EmailConfirmation;

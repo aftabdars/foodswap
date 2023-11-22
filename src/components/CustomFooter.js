@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Colors from '../assets/Colors'
+import { ThemeContext, getColors } from '../assets/Theme';
 
 const CustomFooter = ({ state, descriptors, navigation }) => {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+    
   return (
-    <View style={{ flexDirection: 'row', backgroundColor: Colors.background }}>
+    <View style={{ flexDirection: 'row', backgroundColor: colors.background }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
 
@@ -40,7 +44,7 @@ const CustomFooter = ({ state, descriptors, navigation }) => {
             style={{ flex: 1, alignItems: 'center', padding: 10 }}
             key={index}
           >
-            <Ionicons name={options.iconName} size={24} color={isFocused ? Colors.highlight1 : Colors.foreground} />
+            <Ionicons name={options.iconName} size={24} color={isFocused ? colors.highlight1 : colors.foreground} />
             <Text style={{ color: isFocused ? '#007BFF' : 'gray' }}>{route.name}</Text>
           </TouchableOpacity>
         );

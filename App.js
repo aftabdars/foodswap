@@ -6,19 +6,42 @@ import Forgot from './src/screens/Forgot';
 import Forgot2 from './src/screens/Forgot2';
 import Forgot3 from './src/screens/Forgot3';
 import Main from './src/screens/Main';
-import FoodUploadForm from './src/screens/FoodUploadForm';
-import { NavigationContainer, Appearance } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Colors from './src/assets/Colors'
+import { ThemeContext, getColors } from './src/assets/Theme'
 import { useColorScheme } from 'react-native';
-import {DefaultTheme, DarkTheme} from './src/assets/Colors'
+import { useEffect, useState } from 'react';
+import { getUserTheme, setUserTheme } from './src/storage/UserSettings';
 
 const Stack = createNativeStackNavigator();
 
 //the home will be outside of navigation and a state will be used (or itll bug out)
 export default function App() {
+  const [theme, setTheme] = useState('light');
+  const colors = getColors(theme);
 
-  const scheme = useColorScheme();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Check and get user's theme settings from cache or storage
+        const userThemeSettings = await getUserTheme();
+
+        // If user has theme settings, then set the theme to that
+        if (userThemeSettings && userThemeSettings !== null) {
+          setTheme(userThemeSettings);
+        } else {
+          // Otherwise get user's color scheme (aka mobile theme light or dark mode)
+          const scheme = useColorScheme();
+          setTheme(scheme);
+          // Also save in cache and storage
+          setUserTheme(scheme);
+        }
+      } catch (error) {
+        console.error('Error fetching user theme:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const [loaded] = useFonts({
     'roboto-700': require('./src/assets/fonts/roboto-700.ttf'),
@@ -30,17 +53,22 @@ export default function App() {
   }
   
   return (
-    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator initialRouteName={"Login"}>
-        <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
-        <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Account Verification', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
-        <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
-        <Stack.Screen name="Forgot" component={Forgot} options={{title:'Forgot', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
-        <Stack.Screen name="Forgot2" component={Forgot2} options={{title:'Forgot', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
-        <Stack.Screen name="Forgot3" component={Forgot3} options={{title:'Forgot', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
-        <Stack.Screen name="Main" component={Main} options={{headerShown:false}}/>
-        <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{title:'Food Upload', headerStyle: {backgroundColor: Colors.highlight1}, headerTintColor: '#fff'}}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ThemeContext.Provider
+      value={
+        {theme, setTheme}
+      }
+    >
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName={"Login"}>
+          <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
+          <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Account Verification', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
+          <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
+          <Stack.Screen name="Forgot" component={Forgot} options={{title:'Forgot', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
+          <Stack.Screen name="Forgot2" component={Forgot2} options={{title:'Forgot', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
+          <Stack.Screen name="Forgot3" component={Forgot3} options={{title:'Forgot', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
+          <Stack.Screen name="Main" component={Main} options={{headerShown:false}}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ThemeContext.Provider>
   );
 }

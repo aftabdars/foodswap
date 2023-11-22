@@ -1,11 +1,15 @@
-import React, { Component } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
+
 
 function CupertinoSearchBarBasic(props) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
+    const styles = createStyles(colors);
+
   return (
     <View style={[styles.container, props.style]}>
       <View
@@ -28,8 +32,7 @@ function CupertinoSearchBarBasic(props) {
 }
 
 function createStyles (colors) {
-  return (
-    {
+  return StyleSheet.create({
       container: {
         flexDirection: "row",
         alignItems: "center",

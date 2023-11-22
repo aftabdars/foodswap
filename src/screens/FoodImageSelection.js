@@ -1,12 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
+
 
 function FoodImageSelection() {
-    const { colors } = useTheme();
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
     const styles = createStyles(colors);
+
     const [selectedImage, setSelectedImage] = useState(null);
     const navigation = useNavigation();
 
@@ -88,8 +92,7 @@ function FoodImageSelection() {
 }
 
 function createStyles(colors) {
-    return (
-        {
+    return StyleSheet.create({
             container: {
                 flex: 1,
                 alignItems: 'center',

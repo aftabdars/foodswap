@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
-import Colors from '../assets/Colors'
 
 
 function CupertinoFooter1(props) {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
   const [active, setActive] = React.useState('home');
 
   const navigation = useNavigation();
@@ -31,33 +34,33 @@ function CupertinoFooter1(props) {
 }
 
   return (
-    <View style={[styles.container, props.style, {backgroundColor: Colors.background2, width: "100%"}]}>
+    <View style={[styles.container, props.style, {backgroundColor: colors.background2, width: "100%"}]}>
       <TouchableOpacity style={styles.btnWrapper} onPress={() => { setActive('home'); homePressed(); }}>
         <MaterialCommunityIconsIcon
           name="home-minus"
-          style={[styles.icon, {color: (active == 'home') ? Colors.highlight1 : Colors.foreground}]}
+          style={[styles.icon, {color: (active == 'home') ? colors.highlight1 : colors.foreground}]}
         ></MaterialCommunityIconsIcon>
         <Text
-          style={[styles.font, {color: (active == 'home') ? Colors.highlight1 : Colors.foreground}]}>
+          style={[styles.font, {color: (active == 'home') ? colors.highlight1 : colors.foreground}]}>
           Home
         </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.btnWrapper} onPress={() => {setActive('profile'); profilePressed(); }}>
         <MaterialCommunityIconsIcon
           name="account-circle"
-          style={[styles.icon, {color: (active == 'profile') ? Colors.highlight1 : Colors.foreground}]}
+          style={[styles.icon, {color: (active == 'profile') ? colors.highlight1 : colors.foreground}]}
         ></MaterialCommunityIconsIcon>
         <Text
-         style={[styles.font, {color: (active == 'profile') ? Colors.highlight1 : Colors.foreground}]}>
+         style={[styles.font, {color: (active == 'profile') ? colors.highlight1 : colors.foreground}]}>
         Profile</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.btnWrapper} onPress={() => {setActive('camera' ); cameraPressed();}}>
         <MaterialCommunityIconsIcon
           name="camera"
-          style={[styles.icon, {color: (active == 'camera') ? Colors.highlight1 : Colors.foreground}]}
+          style={[styles.icon, {color: (active == 'camera') ? colors.highlight1 : colors.foreground}]}
         ></MaterialCommunityIconsIcon>
         <Text
-          style={[styles.font, {color: (active == 'camera') ? Colors.highlight1 : Colors.foreground}]}
+          style={[styles.font, {color: (active == 'camera') ? colors.highlight1 : colors.foreground}]}
         >
           Share Food
         </Text>
@@ -65,16 +68,16 @@ function CupertinoFooter1(props) {
       <TouchableOpacity style={styles.btnWrapper} onPress={() => { setActive('messages'); messagesPressed(); }}>
         <MaterialCommunityIconsIcon
           name="message-processing"
-          style={[styles.icon, {color: (active == 'messages') ? Colors.highlight1 : Colors.foreground}]}
+          style={[styles.icon, {color: (active == 'messages') ? colors.highlight1 : colors.foreground}]}
         ></MaterialCommunityIconsIcon>
-        <Text style={[styles.font, {color: (active == 'messages') ? Colors.highlight1 : Colors.foreground}]}>Messages</Text>
+        <Text style={[styles.font, {color: (active == 'messages') ? colors.highlight1 : colors.foreground}]}>Messages</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.btnWrapper} onPress={() => { setActive('settings'); settingsPressed(); }}>
         <MaterialCommunityIconsIcon
           name="account-settings"
-          style={[styles.icon, {color: (active == 'settings') ? Colors.highlight1 : Colors.foreground}]}
+          style={[styles.icon, {color: (active == 'settings') ? colors.highlight1 : colors.foreground}]}
         ></MaterialCommunityIconsIcon>
-        <Text style={[styles.font, {color: (active == 'settings') ? Colors.highlight1 : Colors.foreground}]}>Settings</Text>
+        <Text style={[styles.font, {color: (active == 'settings') ? colors.highlight1 : colors.foreground}]}>Settings</Text>
       </TouchableOpacity>
     </View>
   );

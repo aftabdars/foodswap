@@ -1,13 +1,15 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import React, { useContext } from "react";
+import { View, Text, Image } from "react-native";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
-import Colors from '../assets/Colors'
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme'
 
 function Forgot3({navigation}) {
-  const { colors } = useTheme();
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
   const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <Text style={styles.congratulations}>Congratulations!</Text>
@@ -39,8 +41,7 @@ function Forgot3({navigation}) {
 }
 
 function createStyles(colors) {
-  return (
-    {
+  return StyleSheet.create({
       container: {
         flex: 1,
         backgroundColor: colors.background
@@ -54,7 +55,7 @@ function createStyles(colors) {
       },
       errormsg: {
         fontFamily: "roboto-regular",
-        color: colors.foreground,
+        color: colors.error,
         marginTop: 188,
         marginLeft: 70
       },

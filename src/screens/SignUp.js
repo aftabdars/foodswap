@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
@@ -7,13 +7,16 @@ import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrange
 import { useFonts } from 'expo-font';
 
 import { postSignup } from "../api/backend/User";
-import { setUserToken } from "../storage/Token";
-import { useTheme } from '@react-navigation/native';
+import { setUserToken } from "../storage/UserToken";
+import { ThemeContext, getColors } from '../assets/Theme';
 
 
 function SignUp({navigation}) {
-    const { colors } = useTheme();
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
     const styles = createStyles(colors);
+
     // States
     const [username, setUsername] = useState();
     const [email, setEmail] = useState();
@@ -124,7 +127,7 @@ function SignUp({navigation}) {
 }
 
 function createStyles(colors) {
-  return ({
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background

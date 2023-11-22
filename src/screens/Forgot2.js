@@ -1,12 +1,16 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import React, { useContext } from "react";
+import { View, Image, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
+
 
 function Forgot2({navigation}) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
+    const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <Image
@@ -32,8 +36,7 @@ function Forgot2({navigation}) {
 }
 
 function createStyles(colors) {
-  return(
-    {
+  return StyleSheet.create({
       container: {
         flex: 1,
         backgroundColor: colors.background

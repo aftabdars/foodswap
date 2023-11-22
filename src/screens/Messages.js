@@ -1,15 +1,19 @@
-import  React, { useEffect, useState } from "react";
+import  React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text,TouchableOpacity } from "react-native";
 import { Avatar, Icon } from 'react-native-elements'; 
-import { getUserToken } from "../storage/Token";
+
+import { getUserToken } from "../storage/UserToken";
 import { getUserInbox } from "../api/backend/Social";
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
 
 
 function Inbox() {
-    const { colors } = useTheme();
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
     const styles = createStyles(colors);
+
     const [inboxData, setInboxData] = useState();
 
     useEffect(() => {
@@ -31,7 +35,7 @@ function Inbox() {
         <View style={styles.container}>
             {inboxData?
                 inboxData.map((data, index) => (
-                    <ChatPreview key={data.id} data={data} index={index} dataLength={inboxData.length}/>
+                    <ChatPreview key={data.id} data={data} index={index} dataLength={inboxData.length} styles={styles}/>
                 ))
                 :
                 <Text style={[styles.message, {'textAlign': 'center'}]}>No chats to show</Text>
@@ -41,8 +45,8 @@ function Inbox() {
 };
 
 function ChatPreview(props) {
-    const { colors } = useTheme();
-    const styles = createStyles(colors);
+    const styles = props.styles;
+
     const navigation = useNavigation();
 
     const handleDataPress = (data) => {
@@ -112,10 +116,8 @@ const formatTimeDifference = (timestamp) => {
   };
 
 function createStyles(colors){
-    return (
-        {
+    return StyleSheet.create({
             container: {
-                
                 flex: 1,
                 padding:16,
                 backgroundColor: colors.background,

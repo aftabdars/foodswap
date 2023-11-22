@@ -1,19 +1,24 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Image, Text, ScrollView, useWindowDimensions } from "react-native";
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Editbutton from "../components/Editbutton";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import OcticonsIcon from "react-native-vector-icons/Octicons";
 import { useFonts } from 'expo-font';
+
 import ProgressBar from '../components/ProgressBar'
 import { getProfile, getUserStats } from '../api/backend/User';
-import { getUserToken } from "../storage/Token";
+import { getUserToken } from "../storage/UserToken";
 import { getLevels } from "../api/backend/Gamification";
-import { useTheme } from '@react-navigation/native';
+import { ThemeContext, getColors } from '../assets/Theme';
+
 
 function Profile(props) {
-    const { colors } = useTheme();
+    // Theme
+    const theme = useContext(ThemeContext).theme;
+    const colors = getColors(theme);
     const styles = createStyles(colors);
+
     //fetchuser
     const [userData, setUserData] = useState({username: 'Anonymous'});
     const [userStats, setUserStats] = useState();
@@ -221,12 +226,11 @@ const renderScene = SceneMap({
 
 
 function createStyles(colors) {
-  return (
-    {
+  return StyleSheet.create({
       container: {
         flex: 1,
         backgroundColor: colors.background,
-        opacity: 0.77
+        //opacity: 0.77
       },
       profilecontainer: {
         minWidth: 100,
