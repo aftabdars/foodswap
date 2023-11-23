@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import {View} from 'react-native'
+import {View, Text} from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -12,10 +12,10 @@ import FoodImageSelection from '../screens/FoodImageSelection';
 import Settings from '../screens/Settings';
 import Inbox from '../screens/Messages';
 import Chat from '../screens/Chat';
+import FoodInfo from '../screens/FoodInfo'
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ThemeContext, getColors } from '../assets/Theme';
 import FoodUploadForm from './FoodUploadForm';
-
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -71,6 +71,19 @@ function SettingsContainer() {
   )
 }
 
+function HomeContainer() {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
+  return (
+      <Stack.Navigator initialRouteName={"FoodInfo"}>
+          <Stack.Screen name="Home" component={Home} options={{headerTintColor:'#fff',headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="FoodInfo" component={FoodInfo} options={{headerTintColor:'#fff',headerShown: false}}/>
+      </Stack.Navigator>
+  )
+}
+
 const Main = () => {
   // Theme
   const {
@@ -87,7 +100,7 @@ const Main = () => {
           let iconName;
 
           switch (route.name) {
-            case 'Home' : iconName = 'home-minus'; break;
+            case 'HomeContainer' : iconName = 'home-minus'; break;
             case 'Profile' : iconName = 'account-circle'; break;
             case 'Camera' : iconName = 'camera'; break;
             case 'Messages' : iconName = 'message-processing'; break;
@@ -101,6 +114,10 @@ const Main = () => {
         tabBarActiveBackgroundColor: colors.background,
         tabBarInactiveBackgroundColor: colors.background,
         tabBarLabelStyle: {fontSize :11},
+        tabBarLabel: ()=>{
+          let label = route.name=='HomeContainer'? 'Home': route.name
+          return <Text>{label}</Text>
+        },
         tabBarItemStyle: {padding:0, margin: 0},
         tabBarStyle: {
           backgroundColor: colors.background2,
@@ -108,7 +125,7 @@ const Main = () => {
       })}
       >
         
-        <Tab.Screen name="Home" component={Home} options={{headerShown:false}}/>
+        <Tab.Screen name="HomeContainer" component={HomeContainer} options={{headerShown:false}}/>
         <Tab.Screen name="Profile" component={ProfileContainer} options={{headerShown:false}}/>
         <Tab.Screen name="Camera" component={FoodUploadContainer} options={{headerShown:false}}/>
         <Tab.Screen name="Messages" component={MessagesContainer} options={{headerShown:false}}/>
