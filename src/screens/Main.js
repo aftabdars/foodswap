@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Home from './Home';
 import Profile from './Profile';
+import EditProfile from './EditProfile';
 import CupertinoFooter1 from '../components/CupertinoFooter1';
 import FoodImageSelection from '../screens/FoodImageSelection';
 import Settings from '../screens/Settings';
@@ -18,6 +19,19 @@ import FoodUploadForm from './FoodUploadForm';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
+
+function ProfileContainer() {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
+  return (
+      <Stack.Navigator initialRouteName={"Profile "}>
+          <Stack.Screen name="Profile " component={Profile} options={{headerShown:false}}/>
+          <Stack.Screen name="EditProfile" component={EditProfile} options={{title:'Edit Profile', headerTintColor:'#fff',headerStyle: {backgroundColor:colors.highlight1}}}/>
+      </Stack.Navigator>
+  )
+}
 
 function MessagesContainer() {
     // Theme
@@ -95,7 +109,7 @@ const Main = () => {
       >
         
         <Tab.Screen name="Home" component={Home} options={{headerShown:false}}/>
-        <Tab.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
+        <Tab.Screen name="Profile" component={ProfileContainer} options={{headerShown:false}}/>
         <Tab.Screen name="Camera" component={FoodUploadContainer} options={{headerShown:false}}/>
         <Tab.Screen name="Messages" component={MessagesContainer} options={{headerShown:false}}/>
         <Tab.Screen name="Settings" component={SettingsContainer} options={{headerShown:false}}/>

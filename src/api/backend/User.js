@@ -28,37 +28,37 @@ export async function getUsers(params) {
 
 // Gets a user's data
 export async function getUser(id) {
-    const url = `/accounts/${id}`;
+    const url = `/accounts/${id}/`;
     return await makeGetRequest(url);
 }
 
 // Deletes a user
 export async function deleteUser(id, token) {
-    const url = `/accounts/${id}`;
+    const url = `/accounts/${id}/`;
     return await makeDeleteRequest(url, token);
 }
 
 // Updates a user
 export async function updateUser(id, token, body) {
-    const url = `/accounts/${id}`;
+    const url = `/accounts/${id}/`;
     const contentType = 'multipart/form-data';
     return await makePutRequest(url, token, body, contentType);
 }
 
 // Get user stats
 export async function getUserStats(id) {
-    const url = `/accounts/stats/${id}`;
+    const url = `/accounts/stats/${id}/`;
     return await makeGetRequest(url);
 }
 
 // Get user settings
 export async function getUserSettings(id) {
-    const url = `/accounts/settings/${id}`;
+    const url = `/accounts/settings/${id}/`;
     return await makeGetRequest(url);
 }
 
 // Update user settings
 export async function updateUserSettings(id, token, body) {
-    const url = `/accounts/settings/${id}`;
+    const url = `/accounts/settings/${id}/`;
     return await makePutRequest(url, token, body);
 }

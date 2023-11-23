@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 function Editbutton(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
       <Icon name="ios-settings" style={styles.icon}></Icon>
     </TouchableOpacity>
   );

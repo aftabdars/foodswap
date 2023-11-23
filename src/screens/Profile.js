@@ -11,6 +11,7 @@ import { getProfile, getUserStats } from '../api/backend/User';
 import { getUserToken } from "../storage/UserToken";
 import { getLevels } from "../api/backend/Gamification";
 import { ThemeContext, getColors } from '../assets/Theme';
+import { useNavigation } from "@react-navigation/native";
 
 
 function Profile(props) {
@@ -23,6 +24,12 @@ function Profile(props) {
     const [userData, setUserData] = useState({username: 'Anonymous'});
     const [userStats, setUserStats] = useState();
     const [levelData, setLevelData] = useState();
+
+    const navigation = useNavigation();
+
+    const handleEditProfile = () => {
+      navigation.navigate('EditProfile');
+    }
 
     // Gets user profile
     useEffect(() => {
@@ -110,7 +117,7 @@ function Profile(props) {
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <Editbutton style={styles.editProfilePicture}></Editbutton>
+          <Editbutton style={styles.editProfilePicture} onPress={handleEditProfile}></Editbutton>
         </View>
         <Text style={styles.profileName}>{userData.first_name} {userData.last_name}</Text>
         <Text style={styles.profileName}>{userData.username}</Text>
