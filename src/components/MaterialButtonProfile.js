@@ -5,7 +5,7 @@ function MaterialButtonProfile(props) {
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
       <Image
-            source={{uri: props.userData.profile_picture} || require("../assets/images/image_(1).png")}
+            source={props.userData.profile_picture? {uri: props.userData.profile_picture} : require("../assets/images/default_profile.jpg")}
             resizeMode="contain"
             style={styles.icon}
           ></Image>

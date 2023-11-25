@@ -5,16 +5,20 @@ import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
 import { postVerifyAccount } from "../api/backend/Auth";
 import { ThemeContext, getColors } from '../assets/Theme';
+import { useRoute } from "@react-navigation/native";
 
 
 function EmailConfirmation({navigation}) {
-    // Theme
-    const theme = useContext(ThemeContext).theme;
-    const colors = getColors(theme);
-    const styles = createStyles(colors);
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+  const styles = createStyles(colors);
 
   const [code, setCode] = useState();
   const [showError, setShowError] = useState();
+
+  const route = useRoute();
+  const fromLogin = route.params?.fromLogin;
 
   const [loaded] = useFonts({
     'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
@@ -55,9 +59,20 @@ function EmailConfirmation({navigation}) {
         resizeMode="contain"
         style={styles.keylogo}
       ></Image>
-      <Text style={styles.loremIpsum1}>Your account has been created</Text>
+      <Text style={styles.loremIpsum1}>
+        {fromLogin ? 
+          'Your account is not verified'
+          :
+          'Your account has been created'
+        }
+      </Text>
       <Text style={styles.loremIpsum2}>
-        Please enter the activation code we just emailed you
+        {
+          fromLogin ?
+          'Please enter the verification code we emailed you when you signed up'
+          :
+          'Please enter the verification code we just emailed you'
+        }
       </Text>
       <MaterialFixedLabelTextbox
         label="000000"
@@ -79,7 +94,8 @@ function createStyles(colors) {
   return StyleSheet.create({
       container: {
         flex: 1,
-        backgroundColor: colors.background
+        backgroundColor: colors.background,
+        padding: 5
       },
       keylogo: {
         width: 244,
@@ -104,7 +120,7 @@ function createStyles(colors) {
       materialFixedLabelTextbox1: {
         height: 43,
         width: 278,
-        backgroundColor: colors.background,
+        backgroundColor: colors.background2,
         color: colors.foreground,
         borderRadius: 9,
         marginTop: 45,
@@ -121,7 +137,7 @@ function createStyles(colors) {
         fontFamily: "roboto-regular",
         color: colors.error,
         marginTop: -69,
-        marginLeft: 97
+        textAlign: "center"
       }
     })
 }

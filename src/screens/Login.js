@@ -77,7 +77,9 @@ function Login({navigation}) {
       errorMessages = error.response.data;
 
       if (error.response.status == 401) { // Unauthorized
-        navigation.navigate('EmailConfirmation');
+        navigation.navigate('EmailConfirmation', {
+          fromLogin: true // From login specifies that we are navigating from login screens (and not from SignUp)
+        });
       }
       else {
         setShowError(errorMessages[Object.keys(errorMessages)[0]][0]);
