@@ -45,7 +45,7 @@ const CustomFooter = ({ state, descriptors, navigation }) => {
             key={index}
           >
             <Ionicons name={options.iconName} size={24} color={isFocused ? colors.highlight1 : colors.foreground} />
-            <Text style={{ color: isFocused ? '#007BFF' : 'gray' }}>{route.name}</Text>
+            <Text style={{ color: isFocused ? '#007BFF' : colors.foreground }}>{route.name}</Text>
           </TouchableOpacity>
         );
       })}

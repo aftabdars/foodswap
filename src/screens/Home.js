@@ -12,6 +12,8 @@ import { getUserToken } from "../storage/UserToken.js";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
 import FoodCarousel from "../components/FoodCarousel.js";
 import { ThemeContext, getColors } from '../assets/Theme';
+import MaterialNotificationIcon from "../components/MaterialNotificationIcon.js";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
 
 
 function Home(props) {
@@ -19,6 +21,8 @@ function Home(props) {
   const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
   const styles = createStyles(colors);
+
+  const navigation = useNavigation();
 
   // States
   const [refreshing, setRefreshing] = useState(false);
@@ -79,9 +83,22 @@ function Home(props) {
     setRefreshing(false);
   };
 
+  const openSidebar = () => {
+    navigation.dispatch(DrawerActions.toggleDrawer());
+  };
+
+  const notificationButtonPressed = () => {
+    navigation.navigate('Notifications');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
+      <View style={styles.header}>
+          <MaterialButtonProfile style={styles.profileIcon} userData={userData} onPress={openSidebar}/>
+          <MaterialNotificationIcon style={styles.notificationIcon} onPress={notificationButtonPressed}></MaterialNotificationIcon>
+      </View>
+
+      <ScrollView style={styles.body}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -91,11 +108,6 @@ function Home(props) {
           />
         }
       >
-
-        <View style={styles.header}>
-          <Text style={styles.hiUser}>Hi, {userData && userData.username}</Text>
-          <MaterialButtonProfile style={styles.profileIcon} userData={userData}></MaterialButtonProfile>
-        </View>
 
         <CupertinoSearchBarBasic
           inputStyle="Search for food"
@@ -143,24 +155,23 @@ function createStyles(colors) {
         width: 375,
         bottom: 0
       },
-      hiUser: {
-        fontFamily: "roboto-700",
-        color: colors.foreground,
-        fontSize: 24,
-        position: 'absolute',
-        left: 0,
-        marginTop: 9
-      },
       profileIcon: {
         position: 'absolute',
-        right: 0
+        left: 20
+      },
+      notificationIcon: {
+        position: 'absolute',
+        right: 20,
       },
       header: {
-        height: 46,
+        backgroundColor: colors.background,
+        height: 45,
         flexDirection: "row",
-        marginTop: 0,
-        marginLeft: 29,
-        marginRight: 23
+        left: 0,
+        right: 0,
+      },
+      body: {
+        backgroundColor: colors.background,
       },
       foodsearch: {
         height: 44,

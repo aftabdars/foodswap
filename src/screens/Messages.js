@@ -45,6 +45,7 @@ function Inbox() {
 };
 
 function ChatPreview(props) {
+    const colors = getColors(theme);
     const styles = props.styles;
 
     const navigation = useNavigation();
@@ -85,7 +86,7 @@ function ChatPreview(props) {
                 <Icon
                     name='arrow-right'
                     type='feather'
-                    color='#007bff'
+                    color={colors.highlight2}
                     size={24}
                 />
             </View>

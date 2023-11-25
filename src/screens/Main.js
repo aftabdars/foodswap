@@ -16,6 +16,7 @@ import FoodInfo from '../screens/FoodInfo'
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ThemeContext, getColors } from '../assets/Theme';
 import FoodUploadForm from './FoodUploadForm';
+import Notifications from './Notifications';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -77,9 +78,10 @@ function HomeContainer() {
   const colors = getColors(theme);
 
   return (
-      <Stack.Navigator initialRouteName={"FoodInfo"}>
-          <Stack.Screen name="Home" component={Home} options={{headerTintColor:'#fff',headerStyle: {backgroundColor:colors.highlight1}}}/>
+      <Stack.Navigator initialRouteName={"Home"}>
+          <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
           <Stack.Screen name="FoodInfo" component={FoodInfo} options={{headerTintColor:'#fff',headerShown: false}}/>
+          <Stack.Screen name="Notifications" component={Notifications} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
       </Stack.Navigator>
   )
 }
@@ -116,7 +118,7 @@ const Main = () => {
         tabBarLabelStyle: {fontSize :11},
         tabBarLabel: ()=>{
           let label = route.name=='HomeContainer'? 'Home': route.name
-          return <Text>{label}</Text>
+          return <Text style={{color: colors.foreground}}>{label}</Text>
         },
         tabBarItemStyle: {padding:0, margin: 0},
         tabBarStyle: {
