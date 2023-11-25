@@ -15,10 +15,10 @@ import { ThemeContext, getColors } from '../assets/Theme';
 
 
 function Home(props) {
-    // Theme
-    const theme = useContext(ThemeContext).theme;
-    const colors = getColors(theme);
-    const styles = createStyles(colors);
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+  const styles = createStyles(colors);
 
   // States
   const [refreshing, setRefreshing] = useState(false);

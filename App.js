@@ -25,9 +25,10 @@ export default function App() {
       try {
         // Check and get user's theme settings from cache or storage
         const userThemeSettings = await getUserTheme();
-
+        console.log(userThemeSettings)
         // If user has theme settings, then set the theme to that
         if (userThemeSettings && userThemeSettings !== null) {
+          console.log('hi?')
           setTheme(userThemeSettings);
         } else {
           // Otherwise get user's color scheme (aka mobile theme light or dark mode)

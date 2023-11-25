@@ -40,7 +40,7 @@ function Settings() {
 
         // Remove user's token and theme settings from cache and local storage
         removeUserToken();
-        removeUserTheme();
+        //removeUserTheme();
 
         // Navigate to initial page like Login (forgetting current screens)
         navigation.dispatch(

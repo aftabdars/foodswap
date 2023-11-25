@@ -14,11 +14,10 @@ import { ThemeContext, getColors } from '../assets/Theme';
 
 
 function Login({navigation}) {
-  
-    // Theme
-    const theme = useContext(ThemeContext).theme;
-    const colors = getColors(theme);
-    const styles = createStyles(colors);
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+  const styles = createStyles(colors);
 
   // States
   const [username, setUsername] = useState();

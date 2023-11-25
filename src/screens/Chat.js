@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { useState, useEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { View, Text, StyleSheet,TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
@@ -10,6 +10,7 @@ import { getUserToken } from '../storage/UserToken';
 import { getMessages, postMessage } from '../api/backend/Social';
 import { SerializeImage } from '../api/backend/utils/Serialize';
 import { ThemeContext, getColors } from '../assets/Theme';
+import { BACKEND_WS_ENDPOINT } from '../api/config';
 
 
 function Chat() {
@@ -19,11 +20,45 @@ function Chat() {
     const styles = createStyles(colors);
     
     const route = useRoute(); // Use useRoute to access route parameters
+    const messagesScrollRef = useRef();
 
     const chatPreviewMessage = route.params?.chatPreviewMessage;
     const [newMessage, setNewMessage] = useState('');
     const [attachment, setAttachment] = useState();
     const [messages, setMessages] = useState();
+    const [initialScrollDone, setInitialScrollDone] = useState(false);
+    // WebSocket
+    const [socket, setSocket] = useState(null);
+
+    // Initiate a websocket connection
+    useEffect(() => {
+        let chatRoom = null;
+        if (chatPreviewMessage.sender < chatPreviewMessage.receiver)
+        chatRoom = `${chatPreviewMessage.sender}_${chatPreviewMessage.receiver}`
+        else
+        chatRoom = `${chatPreviewMessage.receiver}_${chatPreviewMessage.sender}`
+        const ws = new WebSocket(`${BACKEND_WS_ENDPOINT}/chat/${chatRoom}/`);
+    
+        ws.onopen = () => {
+          console.log(`WebSocket connected, chatroom: ${chatRoom}`);
+        };
+    
+        ws.onmessage = (event) => {
+            const receivedMessage = JSON.parse(JSON.parse(event.data)['message']);
+            setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
+        };
+    
+        ws.onclose = () => {
+          console.log(`WebSocket disconnected, chatroom: ${chatRoom}`);
+          // Reconnect logic can be added here if needed
+        };
+    
+        setSocket(ws);
+    
+        return () => {
+          ws.close();
+        };
+      }, []);
 
     // Get chat messages
     useEffect(() => {
@@ -47,9 +82,17 @@ function Chat() {
         getMeMessages();
     }, []);
 
+    // Scroll to bottom once messages are loaded initially
+    useEffect(() => {
+        if (!initialScrollDone && messages && messages.length > 0) {
+          scrollToBottom();
+          setInitialScrollDone(true);
+        }
+    }, [messages]);
+
     const handleSend = async () => {
         if (newMessage.trim() !== '' || attachment) {
-            // Post the message to database
+            // Post the message to database (API post request)
             const token = await getUserToken();
             const data = new FormData();
             data.append('receiver', chatPreviewMessage.sender);
@@ -60,14 +103,23 @@ function Chat() {
             postMessage(token.token, data)
             .then(response => {
                 console.log(response.data);
-                // Update user's screen with the message user has typed
-                setMessages([{
-                    id: messages[messages.length - 1].id,
-                    sender: chatPreviewMessage.receiver,
-                    receiver: chatPreviewMessage.sender,
-                    message: newMessage,
-                    attachment: attachment.uri
-                }, ...messages]);
+                
+                // Pass the successful sent message to WebSocket
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify(response.data));
+                }
+                // Update user's screen with the message user has typed if no socket
+                // This way the user will still see their own message even if socket connection is not on or it is lost
+                else {
+                    setMessages([{
+                        id: messages[0].id + 1,
+                        sender: chatPreviewMessage.receiver,
+                        receiver: chatPreviewMessage.sender,
+                        message: newMessage,
+                        attachment: attachment && attachment.uri
+                    }, ...messages]); 
+                }
+                scrollToBottom();
             })
             .catch(error => {
                 console.log(error);
@@ -103,23 +155,33 @@ function Chat() {
         }
     };
 
+    const scrollToBottom = () => {
+        messagesScrollRef.current.scrollToEnd({ animated: true });
+    };
+
     return ( 
         <View style={styles.container}>
             <View style={styles.headerExtraSpaceTop}/>
             <View style={styles.header}>
+                <TouchableOpacity></TouchableOpacity>
                 <Image source={chatPreviewMessage.sender_profile_picture? {uri: chatPreviewMessage.sender_profile_picture} : require("../assets/images/default_profile.jpg")} style={styles.profilePic} />
                 <Text style={styles.senderName}>
                     {
-                        chatPreviewMessage.sender_first_name? (chatPreviewMessage.sender_last_name? chatPreviewMessage.sender_first_name + chatPreviewMessage.sender_last_name : '')
+                        chatPreviewMessage.sender_first_name? (chatPreviewMessage.sender_last_name? chatPreviewMessage.sender_first_name + chatPreviewMessage.sender_last_name : chatPreviewMessage.sender_username)
                     :
                         chatPreviewMessage.sender_username
                     }
                 </Text>
             </View>
-            <ScrollView style={styles.messagesContainer}>
+            <ScrollView 
+                style={styles.messagesContainer}
+                ref={messagesScrollRef}
+            >
                 {messages && messages.slice().reverse().map((msg, index) => (
                     <Message key={msg.id && msg.id} index={index} msg={msg} isYourMessage={msg.sender === chatPreviewMessage.receiver} styles={styles}/>
                  ))}
+
+                 <Text styles={{"marginVertican": 10}} />
             </ScrollView>
             <View style={styles.inputContainer}>
                 <TouchableOpacity style={styles.imagePickerButton} onPress={handleImagePick}>
@@ -147,12 +209,14 @@ function Message(props) {
 
     return (
         <View key={props.index} style={isYourMessage ? styles.yourMessage : styles.otherMessage}>
-            <Text style={styles.sender}>{isYourMessage == true? 'You' : msg.sender_username}:</Text>
-            {msg.attachment ? (
-                <Image source={{ uri: msg.attachment }} style={styles.messageImage} />
-            ) : ''
-            }
-            <Text style={styles.message}>{msg.message}</Text>
+            <TouchableOpacity>
+                <Text style={styles.sender}>{isYourMessage == true? 'You' : msg.sender_username}:</Text>
+                {msg.attachment ? (
+                    <Image source={{ uri: msg.attachment }} style={styles.messageImage} />
+                ) : ''
+                }
+                <Text style={styles.message}>{msg.message}</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -183,6 +247,7 @@ function createStyles(colors){
             marginLeft: 20,
             marginRight: 10,
             marginVertical: 10,
+            resizeMode: 'contain'
         },
         senderName: {
             fontSize: 18,
@@ -191,7 +256,7 @@ function createStyles(colors){
         },
         messagesContainer: {
             flex: 1,
-            padding: 10,
+            padding: 15,
             backgroundColor: colors.background,
         },
         yourMessage: {
@@ -219,7 +284,7 @@ function createStyles(colors){
             fontSize: 16,
             fontWeight: 'bold',
             color: colors.foreground,
-            marginBottom: 8,
+            marginBottom: 4,
         },
         message: {
             fontSize: 16,
@@ -242,6 +307,7 @@ function createStyles(colors){
             width: 200, // Adjust the width as needed
             height: 150, // Adjust the height as needed
             borderRadius: 8,
+            resizeMode: 'contain'
         },
         input: {
             flex: 1,
