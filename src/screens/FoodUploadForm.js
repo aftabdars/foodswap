@@ -136,13 +136,21 @@ function FoodUploadForm() {
                 <Picker
                     placeholder='Select Category'
                     style={styles.categoryPicker}
+                    dropdownIconColor={colors.foreground}
+                    dropdownIconRippleColor={colors.highlight2}
                     selectedValue={category}
                     onValueChange={(itemValue, itemIndex) => setCategory(itemValue) }
                 >
-                    <Picker.Item label="Select Category" value={-1} />
+                    <Picker.Item label="Select Category" value={-1} style={styles.pickerItem}/>
                     {filteredCategories &&
                         filteredCategories.map(foodCategory => (
-                            <Picker.Item key={foodCategory.id} label={foodCategory.name} value={foodCategory.id} />
+                            <Picker.Item 
+                                key={foodCategory.id} 
+                                label={foodCategory.name} 
+                                value={foodCategory.id} 
+                                color={colors.foreground}
+                                style={styles.pickerItem}
+                            />
                     ))}
                 </Picker>
                 <Text styles={styles.foodForText}>
@@ -150,11 +158,13 @@ function FoodUploadForm() {
                 </Text>
                 <Picker
                     style={styles.foodForPicker}
+                    dropdownIconColor={colors.foreground}
+                    dropdownIconRippleColor={colors.highlight2}
                     selectedValue={foodFor}
                     onValueChange={(itemValue, itemIndex) => setFoodFor(itemValue) }
                 >
-                    <Picker.Item label="Swap" value="swap" />
-                    <Picker.Item label="Share" value="share" />
+                    <Picker.Item label="Swap" value="swap" style={styles.pickerItem} />
+                    <Picker.Item label="Share" value="share" style={styles.pickerItem} />
                 </Picker>
                 {showError && (
                     <Text style={styles.errormsg}>
@@ -204,6 +214,7 @@ function createStyles(colors) {
                 height: 43,
                 width: 300,
                 backgroundColor: colors.background2,
+                color: colors.foreground,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 18,
@@ -213,6 +224,7 @@ function createStyles(colors) {
                 height: 150,
                 width: 300,
                 backgroundColor: colors.background2,
+                color: colors.foreground,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 16,
@@ -223,6 +235,7 @@ function createStyles(colors) {
                 height: 43,
                 width: 300,
                 backgroundColor: colors.background2,
+                color: colors.foreground,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 18,
@@ -231,16 +244,23 @@ function createStyles(colors) {
             categoryPicker: {
                 width: 300,
                 backgroundColor: colors.background2,
+                color: colors.foreground,
                 marginBottom: 50,
             },
             foodForText: {
                 fontSize: 18,
                 fontWeight: 'bold',
+                color: colors.foreground
             },
             foodForPicker: {
                 width: 300,
                 backgroundColor: colors.background2,
                 marginBottom: 30,
+                color: colors.foreground
+            },
+            pickerItem: {
+                backgroundColor: colors.background2,
+                color: colors.foreground
             },
             errormsg: {
                 fontFamily: "roboto-regular",
