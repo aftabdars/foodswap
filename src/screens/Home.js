@@ -14,6 +14,8 @@ import FoodCarousel from "../components/FoodCarousel.js";
 import { ThemeContext, getColors } from '../assets/Theme';
 import MaterialNotificationIcon from "../components/MaterialNotificationIcon.js";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import SideBar from "../components/SideBar";
 
 
 function Home(props) {
@@ -84,17 +86,19 @@ function Home(props) {
   };
 
   const openSidebar = () => {
-    navigation.dispatch(DrawerActions.toggleDrawer());
+    // navigation.dispatch(DrawerActions.toggleDrawer());
+    navigation.toggleDrawer();
   };
 
   const notificationButtonPressed = () => {
     navigation.navigate('Notifications');
   }
-
-  return (
-    <SafeAreaView style={styles.container}>
+  
+  function HomePage({navigation}){
+    return(
+      <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-          <MaterialButtonProfile style={styles.profileIcon} userData={userData} onPress={openSidebar}/>
+          <MaterialButtonProfile style={styles.profileIcon} userData={userData} onPress={()=>{navigation.toggleDrawer()}}/>
           <MaterialNotificationIcon style={styles.notificationIcon} onPress={notificationButtonPressed}></MaterialNotificationIcon>
       </View>
 
@@ -138,6 +142,15 @@ function Home(props) {
 
       {/* <CupertinoFooter1 style={styles.cupertinoFooter1}></CupertinoFooter1> */}
     </SafeAreaView>
+    )
+  }
+
+  //MAIN RETURN/////////
+  const Drawer = createDrawerNavigator();
+  return (
+    <Drawer.Navigator screenOptions={{headerShown: false}} initialRouteName="HomePage" drawerContent={(props) => <SideBar {...props} colors={colors}/>}>
+      <Drawer.Screen name="HomePage" component={HomePage} />
+    </Drawer.Navigator>
   );
 }
 
