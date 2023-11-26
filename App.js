@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
