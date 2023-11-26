@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, StyleSheet, Switch } from "react-native";
+import { View, Text, StyleSheet, Switch, Pressable } from "react-native";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
 import { useNavigation, CommonActions, useTheme } from '@react-navigation/native';
 
@@ -22,9 +22,9 @@ function Settings() {
 
   const navigation = useNavigation();
 
-  const handleSwitchTheme = async () => {
-    const toTheme = (theme === 'light') ? 'dark' : 'light';
-    setThemeEnabled(!themeEnabled); 
+  const handleSwitchTheme = async (toTheme) => {
+    // const toTheme = (theme === 'light') ? 'dark' : 'light';
+    // setThemeEnabled(!themeEnabled); 
     setTheme(toTheme); // Updates user theme in real-time by changing the theme State
 
     // Save user theme settings in cache and storage
@@ -61,19 +61,24 @@ function Settings() {
         <View style={styles.parentView}>
             <Text style={[styles.childText,styles.commonStyle]}>Notification</Text>
             <Text style={styles.notification}>You will receive app notifications.</Text>
-            <Text style={[styles.childText1,styles.commonStyle]}>Dark Theme</Text>
-            <Text style={styles.theme}>Change the theme that which you want.</Text>
+            <Text style={[styles.childText1,styles.commonStyle]}>Theme</Text>
+            <Text style={styles.theme}>DarkMode preference.</Text>
             <Text style={[styles.childText2,styles.commonStyle]}>Privacy Notice</Text>
             
             <Switch style={[styles.childText3,styles.commonStyle]}
             value={notificationEnabled}
             onValueChange={() => setNotificationEnabled(!notificationEnabled)}
             />
-            <Switch  
+            {/* <Switch  
                 style={[styles.childText4,styles.commonStyle]}
                 value={themeEnabled}
                 onValueChange={ handleSwitchTheme } 
-            /> 
+            />  */}
+            <View style={[styles.childText4,styles.commonStyle, {flex:1,flexDirection:'row', justifyContent: "space-between", width: 80, marginLeft: 260}]}>
+              <Pressable onPress={()=>{handleSwitchTheme('light')}}><Text>Li</Text></Pressable>
+              <Pressable onPress={()=>{handleSwitchTheme('dark')}}><Text>Da</Text></Pressable>
+              <Pressable onPress={()=>{handleSwitchTheme('auto')}}><Text>Sy</Text></Pressable>
+            </View>
         </View>
         <MaterialButtonDanger style={styles.logoutButton} onPress={handleLogout}>
             Logout

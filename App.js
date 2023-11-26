@@ -17,8 +17,9 @@ const Stack = createNativeStackNavigator();
 
 //the home will be outside of navigation and a state will be used (or itll bug out)
 export default function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('auto');
   const colors = getColors(theme);
+  const systemTheme = useColorScheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,20 +30,19 @@ export default function App() {
         // If user has theme settings, then set the theme to that
         if (userThemeSettings && userThemeSettings !== null) {
           console.log('hi?')
-          setTheme(userThemeSettings);
+          userThemeSettings == 'auto'? setTheme(systemTheme) : setTheme(userThemeSettings);
         } else {
-          // Otherwise get user's color scheme (aka mobile theme light or dark mode)
-          const scheme = useColorScheme();
-          setTheme(scheme);
           // Also save in cache and storage
-          setUserTheme(scheme);
+          setUserTheme('auto');
+          // Otherwise get user's color scheme (aka mobile theme light or dark mode)
+          setTheme(systemTheme);
         }
       } catch (error) {
         console.error('Error fetching user theme:', error);
       }
     };
     fetchData();
-  }, []);
+  }, [systemTheme, theme]);
 
   const [loaded] = useFonts({
     'roboto-700': require('./src/assets/fonts/roboto-700.ttf'),
@@ -60,7 +60,7 @@ export default function App() {
       }
     >
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={"Login"}>
+          <Stack.Navigator initialRouteName={"Login"}>
           <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
           <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Account Verification', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
           <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
@@ -73,3 +73,4 @@ export default function App() {
     </ThemeContext.Provider>
   );
 }
+
