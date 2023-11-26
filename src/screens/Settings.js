@@ -6,7 +6,8 @@ import { useNavigation, CommonActions, useTheme } from '@react-navigation/native
 import { getUserToken, removeUserToken } from "../storage/UserToken";
 import { postLogout } from "../api/backend/Auth";
 import { getColors, ThemeContext } from "../assets/Theme";
-import { removeUserTheme, setUserTheme } from "../storage/UserSettings";
+import { removeUserTheme, setUserTheme, getUserTheme } from "../storage/UserSettings";
+import Icon from "react-native-vector-icons/Ionicons";
 
 function Settings() {
   // Theme
@@ -16,7 +17,7 @@ function Settings() {
   } = useContext(ThemeContext);
   const colors = getColors(theme);
   const styles = createStyles(colors);
-  const [ themeEnabled, setThemeEnabled ] = useState(theme === 'light'? false : true);
+
   // States
   const[ notificationEnabled, setNotificationEnabled ] = useState(false);
 
@@ -60,9 +61,9 @@ function Settings() {
         <Text style={styles.subHeading}>Display and notification</Text>
         <View style={styles.parentView}>
             <Text style={[styles.childText,styles.commonStyle]}>Notification</Text>
-            <Text style={styles.notification}>You will receive app notifications.</Text>
+            <Text style={[styles.notification, {color: colors.foreground}]}>You will receive app notifications.</Text>
             <Text style={[styles.childText1,styles.commonStyle]}>Theme</Text>
-            <Text style={styles.theme}>DarkMode preference.</Text>
+            <Text style={[styles.theme, {color:colors.foreground}]}>DarkMode preference.</Text>
             <Text style={[styles.childText2,styles.commonStyle]}>Privacy Notice</Text>
             
             <Switch style={[styles.childText3,styles.commonStyle]}
@@ -75,9 +76,9 @@ function Settings() {
                 onValueChange={ handleSwitchTheme } 
             />  */}
             <View style={[styles.childText4,styles.commonStyle, {flex:1,flexDirection:'row', justifyContent: "space-between", width: 80, marginLeft: 260}]}>
-              <Pressable onPress={()=>{handleSwitchTheme('light')}}><Text>Li</Text></Pressable>
-              <Pressable onPress={()=>{handleSwitchTheme('dark')}}><Text>Da</Text></Pressable>
-              <Pressable onPress={()=>{handleSwitchTheme('auto')}}><Text>Sy</Text></Pressable>
+              <Pressable onPress={()=>{handleSwitchTheme('light')}}><Icon name="sunny" style={{fontSize:20, color: theme=='light'? colors.highlight1 : colors.foreground}}></Icon></Pressable>
+              <Pressable onPress={()=>{handleSwitchTheme('dark')}}><Icon name="moon" style={{fontSize:20, color: theme=='dark'? colors.highlight1 : colors.foreground}}></Icon></Pressable>
+              <Pressable onPress={()=>{handleSwitchTheme('auto')}}><Icon name="contrast" style={{fontSize:20, color:colors.foreground}}></Icon></Pressable>
             </View>
         </View>
         <MaterialButtonDanger style={styles.logoutButton} onPress={handleLogout}>
