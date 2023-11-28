@@ -117,6 +117,7 @@ function Home(props) {
           inputStyle="Search for food"
           inputBox="rgba(255,255,255,1)"
           style={styles.foodsearch}
+          onPressIn={(e) => navigation.navigate('Search')}
         ></CupertinoSearchBarBasic>
         {/* <MaterialSpinner style={styles.materialSpinner}></MaterialSpinner> */}
 

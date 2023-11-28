@@ -17,6 +17,7 @@ import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommun
 import { ThemeContext, getColors } from '../assets/Theme';
 import FoodUploadForm from './FoodUploadForm';
 import Notifications from './Notifications';
+import Search from './Search';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -82,6 +83,7 @@ function HomeContainer() {
           <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
           <Stack.Screen name="FoodInfo" component={FoodInfo} options={{headerTintColor:'#fff',headerShown: false}}/>
           <Stack.Screen name="Notifications" component={Notifications} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="Search" component={Search} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
       </Stack.Navigator>
   )
 }

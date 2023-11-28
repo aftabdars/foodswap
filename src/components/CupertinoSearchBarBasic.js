@@ -25,6 +25,8 @@ function CupertinoSearchBarBasic(props) {
           placeholder={props.inputStyle || "Search"}
           placeholderTextColor={colors.foreground}
           style={styles.inputStyle}
+          onPressIn={props.onPressIn}
+          onChangeText={props.onChangeText}
         ></TextInput>
       </View>
     </View>
