@@ -1,7 +1,7 @@
 import React, { Component, useContext } from "react";
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
 import { ThemeContext, getColors } from '../assets/Theme';
-
+import { LinearGradient } from "expo-linear-gradient";
 
 function FoodPreview(props) {
     // Theme
@@ -14,16 +14,20 @@ function FoodPreview(props) {
 
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-        <View style={styles.imageContainer}>
           <Image
             source={{uri: props.foodData.image}}
             resizeMode="cover"
             style={styles.image}
           ></Image>
-        </View>
+         <View style={styles.overlay}>
         <Text style={styles.title}>
           {props.foodData? props.foodData.name : "Food Title"}
-        </Text>
+          </Text>
+          <Text style={styles.infoText}>{`Expire Date: 2023-12-31`}</Text>
+          <Text style={styles.infoText}>Swap</Text>
+      
+     
+        </View>
     </TouchableOpacity>
   );
 }
@@ -31,33 +35,47 @@ function FoodPreview(props) {
 function createStyles(colors) {
   return StyleSheet.create({
       container: {
-        borderRadius: 9,
+        borderRadius: 16,
         backgroundColor: colors.background2,
-        borderRadius: 5,
-        height: 250,
-        padding: 15,
-        marginLeft: 25,
-        marginRight: 25,
-      },
-      imageContainer: {
-        width: 250,
-        height: 150,
-        marginTop: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
+        overflow:'hidden',
+        marginBottom:20,
+        position: 'relative',
+        },
       image: {
         width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
+        height: 200,
+        borderRadius: 16,
       },
-      title: {
+      overlay: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: "center",
+        padding: 0,
+        marginTop:90,
+      
+      },
+      
+        title: {
         fontFamily: "roboto-regular",
-        color: colors.foreground,
+        color: '#FFFFFF',
         fontSize: 20,
+        fontWeight:'bold',
         textAlign: 'center', 
-      }
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        borderRadius: 16,
+        padding: 45,
+        marginBottom: -40,
+      },
+      infoText: {
+        fontFamily: "roboto-regular",
+        fontSize: 16,
+        color: '#FFFFFF',
+        fontWeight:'bold',
+        textAlign: "center",
+        borderRadius: 10,
+        padding: 10,
+        marginTop: -18,
+       
+      },
     }
   )
 }
