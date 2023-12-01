@@ -1,8 +1,8 @@
 import  React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
-import { formatDateTimeString } from "../api/backend/utils/Format";
-import { stringCapitalize } from "../assets/utils";
+import { formatDateTimeString } from "../utils/Format";
+import { stringCapitalize } from "../utils/Utils";
 
 function SearchedFoodPreview(props) {
     //Theme

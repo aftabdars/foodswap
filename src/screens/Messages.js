@@ -6,6 +6,7 @@ import { Avatar, Icon } from 'react-native-elements';
 import { getUserToken } from "../storage/UserToken";
 import { getUserInbox } from "../api/backend/Social";
 import { ThemeContext, getColors } from '../assets/Theme';
+import { formatTimeDifferencePast } from '../utils/Format';
 
 
 function Inbox() {
@@ -80,7 +81,7 @@ function ChatPreview(props) {
                     </Text>
                 
                     <Text style={styles.time}>
-                        {formatTimeDifference(props.data.timestamp)}
+                        {formatTimeDifferencePast(props.data.timestamp)} ago
                     </Text>
                 </View>
                 <Icon
@@ -96,25 +97,7 @@ function ChatPreview(props) {
     )
 }
 
-const formatTimeDifference = (timestamp) => {
-    const currentTime = new Date(); // Current time
-    const messageTime = new Date(timestamp); // Time of the message
-  
-    const timeDifferenceInMilliseconds = currentTime - messageTime;
-    const timeDifferenceInMinutes = Math.floor(timeDifferenceInMilliseconds / (1000 * 60));
-  
-    if (timeDifferenceInMinutes < 60) {
-      return `${timeDifferenceInMinutes} minutes ago`;
-    } else if (timeDifferenceInMinutes < 24 * 60) {
-      const hours = Math.floor(timeDifferenceInMinutes / 60);
-      const remainingMinutes = timeDifferenceInMinutes % 60;
-      return `${hours} hours ${remainingMinutes} minutes ago`;
-    } else {
-      const days = Math.floor(timeDifferenceInMinutes / (24 * 60));
-      const remainingHours = Math.floor((timeDifferenceInMinutes % (24 * 60)) / 60);
-      return `${days} days ${remainingHours} hours ago`;
-    }
-  };
+
 
 function createStyles(colors){
     return StyleSheet.create({
