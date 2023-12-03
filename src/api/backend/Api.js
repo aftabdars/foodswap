@@ -3,14 +3,18 @@ import { BACKEND_API_ENDPOINT, TOKEN_KEYWORD } from "../config";
 //import { removeUserToken } from "../../storage/Token";
 
 
-export async function makeGetRequest(url, token = undefined, params = undefined) {
+export async function makeGetRequest(url, token = undefined, params = undefined, ifModifiedSince = undefined) {
     const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
     console.log(`Making API GET request to: ${fullUrl}`);
 
     const headers = {
         'Content-Type': 'application/json',
-        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
+        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined
     };
+    
+    if (ifModifiedSince) {
+        headers['If-Modified-Since'] = ifModifiedSince.toUTCString();
+    }
 
     try {
         const response = await axios.get(fullUrl, { headers, params });

@@ -11,6 +11,8 @@ import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrange
 import { postLogin } from "../api/backend/Auth";
 import { getUserToken, setUserToken } from "../storage/UserToken";
 import { ThemeContext, getColors } from '../assets/Theme';
+import { setProfile, setStats } from "../storage/User";
+import { getClientProfile, getClientStats } from "../api/backend/User";
 
 
 function Login({navigation}) {
@@ -60,15 +62,33 @@ function Login({navigation}) {
       console.log(response.status);
       console.log(response.data);
       if (response.status == 200) {
-        setUserToken(response.data);
-        
-        // Navigate to home forgetting login and previous screens
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'Main' }],
-          })
-        );
+        // Set some user data and token to storage
+        const setSomeData = async () => {
+          try {
+            const profileResponse = await getClientProfile(response.data.token);
+            const statsResponse = await getClientStats(response.data.token);
+
+            if (profileResponse && statsResponse) {
+              setUserToken(response.data);
+              console.log(profileResponse.data);
+              setProfile(profileResponse.data);
+              console.log(statsResponse.data);
+              setStats(statsResponse.data);
+
+              // Navigate to home forgetting login and previous screens
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: 'Main' }],
+                })
+              );
+            }
+          }
+          catch(error) {
+            console.error(error.response.data);
+          }
+        }
+        setSomeData();
       }
     })
     .catch(error => {
@@ -78,7 +98,7 @@ function Login({navigation}) {
 
       if (error.response.status == 401) { // Unauthorized
         navigation.navigate('EmailConfirmation', {
-          fromLogin: true // From login specifies that we are navigating from login screens (and not from SignUp)
+          fromLogin: true // From login specifies that we are navigating from login screen (and not from SignUp)
         });
       }
       else {

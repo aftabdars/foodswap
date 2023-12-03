@@ -8,6 +8,7 @@ import { postLogout } from "../api/backend/Auth";
 import { getColors, ThemeContext } from "../assets/Theme";
 import { removeUserTheme, setUserTheme, getUserTheme } from "../storage/UserSettings";
 import Icon from "react-native-vector-icons/Ionicons";
+import { removeProfile, removeStats } from "../storage/User";
 
 function Settings() {
   // Theme
@@ -39,8 +40,10 @@ function Settings() {
         console.log(response.status);
         console.log(response.data);
 
-        // Remove user's token and theme settings from cache and local storage
+        // Clears some data from user storage
         removeUserToken();
+        removeProfile();
+        removeStats();
         //removeUserTheme();
 
         // Navigate to initial page like Login (forgetting current screens)

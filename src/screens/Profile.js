@@ -7,7 +7,8 @@ import OcticonsIcon from "react-native-vector-icons/Octicons";
 import { useFonts } from 'expo-font';
 
 import ProgressBar from '../components/ProgressBar'
-import { getProfile, getUserStats } from '../api/backend/User';
+import { getUserStats } from '../api/backend/User';
+import { getProfile, getStats } from "../storage/User";
 import { getUserToken } from "../storage/UserToken";
 import { getLevels } from "../api/backend/Gamification";
 import { ThemeContext, getColors } from '../assets/Theme';
@@ -27,29 +28,42 @@ function Profile(props) {
 
     const navigation = useNavigation();
 
+    // Handle functionality for user profile other than client himself here
+
     const handleEditProfile = () => {
       navigation.navigate('EditProfile');
     }
 
-    // Gets user profile
+    // Gets client user profile
     useEffect(() => {
       const getUserProfile = async () => {
-        const token = await getUserToken();
-        console.log(token);
-        getProfile(token.token)
-        .then(response => {
-          if (response.status == 200) {
-            setUserData(response.data);
-          }
-        })
-        .catch(error => {
+        try {
+          const profile = await getProfile();
+          if (profile && profile !== null) setUserData(profile);
+        }
+        catch(error) {
           console.log(error);
-        })
+        }
       }
       getUserProfile();
     }, []);
 
-    // Gets user stats
+    // Gets client user stats
+    useEffect(() => {
+      const getMeUserStats = async () => {
+        try {
+          const stats = await getStats();
+          if(stats && stats !== null) setUserStats(stats);
+        }
+        catch(error) {
+          console.log(error);
+        }
+      }
+      getMeUserStats();
+    }, [userData]);
+
+    /*
+    // Gets other user stats
     useEffect(() => {
       if (userData && userData.id) {
         const getMeUserStats = async () => {
@@ -64,7 +78,7 @@ function Profile(props) {
         }
         getMeUserStats();
       }
-    }, [userData]);
+    }, [userData]); */
 
     // Gets user level and level's data from user's current XP
     useEffect(() => {

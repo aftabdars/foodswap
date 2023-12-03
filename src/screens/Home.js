@@ -7,8 +7,7 @@ import MaterialSpinner from "../components/MaterialSpinner";
 import Categorybutton from "../components/Categorybutton";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { getProfile } from '../api/backend/User';
-import { getUserToken } from "../storage/UserToken.js";
+import { getProfile } from "../storage/User.js";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
 import FoodCarousel from "../components/FoodCarousel.js";
 import { ThemeContext, getColors } from '../assets/Theme';
@@ -35,15 +34,13 @@ function Home(props) {
   // Gets user profile
   useEffect(() => {
     const getUserProfile = async () => {
-      const token = await getUserToken();
-      console.log(token);
-      getProfile(token.token)
-      .then(response => {
-        if (response.status == 200) setUserData(response.data);
-      })
-      .catch(error => {
+      try {
+        const profile = await getProfile();
+        if (profile && profile !== null) setUserData(profile);
+      }
+      catch(error) {
         console.log(error);
-      })
+      }
     }
     getUserProfile();
   }, []);
@@ -53,7 +50,7 @@ function Home(props) {
     const getFoodItems = async () => {
       getFoods() // In future add params, status = 'up'
       .then(response => {
-        console.log(response.data);
+        //console.log(response.data);
         setFoodItems(response.data.results);
       })
       .catch(error => {
@@ -69,7 +66,7 @@ function Home(props) {
     const getMeFoodCategories = async () => {
       getFoodCategories()
       .then(response => {
-        console.log(response.data);
+        //console.log(response.data);
         setFoodCategories(response.data.results);
       })
       .catch(error => {

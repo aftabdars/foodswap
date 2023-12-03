@@ -15,9 +15,21 @@ export async function postSignup(body) {
 }
 
 // Gets client user profile
-export async function getProfile(token) {
+export async function getClientProfile(token, ifModifiedSince) {
     const url = `/accounts/profile/`;
-    return await makeGetRequest(url, token);
+    return await makeGetRequest(url, token, ifModifiedSince);
+}
+
+// Gets client user stats
+export async function getClientStats(token, ifModifiedSince) {
+    const url = `/accounts/profile-stats/`;
+    return await makeGetRequest(url, token, ifModifiedSince);
+}
+
+// Gets client user settings
+export async function getClientSettings(token, ifModifiedSince) {
+    const url = `/accounts/profile-settings/`;
+    return await makeGetRequest(url, token, ifModifiedSince);
 }
 
 // Gets all users matching params

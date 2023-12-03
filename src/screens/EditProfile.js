@@ -4,8 +4,9 @@ import { View, Text, TextInput, StyleSheet,TouchableOpacity,Image, ScrollView } 
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import * as ImagePicker from 'expo-image-picker';
 
+import { getProfile, setProfile } from '../storage/User';
 import { getUserToken } from '../storage/UserToken';
-import { getProfile, updateUser } from '../api/backend/User';
+import { updateUser } from '../api/backend/User';
 import { ThemeContext, getColors } from '../assets/Theme';
 import Editbutton from '../components/Editbutton';
 import { SerializeImage } from '../api/backend/utils/Serialize';
@@ -24,7 +25,7 @@ function EditProfile() {
     const [dob, setDob] = useState('');
     const [profilePicture, setProfilePicture] = useState('');
     const [showError, setShowError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('This is success message');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleSaveProfile = async () => {
         setShowError('');
@@ -42,8 +43,6 @@ function EditProfile() {
           data.append('profile_picture', SerializeImage(profilePicture, userData['username']));
         //data.append('dob', dob);
 
-        console.log(SerializeImage(profilePicture, userData['username']));
-
         const isFormData = data['_parts'].length > 0;
         if (isFormData) {
           updateUser(userData['id'], token.token, data)
@@ -51,7 +50,8 @@ function EditProfile() {
             console.log(response.status);
             console.log(response.data);
             setUserData(response.data);
-            setSuccessMessage('Successfully update profile');
+            setProfile(response.data); // Also update in cache
+            setSuccessMessage('Successfully updated profile');
             console.log(`UserID: ${userData['id']}'s profile updated`);
           })
           .catch(error => {
@@ -86,24 +86,24 @@ function EditProfile() {
     // Gets user profile
     useEffect(() => {
       const getUserProfile = async () => {
-        const token = await getUserToken();
-        getProfile(token.token)
-        .then(response => {
-          if (response.status == 200) {
-            const userData = response.data;
-            setUserData(response.data);
+        try {
+          const profile = await getProfile();
+          if (profile && profile !== null) {
+            setUserData(profile);
 
-            setFirstName(userData['first_name']);
-            setLastName(userData['last_name']);
-            setAbout(userData['about']);
-            setDob(userData['dob']);
-            setProfilePicture(userData['profile_picture']);
+            setFirstName(profile['first_name']);
+            setLastName(profile['last_name']);
+            setAbout(profile['about']);
+            setDob(profile['dob']);
+            setProfilePicture(profile['profile_picture']);
           }
-        })
-        .catch(error => {
-          const errorMessages = error.response.data;
-          setShowError(errorMessages[Object.keys(errorMessages)[0]][0]);
-        })
+        }
+        catch(error) {
+          console.log(error);
+          setShowError('Error getting profile');
+          //const errorMessages = error.response.data;
+          //setShowError(errorMessages[Object.keys(errorMessages)[0]][0]);
+        }
       }
       getUserProfile();
     }, []);
