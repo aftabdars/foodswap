@@ -18,6 +18,7 @@ import { ThemeContext, getColors } from '../assets/Theme';
 import FoodUploadForm from './FoodUploadForm';
 import Notifications from './Notifications';
 import Search from './Search';
+import TransactionsHistory from './TransactionsHistory';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -84,6 +85,7 @@ function HomeContainer() {
           <Stack.Screen name="FoodInfo" component={FoodInfo} options={{headerTintColor:'#fff',headerShown: false}}/>
           <Stack.Screen name="Notifications" component={Notifications} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="Search" component={Search} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{title:'Foodiez and XP', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
       </Stack.Navigator>
   )
 }

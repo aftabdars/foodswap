@@ -18,3 +18,21 @@ export async function getLevel(id) {
     const url = `/gamification/levels/${id}`;
     return await makeGetRequest(url, undefined);
 }
+
+// Gets client's all Foodiez Transfer Transactions matching params
+export async function getClientFoodiezTransferTransactions(token, params) {
+    const url = `/gamification/foodieztransactions/transfer/`;
+    return await makeGetRequest(url, token, params);
+}
+
+// Gets all Foodiez Transactions matching params
+export async function getFoodiezTransactions(token, params) {
+    const url = `/gamification/foodieztransactions/`;
+    return await makeGetRequest(url, token, params);
+}
+
+// Gets all XP Transactions matching params
+export async function getXPTransactions(token, params) {
+    const url = `/gamification/xptransactions/`;
+    return await makeGetRequest(url, token, params);
+}

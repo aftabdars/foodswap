@@ -21,6 +21,10 @@ const SideBar = (props)=> {
     const findUsersPressed = () => {
         navigation.navigate('Search', {userSearch: true})
     }
+    
+    const transactionHistoryPressed = () => {
+      navigation.navigate('TransactionsHistory')
+  }
 
     // Gets client user profile
     useEffect(() => {
@@ -94,9 +98,9 @@ const SideBar = (props)=> {
             icon="search"
           />
           <SidebarButton 
-            title="Button 2" 
-            onPress={() => console.log("Button 2")}
-            icon="settings"
+            title="Transactions History" 
+            onPress={transactionHistoryPressed}
+            icon="timeline"
           />
           <SidebarButton 
             title="Button 3" 
