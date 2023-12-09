@@ -9,9 +9,11 @@ export async function makeGetRequest(url, token = undefined, params = undefined,
 
     const headers = {
         'Content-Type': 'application/json',
-        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined
     };
-    
+
+    if (token) {
+        headers['Authorization'] = `${TOKEN_KEYWORD} ${token}`;
+    }
     if (ifModifiedSince) {
         headers['If-Modified-Since'] = ifModifiedSince.toUTCString();
     }
@@ -39,9 +41,12 @@ export async function makePostRequest(url, token = undefined, body = {}, content
 
     const headers = {
         'Content-Type': contentType,
-        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
         'X-CSRFToken': await getCSRFToken(), //"guUhQZzjOwyEQ3q7k5byTAIT8FqW3MFY",
     };
+
+    if (token) {
+        headers['Authorization'] = `${TOKEN_KEYWORD} ${token}`;
+    }
 
     try {
         const response = await axios.post(fullUrl, body, { headers });
@@ -58,9 +63,12 @@ export async function makePutRequest(url, token = undefined, body = {}, contentT
 
     const headers = {
         'Content-Type': contentType,
-        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
         'X-CSRFToken': await getCSRFToken(),
     };
+
+    if (token) {
+        headers['Authorization'] = `${TOKEN_KEYWORD} ${token}`;
+    }
 
     try {
         const response = await axios.put(fullUrl, body, { headers });
@@ -76,9 +84,12 @@ export async function makeDeleteRequest(url, token = undefined) {
     console.log(`Making API DELETE request to: ${fullUrl}`);
 
     const headers = {
-        'Authorization': token ? `${TOKEN_KEYWORD} ${token}` : undefined,
         'X-CSRFToken': await getCSRFToken(),
     };
+
+    if (token) {
+        headers['Authorization'] = `${TOKEN_KEYWORD} ${token}`;
+    }
 
     try {
         const response = await axios.delete(fullUrl, { headers });

@@ -19,6 +19,12 @@ export async function getLevel(id) {
     return await makeGetRequest(url, undefined);
 }
 
+// Posts client's Foodiez Transfer Transaction
+export async function postClientFoodiezTransferTransactions(token, body) {
+    const url = `/gamification/foodieztransactions/transfer/`;
+    return await makePostRequest(url, token, body);
+}
+
 // Gets client's all Foodiez Transfer Transactions matching params
 export async function getClientFoodiezTransferTransactions(token, params) {
     const url = `/gamification/foodieztransactions/transfer/`;

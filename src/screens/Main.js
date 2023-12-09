@@ -19,6 +19,7 @@ import FoodUploadForm from './FoodUploadForm';
 import Notifications from './Notifications';
 import Search from './Search';
 import TransactionsHistory from './TransactionsHistory';
+import TransferFoodiez from './TransferFoodiez';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -86,6 +87,7 @@ function HomeContainer() {
           <Stack.Screen name="Notifications" component={Notifications} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="Search" component={Search} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{title:'Foodiez and XP', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="TransferFoodiez" component={TransferFoodiez} options={{title:'Transfer Foodiez', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
       </Stack.Navigator>
   )
 }

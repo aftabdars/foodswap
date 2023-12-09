@@ -19,12 +19,16 @@ const SideBar = (props)=> {
     const navigation = useNavigation();
 
     const findUsersPressed = () => {
-        navigation.navigate('Search', {userSearch: true})
+        navigation.navigate('Search', {userSearch: true});
     }
     
     const transactionHistoryPressed = () => {
-      navigation.navigate('TransactionsHistory')
-  }
+      navigation.navigate('TransactionsHistory');
+    }
+
+    const transferFoodiezPressed = () => {
+      navigation.navigate('TransferFoodiez');
+    }
 
     // Gets client user profile
     useEffect(() => {
@@ -103,9 +107,9 @@ const SideBar = (props)=> {
             icon="timeline"
           />
           <SidebarButton 
-            title="Button 3" 
-            onPress={() => console.log("Button 3")} 
-            icon="notifications"
+            title="Send Foodiez" 
+            onPress={transferFoodiezPressed} 
+            icon="credit-card"
           />
       </View>
     </View>
