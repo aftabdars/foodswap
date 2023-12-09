@@ -17,7 +17,7 @@ export async function postSignup(body) {
 // Gets client user profile
 export async function getClientProfile(token, ifModifiedSince) {
     const url = `/accounts/profile/`;
-    return await makeGetRequest(url, token, ifModifiedSince);
+    return await makeGetRequest(url, token, undefined, ifModifiedSince);
 }
 
 // Gets client user stats

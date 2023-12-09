@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND_API_ENDPOINT, TOKEN_KEYWORD } from "../config";
+import { BACKEND_API_ENDPOINT, NO_IF_MODIFIED_SINCE, TOKEN_KEYWORD } from "../config";
 //import { removeUserToken } from "../../storage/Token";
 
 
@@ -9,13 +9,11 @@ export async function makeGetRequest(url, token = undefined, params = undefined,
 
     const headers = {
         'Content-Type': 'application/json',
+        'If-Modified-Since': ifModifiedSince? ifModifiedSince.toUTCString() : NO_IF_MODIFIED_SINCE,
     };
 
     if (token) {
         headers['Authorization'] = `${TOKEN_KEYWORD} ${token}`;
-    }
-    if (ifModifiedSince) {
-        headers['If-Modified-Since'] = ifModifiedSince.toUTCString();
     }
 
     try {

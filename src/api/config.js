@@ -9,5 +9,7 @@ export const BACKEND_WS_ENDPOINT = `${ASFAND_WS_HOST}/ws`;
 
 export const TOKEN_KEYWORD = 'Token';
 
+export const NO_IF_MODIFIED_SINCE = 'NO_IF_MODIFIED_SINCE';
+
 // Will remove in production
 export const ADMIN_TOKEN = '4c2e3c730400d60d9bff74ab503115d39aec905a00dc70a379359741827412c4';

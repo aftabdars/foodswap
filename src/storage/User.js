@@ -13,20 +13,22 @@ export const getProfile = async () => {
         const token = await getUserToken();
         getClientProfile(token.token, new Date(profile.timestamp))
         .then(response => {
-            if (response.status === 304) { // Status 304, Not Modified
-                // Same data will be returned in last return statement
-                console.log('Data is not modified at backend');
-            }
-            else if (response.status === 200) { // Data was modified and body is returned
+            if (response.status === 200) { // Data was modified and body is returned
                 // Update the stored data with returned modified data and return that data
                 setProfile(response.data);
-                profile.profile = response.data;
+                return response.data;
             }
         })
         .catch(error => {
-            console.log(error.response.status);
-            console.log(error);
-            throw new Error('Error getting client profile from server');
+            if (error.response.status === 304) { // Status 304, Not Modified
+                // Same data will be returned in last return statement
+                console.log('Data is not modified at backend');
+            }
+            else {
+                console.log(error.response.status);
+                console.log(error);
+                throw new Error('Error getting client profile from server');
+            }
         })
     }
     return JSON.parse(profile.profile);
@@ -55,19 +57,21 @@ export const getStats = async () => {
         const token = await getUserToken();
         getClientStats(token.token, new Date(stats.timestamp))
         .then(response => {
-            if (response.status === 304) { // Status 304, Not Modified
-                console.log('Data is not modified at backend');
-            }
-            else if (response.status === 200) { // Data was modified and body is returned
+            if (response.status === 200) { // Data was modified and body is returned
                 // Update the stored data with returned modified data and return that data
                 setStats(response.data);
-                stats.stats = response.data;
+                return response.data;
             }
         })
         .catch(error => {
-            console.log(error.response.status);
-            console.log(error);
-            throw new Error('Error getting client stats from server');
+            if (response.status === 304) { // Status 304, Not Modified
+                console.log('Data is not modified at backend');
+            }
+            else {
+                console.log(error.response.status);
+                console.log(error);
+                throw new Error('Error getting client stats from server');
+            }
         })
     }
     return JSON.parse(stats.stats);
