@@ -23,7 +23,7 @@ export async function getClientProfile(token, ifModifiedSince) {
 // Gets client user stats
 export async function getClientStats(token, ifModifiedSince) {
     const url = `/accounts/profile-stats/`;
-    return await makeGetRequest(url, token, ifModifiedSince);
+    return await makeGetRequest(url, token, undefined, ifModifiedSince);
 }
 
 // Gets client user settings
@@ -73,4 +73,10 @@ export async function getUserSettings(id) {
 export async function updateUserSettings(id, token, body) {
     const url = `/accounts/settings/${id}/`;
     return await makePutRequest(url, token, body);
+}
+
+// Gets client user's notifications
+export async function getClientNotifications(token, params) {
+    const url = `/accounts/notifications/`;
+    return await makeGetRequest(url, token, params);
 }

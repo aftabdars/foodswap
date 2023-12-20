@@ -7,7 +7,7 @@ import SearchedFoodPreview from '../components/SearchedFoodPreview';
 import { getFoods } from '../api/backend/Food';
 import { getUsers } from '../api/backend/User';
 import SearchedUserPreview from '../components/SearchedUserPreview';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const Search = () => {
   // Theme
@@ -28,11 +28,13 @@ const Search = () => {
   const route = useRoute();
   const userSearch = route.params?.userSearch;
 
+  const navigation = useNavigation();
+
   const renderItem = ({item}) => {
     if (userSearch) {
-      return <SearchedUserPreview userData={item} colors={colors} />
+      return <SearchedUserPreview userData={item} colors={colors} navigation={navigation}/>
     }
-    return <SearchedFoodPreview foodData={item} colors={colors} />
+    return <SearchedFoodPreview foodData={item} colors={colors} navigation={navigation}/>
   }
 
   // Perform the search after a delay

@@ -25,3 +25,9 @@ export async function postMessage(token, body) {
     const contentType = 'multipart/form-data';
     return await makePostRequest(url, token, body, contentType);
 }
+
+// Get food item's feedbacks
+export async function getFoodFeedbacks(token, params) {
+    const url = `/social/feedbacks/`;
+    return await makeGetRequest(url, token, params);
+}

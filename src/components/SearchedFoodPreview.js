@@ -10,11 +10,13 @@ function SearchedFoodPreview(props) {
     const styles = createStyles(colors);
     // Food Item's Data
     const item = props.foodData;
-  
+
+    const navigation = props.navigation;
+    
     const DESCRIPTION_MAX_LENGTH = 100;
 
     const handlePress = () => {
-      // Navigation will be handled here
+      navigation.navigate('FoodInfo', {foodItem: item});
     }
 
     return (

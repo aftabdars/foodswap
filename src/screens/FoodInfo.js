@@ -1,347 +1,351 @@
-import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Image, Text, ScrollView, useWindowDimensions } from "react-native";
-import { TabView, SceneMap } from 'react-native-tab-view';
-import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
-import EntypoIcon from "react-native-vector-icons/Entypo";
-import OcticonsIcon from "react-native-vector-icons/Octicons";
-import { useFonts } from 'expo-font';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView, } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-import ProgressBar from '../components/ProgressBar';
-import { getProfile } from "../storage/User";
-import { getUserStats } from '../api/backend/User';
-import { getUserToken } from "../storage/UserToken";
-import { getLevels } from "../api/backend/Gamification";
-import { ThemeContext, getColors } from '../assets/Theme';
-import { useNavigation } from "@react-navigation/native";
-import foodData from '../assets/dummy_food_feedback'
+import { getColors, ThemeContext } from '../assets/Theme';
+import { formatDateTimeString, formatTimeDifferencePast } from '../utils/Format';
+import { stringCapitalize } from '../utils/Utils';
+import { getFoodFeedbacks } from '../api/backend/Social';
+import { getUserToken } from '../storage/UserToken';
+import { getProfile } from '../storage/User';
 
 
-function FoodInfo(props) {
-    // Theme
-    const theme = useContext(ThemeContext).theme;
-    const colors = getColors(theme);
-    const styles = createStyles(colors);
+const FoodInfo = () => {
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+  const styles = createStyles(colors);
 
-    //fetchuser
-    const [userData, setUserData] = useState({username: 'Anonymous'});
-    const [userStats, setUserStats] = useState();
-    const [levelData, setLevelData] = useState();
+  const navigation = useNavigation();
 
-    const navigation = useNavigation();
+  const route = useRoute();
+  const foodItem = route.params?.foodItem;
 
-    const handleEditProfile = () => {
-      navigation.navigate('EditProfile');
+  const [userID, setUserID] = useState();
+  const [feedback, setFeedback] = useState('');
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  // Get user's ID
+  useEffect(() => {
+    const getMeUserID = async () => {
+      setUserID((await getProfile()).id);
     }
+    getMeUserID();
+  }, []);
 
-    // Gets user profile
-    useEffect(() => {
-      const getUserProfile = async () => {
-        try {
-          const profile = await getProfile();
-          if (profile && profile !== null) setUserData(profile);
-        }
-        catch(error) {
-          console.log(error);
-        }
-      }
-      getUserProfile();
-    }, []);
+  // Get food item's feedbacks
+  useEffect(() => {
+    const getMeFoodFeedbacks = async () => {
+      const token = await getUserToken();
+      getFoodFeedbacks(token.token, { 'food': foodItem.id })
+        .then(response => {
+          console.log(response.data);
+          setFeedbacks(response.data.results);
+        })
+        .catch(error => {
+          console.log(error.response.data);
+        })
+    }
+    getMeFoodFeedbacks();
+  }, []);
 
-    // Gets client user stats
-    useEffect(() => {
-      const getMeUserStats = async () => {
-        try {
-          const stats = await getStats();
-          if(stats && stats !== null) setUserStats(stats);
-        }
-        catch(error) {
-          console.log(error);
-        }
-      }
-      getMeUserStats();
-    }, [userData]);
+  const handleRequest = () => {
+    console.log('Sending swap request...');
+    navigation.navigate('FoodSwapSelection', { foodItem: foodItem });
+  };
 
-    /*
-    // Gets other user stats
-    useEffect(() => {
-      if (userData && userData.id) {
-        const getMeUserStats = async () => {
-          getUserStats(userData.id)
-          .then(response => {
-            console.log(response.data);
-            if (response.status == 200) setUserStats(response.data);
-          })
-          .catch(error => {
-            console.log(error);
-          })
-        }
-        getMeUserStats();
-      }
-    }, [userData]); */
+  const handleOwnerClick = () => {
+    console.log(`Clicked on owner: ${foodItem.owner_username}`);
+  };
 
-    // Gets user level and level's data from user's current XP
-    useEffect(() => {
-      if (userStats) {
-        const getLevelData = async () => {
-          const params = { // Retrieves level row having xp_start >= user_xp <= xp_end
-            'xp_start__lte': userStats? userStats.xp: 0,
-            'xp_end__gte': userStats? userStats.xp: 199
-          }
-          getLevels(params)
-          .then(response => {
-            console.log(response.data);
-            if (response.status == 200) setLevelData(response.data.results[0]);
-          })
-          .catch(error => {
-            console.log(error);
-          })
-        }
-        getLevelData();
-      }
-    }, [userStats]);
+  const handleSendFeedback = () => {
+    // replace actual timestamp logic here 
+    const timestamp = new Date();
+    // Create a new feedback object with timestamp
+    const newFeedback = {
+      "message": feedback,
+      "timestamp": timestamp,
+      "food": 1,
+      "user": 1,
+      "user_username": "admin"
+    };
 
-    //TABBED VIEW/////////////////////////////////
-    const layout = useWindowDimensions();
+    // Adding newlyyy feedbacks to the userFeedback like an arry
+    setFeedbacks((prevFeedback) => [newFeedback, ...prevFeedback]);
 
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-      { key: 'first', title: 'Active Foods' },
-      { key: 'second', title: 'Swapped Foods' },
-      { key: 'third', title: 'Shared Foods' },
-    ]);
-    /////////////////////////////////////////////
+    // Cleared the feedback inputs here 
+    setFeedback('');
+  };
 
+  const FeedbackItem = ({ feedbackData }) => (
+    <View style={styles.userFeedback}>
+      <Text style={styles.feedbackUsername}>{feedbackData.user_username}</Text>
+      <Text style={styles.feedback}>{feedbackData.message}</Text>
+      <Text style={styles.feedbackTimestamp}>
+        {formatTimeDifferencePast(feedbackData.timestamp)} ago
+      </Text>
+    </View>
+  );
 
-  const [loaded] = useFonts({
-    'roboto-700': require('../assets/fonts/roboto-700.ttf'),
-    'roboto-regular': require('../assets/fonts/roboto-regular.ttf')
-  });
-
-  if (!loaded) {
-    return null;
+  // Decides what to render if food item is being shared/swapped or has already been shared/swapped etc
+  const RequestButtonOrAlternativeText = () => {
+    if (foodItem.owner == userID) {
+      return
+    }
+    else if (foodItem.status == 'up') {
+      return (
+        <TouchableOpacity style={styles.requestButton} onPress={handleRequest}>
+          <Text style={styles.requestButtonText}>Send Request</Text>
+        </TouchableOpacity>
+      )
+    }
+    else if (foodItem.is_being_shared) {
+      return (
+        <Text style={styles.requestButtonAlternativeText}>
+          This food is currently being shared
+        </Text>
+      )
+    }
+    else if (foodItem.is_being_swapped) {
+      return (
+        <Text style={styles.requestButtonAlternativeText}>
+          This food is currently being swapped
+        </Text>
+      )
+    }
+    return (
+      <Text style={styles.requestButtonAlternativeText}>
+        This food has been {stringCapitalize(foodItem.status)}
+      </Text>
+    )
   }
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.profilecontainer}>
-        <View style={styles.imageStack}>
-          <Image
-            source={{uri: foodData.food.image} || require("../assets/images/image_(1).png")}
-            resizeMode="contain"
-            style={styles.image}
-          ></Image>
-        </View>
-        <Text style={styles.profileName}>{foodData.food.name}</Text>
-        <Text style={[styles.profileName, {fontSize: 14, textDecorationLine:'underline'}]}>By {foodData.food.owner}</Text>
+      <Image
+        source={foodItem.image ? { uri: foodItem.image } : require("../assets/images/image_2023-10-27_183534741.png")}
+        style={styles.foodImage}
+      />
+      <View style={styles.detailsContainer}>
+        <Text style={styles.title}>{foodItem.name}</Text>
+        <Text style={styles.description}>{foodItem.description}</Text>
+        <Text style={styles.category}>{foodItem.category_name}</Text>
+        <Text style={styles.uploadDate}>Uploaded:{' '}
+          {formatDateTimeString(foodItem.date_added, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          })}
+        </Text>
+        <Text style={styles.expireDate}>Expires:{' '}
+          {formatDateTimeString(foodItem.expire_time, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          })}
+        </Text>
+        <Text style={styles.owner} onPress={handleOwnerClick}>
+          Owner: {foodItem.owner_username}
+        </Text>
+        <Text style={styles.upFor}>Up for: {foodItem.up_for}</Text>
+        <Text style={styles.status}>Status: {foodItem.status == 'up' ? 'Available' : stringCapitalize(foodItem.status)}</Text>
 
-        <View style={{flex:1, alignItems:'center', justifyContent:'space-between', width: '100%', flexDirection: 'row'}}>
-          <View style={{width: 150, marginRight:15}}>
-            <Text style={{color:'#fff', fontFamily: "roboto-700", fontSize: 10}}>Upload: {foodData.food.date_added.substring(0,10)}</Text>
-            <Text style={{color:'#fff', fontFamily: "roboto-700", fontSize: 10}}>Expiry: {foodData.food.date_added.substring(0,10)}</Text>
-          </View>
-          <MaterialButtonSuccess onPress={()=>{console.log('gotoprofile')}}>{foodData.food.up_for}</MaterialButtonSuccess>
-          <View style={{width: 150, flex:1, alignItems:'flex-end'}}>
-            <Text style={{color:'#fff', fontFamily: "roboto-700", fontSize: 10}}>Status: {foodData.food.is_being_shared? 'Being Shared' : foodData.food.is_being_swapped? 'Being Swapped' : 'Free'}</Text>
-            <Text style={{color:'#fff', fontFamily: "roboto-700", fontSize: 10}}>{foodData.food.status} for {foodData.food.up_for}</Text>
-          </View>
-        </View>
-      </View>
-      
-      <View style={styles.detailscontainer}>
-        <Text style={styles.headings}>About</Text>
-        <View style={styles.detailsgroup}>
-        <Text style={styles.detailsfont}>{userData.about || 'Hidden'}</Text>
-        </View>
-      </View>
+        <RequestButtonOrAlternativeText />
 
-      <View style={styles.detailscontainer}>
-        <Text style={styles.headings}>Details</Text>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="phone" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userData.phone || 'Hidden'}</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="location-pin" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userData.address || 'Hidden'}</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="email" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userData.email || 'Hidden'}</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-        <EntypoIcon name="calendar" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>Member Since {userData.date_joined? userData.date_joined.substring(0,4): 'Hidden'}</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-        <EntypoIcon name="add-user" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>Following {userStats? userStats.following_count : 0}</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-        <EntypoIcon name="remove-user" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>Followers {userStats? userStats.follower_count : 0}</Text>
-        </View>
       </View>
 
-      <View style={styles.detailscontainer}>
-        <Text style={styles.headings}>Stats</Text>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{color: colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>{levelData? String(levelData.level).padStart(3, '0') : '000'}</Text>
-          <ProgressBar xp={[userStats? userStats.xp : 0, levelData? levelData.xp_end : 1]} />
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="arrow-bold-up" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userStats? userStats.food_count : 0} food uploaded</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="swap" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userStats? userStats.foodswap_count : 0} food items swapped</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="level-down" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userStats? userStats.foodshare_count : 0} food items shared</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="level-up" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userStats? userStats.food_taken_count : 0} food items taken</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="bowl" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userStats? userStats.total_foodiez : 0} foodiez earned</Text>
-        </View>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="trophy" style={styles.icon}></EntypoIcon>
-          <Text style={styles.detailsfont}>{userStats? userStats.achievements_completed : 0} Achievements completed</Text>
-        </View>
-      </View>
+      <View style={styles.feedbackContainer}>
+        <Text style={styles.feedbackHeader}>Feedbacks:</Text>
+        {feedbacks.length > 0 ? (
+          feedbacks.map((feedbackItem, index) => (
+            <FeedbackItem
+              key={index}
+              feedbackData={feedbackItem}
+            />
+          ))
+        ) : (
+          <Text style={styles.noFeedback}>No feedbacks</Text>
+        )}
 
-      <TabView style={styles.tabbedcontainer}
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-    />
-      {/* Acheivments */}
-      <View style={styles.detailscontainer}>
-        <Text style={styles.headings}>Achievements</Text>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{color: colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center"}}>001</Text>
-          <ProgressBar xp={[30,60]} />
-        </View>
+        <TextInput
+          style={styles.feedbackInput}
+          placeholder="Type your feedback here"
+          value={feedback}
+          onChangeText={(text) => setFeedback(text)}
+        />
+        <TouchableOpacity
+          style={styles.sendFeedbackButton}
+          onPress={handleSendFeedback}
+        >
+          <Text style={styles.sendFeedbackButtonText}>Send Feedback</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
-}
-
-//TABBED VIEWS////////////////////////////////////////////////
-
-const FirstRoute = (colors) => (
-  <View style={{ flex: 1, backgroundColor: colors.background }} />
-);
-
-const SecondRoute = (colors) => (
-  <View style={{ flex: 1, backgroundColor: colors.background }} />
-);
-
-const ThirdRoute = (colors) => (
-  <View style={{ flex: 1, backgroundColor: colors.background }} />
-);
-
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second: SecondRoute,
-  third: ThirdRoute
-});
-//////////////////////////////////////////////////////////////
-
+};
 
 function createStyles(colors) {
   return StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: colors.background,
-        //opacity: 0.77
-      },
-      profilecontainer: {
-        minHeight: 330,
-        paddingTop: 50,
-        minWidth: 100,
-        backgroundColor: colors.highlight1,
-        flex : 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 0
-      },
-      image: {
-        width: 155,
-        height: 155,
-        position: "relative",
-        borderRadius: 100
-      },
-      editProfilePicture: {
-        height: 44,
-        width: 44,
-        position: "relative",
-        bottom: 155,
-        left: 130
-      },
-      imageStack: {
-        width: 181,
-        height: 155,
-        left: 13
-      },
-      profileName: {
-        fontFamily: "roboto-700",
-        color: '#fff',
-        fontSize: 22,
-        textAlign: "center",
-      },
-      ignorethis: {
-        height: 36,
-        width: 100,
-        marginTop: 352,
-        marginLeft: 138
-      },
-      headings: {
-        fontFamily: "roboto-700",
-        color: colors.foreground,
-        fontSize: 22,
-        marginLeft: 0
-      },
-      detailscontainer: {
-        width: 265,
-        height: 'auto',
-        justifyContent: "space-between",
-        marginTop: 33,
-        marginLeft: 55
-      },
-      detailsgroup: {
-        minWidth: 200,
-        height: 40,
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        marginTop: 10,
-      },
-      icon: {
-        color: colors.highlight1,
-        fontSize: 40
-      },
-      detailsfont: {
-        fontFamily: "roboto-700",
-        color: colors.foreground,
-        fontSize: 15,
-        left: 25
-      },
-      tabbedcontainer: {
-        width: '100%',
-        height: 360,
-        justifyContent: "space-between",
-        marginTop: 33,
-        marginLeft: 0,
-      }
-    }
-  )
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    foodImage: {
+      height: 330,
+      resizeMode: 'cover',
+      borderRadius: 20,
+      marginBottom: -40,
+      marginTop: 23,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
+    },
+    detailsContainer: {
+      flex: 1,
+      borderRadius: 20,
+      backgroundColor: colors.background2,
+      overflow: 'hidden',
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      margin: 16,
+      padding: 20,
+    },
+    title: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      marginBottom: 12,
+      color: colors.foreground
+    },
+    category: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.highlight2,
+      marginBottom: 6,
+    },
+    description: {
+      fontSize: 18,
+      marginBottom: 12,
+      color: colors.foreground
+    },
+    uploadDate: {
+      fontSize: 16,
+      color: colors.foreground,
+      marginBottom: 6,
+    },
+    expireDate: {
+      fontSize: 16,
+      color: colors.error,
+      marginBottom: 6,
+    },
+    owner: {
+      fontSize: 18,
+      color: colors.foreground,
+      marginBottom: 6,
+      textDecorationLine: 'underline',
+    },
+    upFor: {
+      fontSize: 18,
+      color: colors.foreground,
+      marginBottom: 6,
+    },
+    status: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.foreground,
+      marginTop: 10,
+    },
+    requestButton: {
+      backgroundColor: '#3498db',
+      padding: 14,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginTop: 15,
+    },
+    requestButtonText: {
+      color: '#ecf0f1',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    requestButtonAlternativeText: {
+      fontSize: 16,
+      color: colors.error,
+      marginVertical: 6,
+      alignSelf: 'center',
+    },
+    feedbackContainer: {
+      marginTop: 10,
+      padding: 20,
+      backgroundColor: colors.background2,
+      borderRadius: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+    },
+    feedbackHeader: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: colors.foreground,
+    },
+    userFeedback: {
+      padding: 10,
+      borderWidth: 1,
+      color: colors.foreground,
+      borderColor: colors.foreground,
+      borderRadius: 8,
+      marginBottom: 10,
+    },
+    feedbackUsername: {
+      fontSize: 16,
+      color: colors.foreground,
+      marginBottom: 5,
+      color: colors.highlight2
+    },
+    feedback: {
+      fontSize: 14,
+      color: colors.foreground,
+      marginBottom: 10,
+    },
+    feedbackTimestamp: {
+      fontSize: 12,
+      color: colors.foreground,
+    },
+    noFeedback: {
+      fontSize: 16,
+      color: colors.foreground,
+      marginBottom: 10,
+    },
+    feedbackInput: {
+      height: 40,
+      backgroundColor: colors.background2,
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 8,
+      marginBottom: 10,
+      padding: 10,
+    },
+    sendFeedbackButton: {
+      backgroundColor: '#3498db',
+      padding: 14,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    sendFeedbackButtonText: {
+      color: '#ecf0f1',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+  });
 }
+
 export default FoodInfo;

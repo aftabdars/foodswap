@@ -20,6 +20,8 @@ import Notifications from './Notifications';
 import Search from './Search';
 import TransactionsHistory from './TransactionsHistory';
 import TransferFoodiez from './TransferFoodiez';
+import LocationSelection from './LocationSelection'
+import FoodSwapSelection from './FoodSwapSelection';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -79,11 +81,13 @@ function HomeContainer() {
   // Theme
   const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
-
   return (
       <Stack.Navigator initialRouteName={"Home"}>
           <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
           <Stack.Screen name="FoodInfo" component={FoodInfo} options={{headerTintColor:'#fff',headerShown: false}}/>
+          <Stack.Screen name="FoodSwapSelection" component={FoodSwapSelection} options={{title: 'Food Selection', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="LocationSelection" component={LocationSelection} options={{title:'Location Selection', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
+
           <Stack.Screen name="Notifications" component={Notifications} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="Search" component={Search} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{title:'Foodiez and XP', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>

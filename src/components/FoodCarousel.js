@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FoodPreview from "../components/FoodPreview.js";
+import { useNavigation } from "@react-navigation/native";
 
 function FoodCarousel(props) { 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -9,10 +10,11 @@ function FoodCarousel(props) {
   // References and others
   const carouselRef = useRef(null);
   const dummyFoodItems = [{"id": 0, "name": "food", "descripttion": "Healthy food", "status": "up"}];
+  const navigation = useNavigation();
 
   // Render food items in carousel
-  const renderItem = ({ item, index }) => (
-    <FoodPreview foodData={item}></FoodPreview>
+  const renderItem = ({ item, index}) => (
+    <FoodPreview foodData={item} navigation={navigation}></FoodPreview>
   );
 
   return (

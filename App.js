@@ -30,7 +30,6 @@ export default function App() {
         console.log(userThemeSettings)
         // If user has theme settings, then set the theme to that
         if (userThemeSettings && userThemeSettings !== null) {
-          console.log('hi?')
           userThemeSettings == 'auto'? setTheme(systemTheme) : setTheme(userThemeSettings);
         } else {
           // Also save in cache and storage
@@ -61,7 +60,7 @@ export default function App() {
       }
     >
       <NavigationContainer>
-          <Stack.Navigator initialRouteName={"Login"}>
+        <Stack.Navigator initialRouteName={"Login"}>
           <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
           <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Account Verification', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
           <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>

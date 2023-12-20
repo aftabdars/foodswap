@@ -67,3 +67,9 @@ export async function updateFoodCategory(id, token, body) {
     const contentType = 'multipart/form-data';
     return await makePutRequest(url, token, body, contentType);
 }
+
+// Posts foodswap request
+export async function postFoodSwapRequest(token, body) {
+    const url = `/food/foodswap-requests/`;
+    return await makePostRequest(url, token, body);
+}

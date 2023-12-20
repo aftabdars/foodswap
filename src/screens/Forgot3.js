@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import { ThemeContext, getColors } from '../assets/Theme'

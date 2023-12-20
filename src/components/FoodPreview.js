@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { formatTimeDifferenceFuture } from "../utils/Format";
 import { stringCapitalize } from "../utils/Utils";
+import { useNavigation } from "@react-navigation/native";
 
 function FoodPreview(props) {
     // Theme
@@ -13,12 +14,18 @@ function FoodPreview(props) {
     const foodData = props.foodData;
     const formatedExpiredTime = formatTimeDifferenceFuture(foodData.expire_time);
 
+    const navigation = props.navigation;
+
     const TITLE_MAX_LENGTH = 55;
   // Food preview click functionaly will be implemented here
   // On click it will take the user to that food's screen showing all details
 
+  const handlePress = () => {
+    navigation.navigate('FoodInfo', {foodItem: foodData});
+  }
+
   return (
-    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={handlePress}>
       <Image
         source={{uri: foodData.image}}
         resizeMode="cover"

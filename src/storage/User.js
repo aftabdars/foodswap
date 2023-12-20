@@ -64,7 +64,7 @@ export const getStats = async () => {
             }
         })
         .catch(error => {
-            if (response.status === 304) { // Status 304, Not Modified
+            if (error.response.status === 304) { // Status 304, Not Modified
                 console.log('Data is not modified at backend');
             }
             else {
