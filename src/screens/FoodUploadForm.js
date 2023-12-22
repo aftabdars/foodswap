@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput,ScrollView,KeyboardAvoidingView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { CommonActions, useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getFoodCategories, postFood } from '../api/backend/Food';
 import { getUserToken } from '../storage/UserToken';
 import { SerializeImage } from '../api/backend/utils/Serialize';
@@ -113,7 +113,8 @@ function FoodUploadForm() {
     }
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView behavior="height" style={styles.container}>
+              <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.titleInput}
@@ -180,8 +181,9 @@ function FoodUploadForm() {
             <MaterialButtonSuccess style={styles.button} onPress={handleConfirm}>
                 Confirm
             </MaterialButtonSuccess>
-        </View>
     </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -191,9 +193,17 @@ function createStyles(colors) {
             container: {
                 flex: 1,
                 alignItems: 'center',
-                justifyContent: 'top',
-                backgroundColor: colors.background
+                justifyContent:'center',
+                backgroundColor: colors.background,
+                paddingVertical: 30,
+                
             },
+            scrollContainer: {
+                flexGrow: 1,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingBottom: 20,
+              },
             buttonContainer: {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -208,52 +218,52 @@ function createStyles(colors) {
             },
             inputContainer: {
                 width: '80%',
-                marginTop: 30,
             },
             titleInput: {
                 height: 43,
-                width: 300,
+                width: '100%',
                 backgroundColor: colors.background2,
                 color: colors.foreground,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 18,
-                marginBottom: 50,
+                marginBottom: 20,
             },
             descriptionInput: {
                 height: 150,
-                width: 300,
+                width: '100%',
                 backgroundColor: colors.background2,
                 color: colors.foreground,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 16,
-                marginBottom: 50,
+                marginBottom: 20,
                 //multiline: true,
             },
             searchInput: {
                 height: 43,
-                width: 300,
+                width: '100%',
                 backgroundColor: colors.background2,
                 color: colors.foreground,
                 borderRadius: 9,
                 paddingHorizontal: 10,
                 fontSize: 18,
-                marginBottom: 5,
+                marginBottom: 20,
             },
             categoryPicker: {
-                width: 300,
+                width: '100%',
                 backgroundColor: colors.background2,
                 color: colors.foreground,
-                marginBottom: 50,
+                marginBottom: 20,
             },
             foodForText: {
                 fontSize: 18,
                 fontWeight: 'bold',
-                color: colors.foreground
+                color: colors.foreground,
+                marginBottom: 10,
             },
             foodForPicker: {
-                width: 300,
+                width: '100%',
                 backgroundColor: colors.background2,
                 marginBottom: 30,
                 color: colors.foreground
