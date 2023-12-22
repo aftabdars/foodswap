@@ -6,6 +6,7 @@ import { getFoods } from '../api/backend/Food';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { getProfile } from "../storage/User";
 import { Icon } from 'react-native-elements';
+import { getUserToken } from '../storage/UserToken';
 
 const FoodSwapSelection = () => {
     // Theme
@@ -62,7 +63,8 @@ const FoodSwapSelection = () => {
 
     const getUserFoodItemsForSwap = async () => {
         try {
-            const response = await getFoods({
+            const token = await getUserToken();
+            const response = await getFoods(token.token, {
                 'up_for': 'swap',
                 'status': 'up',
                 'owner': (await getProfile()).id,

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, Dimensions, StyleSheet, Switch, TextInput, Text, View } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import { ThemeContext, getColors } from '../assets/Theme';
 import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
-import { postFoodSwapRequest } from '../api/backend/Food';
+import { postFoodSwapRequest, updateFoodSwapRequest } from '../api/backend/Food';
 import { getUserToken } from '../storage/UserToken';
 
 function LocationSelection() {
@@ -19,10 +19,14 @@ function LocationSelection() {
     const [showError, setShowError] = useState();
 
     const mapRef = useRef(null);
+    const navigation = useNavigation();
 
     const route = useRoute();
     const foodA = route.params?.foodA;
     const foodB = route.params?.foodB;
+
+    const rePropose = route.params?.rePropose;
+    const requestID = route.params?.requestID;
 
     // Location permissions and map's initial location set to user's current location if permissions provided
     useEffect(() => {
@@ -86,28 +90,45 @@ function LocationSelection() {
     };
 
     const handleSend = async () => {
-        console.log('Send');
-
         // Make the foodswap request
         const token = await getUserToken();
         // Round latitude and longitude to 6 decimal places
         const roundedLatitude = location.latitude.toFixed(6);
         const roundedLongitude = location.longitude.toFixed(6);
 
-        body = {
-            'food_a': foodA.id,
-            'food_b': foodB.id,
-            'proposed_location_latitude': parseFloat(roundedLatitude),
-            'proposed_location_longitude': parseFloat(roundedLongitude), 
+        if (rePropose) { // If it is the reporposal of the location (currently for FoodSwap only)
+            body = {
+                'proposed_location_latitude': parseFloat(roundedLatitude),
+                'proposed_location_longitude': parseFloat(roundedLongitude),
+                'is_location_reproposed': true
+            }
+            updateFoodSwapRequest(requestID, token.token, body)
+            .then(response => {
+                console.log(response.data);
+                navigation.navigate('Home');
+            })
+            .catch(error => {
+                console.log(error.response.data);
+                setShowError('Error sending request');
+            })
         }
-        postFoodSwapRequest(token.token, body)
-        .then(response => {
-            console.log(response.data);
-        })
-        .catch(error => {
-            console.log(error.response.data);
-            setShowError('Error making swap request');
-        })
+        else { // else it is the initial request
+            body = {
+                'food_a': foodA.id,
+                'food_b': foodB.id,
+                'proposed_location_latitude': parseFloat(roundedLatitude),
+                'proposed_location_longitude': parseFloat(roundedLongitude), 
+            }
+            postFoodSwapRequest(token.token, body)
+            .then(response => {
+                console.log(response.data);
+                navigation.navigate('Home');
+            })
+            .catch(error => {
+                console.log(error.response.data);
+                setShowError('Error making swap request');
+            })
+        }
     }
 
     return (

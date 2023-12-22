@@ -15,6 +15,7 @@ import MaterialNotificationIcon from "../components/MaterialNotificationIcon.js"
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import SideBar from "../components/SideBar";
+import { getUserToken } from "../storage/UserToken.js";
 
 
 function Home(props) {
@@ -48,7 +49,8 @@ function Home(props) {
   // Get food items
   useEffect(() => {
     const getFoodItems = async () => {
-      getFoods() // In future add params, status = 'up'
+      const token = await getUserToken();
+      getFoods(token.token) // In future add params, status = 'up', owner != profile.id, and location range
       .then(response => {
         //console.log(response.data);
         setFoodItems(response.data.results);

@@ -8,6 +8,7 @@ import { stringCapitalize } from '../utils/Utils';
 import { getFoodFeedbacks } from '../api/backend/Social';
 import { getUserToken } from '../storage/UserToken';
 import { getProfile } from '../storage/User';
+import { getFood } from '../api/backend/Food';
 
 
 const FoodInfo = () => {
@@ -18,11 +19,11 @@ const FoodInfo = () => {
   const navigation = useNavigation();
 
   const route = useRoute();
-  const foodItem = route.params?.foodItem;
 
   const [userID, setUserID] = useState();
   const [feedback, setFeedback] = useState('');
   const [feedbacks, setFeedbacks] = useState([]);
+  const [foodItem, setFoodItem] = useState(route.params?.foodItem);
 
   // Get user's ID
   useEffect(() => {
@@ -32,21 +33,42 @@ const FoodInfo = () => {
     getMeUserID();
   }, []);
 
+  // Get foodItem either from route or API call if foodID is passed
+  useEffect(() => {
+    foodID = route.params?.foodID;
+    if (foodID) {
+      const getMeFoodItem = async () => {
+        const token = await getUserToken();
+        getFood(foodID, token.token)
+          .then(response => {
+            console.log(response.data);
+            setFoodItem(response.data);
+          })
+          .catch(error => {
+            console.log(error.response.data);
+          })
+      }
+      getMeFoodItem();
+    }
+  }, []);
+
   // Get food item's feedbacks
   useEffect(() => {
     const getMeFoodFeedbacks = async () => {
-      const token = await getUserToken();
-      getFoodFeedbacks(token.token, { 'food': foodItem.id })
-        .then(response => {
-          console.log(response.data);
-          setFeedbacks(response.data.results);
-        })
-        .catch(error => {
-          console.log(error.response.data);
-        })
+      if (foodItem) {
+        const token = await getUserToken();
+        getFoodFeedbacks(token.token, { 'food': foodItem.id })
+          .then(response => {
+            console.log(response.data);
+            setFeedbacks(response.data.results);
+          })
+          .catch(error => {
+            console.log(error.response.data);
+          })
+      }
+      getMeFoodFeedbacks();
     }
-    getMeFoodFeedbacks();
-  }, []);
+  }, [foodItem]);
 
   const handleRequest = () => {
     console.log('Sending swap request...');
@@ -91,6 +113,13 @@ const FoodInfo = () => {
     if (foodItem.owner == userID) {
       return
     }
+    else if (foodItem.has_client_already_made_request) {
+      return (
+        <Text style={styles.requestButtonAlternativeText}>
+          You have already sent request, waiting for response...
+        </Text>
+      )
+    }
     else if (foodItem.status == 'up') {
       return (
         <TouchableOpacity style={styles.requestButton} onPress={handleRequest}>
@@ -122,15 +151,15 @@ const FoodInfo = () => {
   return (
     <ScrollView style={styles.container}>
       <Image
-        source={foodItem.image ? { uri: foodItem.image } : require("../assets/images/image_2023-10-27_183534741.png")}
+        source={foodItem && foodItem.image ? { uri: foodItem.image } : require("../assets/images/image_2023-10-27_183534741.png")}
         style={styles.foodImage}
       />
       <View style={styles.detailsContainer}>
-        <Text style={styles.title}>{foodItem.name}</Text>
-        <Text style={styles.description}>{foodItem.description}</Text>
-        <Text style={styles.category}>{foodItem.category_name}</Text>
+        <Text style={styles.title}>{foodItem && foodItem.name}</Text>
+        <Text style={styles.description}>{foodItem && foodItem.description}</Text>
+        <Text style={styles.category}>{foodItem && foodItem.category_name}</Text>
         <Text style={styles.uploadDate}>Uploaded:{' '}
-          {formatDateTimeString(foodItem.date_added, {
+          {foodItem && formatDateTimeString(foodItem.date_added, {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -140,7 +169,7 @@ const FoodInfo = () => {
           })}
         </Text>
         <Text style={styles.expireDate}>Expires:{' '}
-          {formatDateTimeString(foodItem.expire_time, {
+          {foodItem && formatDateTimeString(foodItem.expire_time, {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -150,13 +179,14 @@ const FoodInfo = () => {
           })}
         </Text>
         <Text style={styles.owner} onPress={handleOwnerClick}>
-          Owner: {foodItem.owner_username}
+          Owner: {foodItem && foodItem.owner_username}
         </Text>
-        <Text style={styles.upFor}>Up for: {foodItem.up_for}</Text>
-        <Text style={styles.status}>Status: {foodItem.status == 'up' ? 'Available' : stringCapitalize(foodItem.status)}</Text>
+        <Text style={styles.upFor}>Up for: {foodItem && foodItem.up_for}</Text>
+        <Text style={styles.status}>Status: {foodItem && (foodItem.status == 'up' ? 'Available' : stringCapitalize(foodItem.status))}</Text>
 
-        <RequestButtonOrAlternativeText />
-
+        {foodItem &&
+          <RequestButtonOrAlternativeText />
+        }
       </View>
 
       <View style={styles.feedbackContainer}>

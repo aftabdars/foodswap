@@ -14,15 +14,15 @@ export async function postFood(token, body) {
 }
 
 // Gets all food items matching params
-export async function getFoods(params) {
+export async function getFoods(token, params) {
     const url = `/food/`;
-    return await makeGetRequest(url, undefined, params);
+    return await makeGetRequest(url, token, params);
 }
 
 // Gets a food item
-export async function getFood(id) {
+export async function getFood(id, token) {
     const url = `/food/${id}`;
-    return await makeGetRequest(url, undefined);
+    return await makeGetRequest(url, token);
 }
 
 // Deletes a food item
@@ -72,4 +72,16 @@ export async function updateFoodCategory(id, token, body) {
 export async function postFoodSwapRequest(token, body) {
     const url = `/food/foodswap-requests/`;
     return await makePostRequest(url, token, body);
+}
+
+// Updates the foodswap request
+export async function updateFoodSwapRequest(id, token, body) {
+    const url = `/food/foodswap-requests/${id}`;
+    return await makePutRequest(url, token, body);
+}
+
+// Deletes the foodswap request
+export async function deleteFoodSwapRequest(id, token, body) {
+    const url = `/food/foodswap-requests/${id}`;
+    return await makeDeleteRequest(url, token, body);
 }

@@ -8,6 +8,7 @@ import { getFoods } from '../api/backend/Food';
 import { getUsers } from '../api/backend/User';
 import SearchedUserPreview from '../components/SearchedUserPreview';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { getUserToken } from '../storage/UserToken';
 
 const Search = () => {
   // Theme
@@ -47,7 +48,8 @@ const Search = () => {
           response = await getUsers({'search': text, 'page': page});
         }
         else {
-          response = await getFoods({'search': text, 'page': page});
+          const token = await getUserToken();
+          response = await getFoods(token.token, {'search': text, 'page': page});
         }
         setSearchResults((prevResults) => [
           ...prevResults,

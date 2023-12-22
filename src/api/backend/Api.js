@@ -77,7 +77,7 @@ export async function makePutRequest(url, token = undefined, body = {}, contentT
     }
 }
 
-export async function makeDeleteRequest(url, token = undefined) {
+export async function makeDeleteRequest(url, token = undefined, body = {}) {
     const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
     console.log(`Making API DELETE request to: ${fullUrl}`);
 
@@ -90,7 +90,7 @@ export async function makeDeleteRequest(url, token = undefined) {
     }
 
     try {
-        const response = await axios.delete(fullUrl, { headers });
+        const response = await axios.delete(fullUrl, { headers: headers, data: body });
         return response
     } catch (error) {
         console.error(`Error making DELETE request to ${fullUrl}`, error);
