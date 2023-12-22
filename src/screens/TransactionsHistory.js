@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, useWindowDimensions } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import EntypoIcon from "react-native-vector-icons/Entypo";
 import { SceneMap, TabView, TabBar } from "react-native-tab-view";
 import { getUserToken } from "../storage/UserToken";
 import { getClientFoodiezTransferTransactions, getFoodiezTransactions, getXPTransactions } from "../api/backend/Gamification";
@@ -37,23 +38,23 @@ const TransactionsHistory = () => {
 	);
 };
 
-const FoodiezTransaction = ({item, userData, styles}) => {
+const FoodiezTransaction = ({item, userData, styles, colors}) => {
     let message = undefined;
-    let color = 'green';
+    let color = colors.highlight2;
     if (item.type == 'account_transfer') {
         if (item.user == userData.id) {
             message = `Received foodiez from ${item.user_from_username}`;
-            color = 'green';
+            color = colors.highlight2;
         }
         else if (item.user_from == userData.id) {
             message = `Sent foodiez to ${item.user_username}`;
-            color = 'red';
+            color = colors.error;
         }
     }
 
     return (
         <View style={styles.transactionItem}>
-            <FontAwesome name="cutlery" size={24} color="#FFA726" style={styles.icon} />
+            <EntypoIcon name="bowl" style={styles.icon}></EntypoIcon>
             <View style={styles.transactionDetails}>
                 <Text style={styles.message}>{message? message : item.message}</Text>
                 <Text style={styles.timestamp}>
@@ -69,16 +70,16 @@ const FoodiezTransaction = ({item, userData, styles}) => {
                 </Text>
             </View>
             <Text style={{ color: color }}>
-                {color == 'green'? '+' : '-'}{item.amount}
+                {color == colors.highlight2? '+' : '-'}{item.amount}
             </Text>
         </View>
     )
 }
 
-const XPTransaction = ({item, userData, styles}) => {
+const XPTransaction = ({item, userData, styles, colors}) => {
     return (
         <View style={styles.transactionItem}>
-            <FontAwesome name="star" size={24} color="#4CAF50" style={styles.icon} />
+            <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
             <View style={styles.transactionDetails}>
                 <Text style={styles.message}>{item.message}</Text>
                 <Text style={styles.timestamp}>
@@ -93,7 +94,7 @@ const XPTransaction = ({item, userData, styles}) => {
                     })}
                 </Text>
             </View>
-            <Text style={{ color: "green"}}>{item.amount} XP</Text>
+            <Text style={{ color: colors.highlight2}}>{item.amount} XP</Text>
       </View>
     )
 }
@@ -149,7 +150,7 @@ const FirstRoute = () => {
                 data={transactions}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <FoodiezTransaction item={item} userData={userData} styles={styles}/>
+                    <FoodiezTransaction item={item} userData={userData} styles={styles} colors={colors}/>
                 )}
             />
         </View>
@@ -201,7 +202,7 @@ const SecondRoute = () => {
                 data={transactions}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <FoodiezTransaction item={item} userData={userData} styles={styles}/>
+                    <FoodiezTransaction item={item} userData={userData} styles={styles} colors={colors}/>
                 )}
             />
         </View>
@@ -258,7 +259,7 @@ const ThirdRoute = () => {
                 data={transactions}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <XPTransaction item={item} userData={userData} styles={styles}/>
+                    <XPTransaction item={item} userData={userData} styles={styles} colors={colors}/>
                 )}
             />
         </View>
@@ -295,7 +296,8 @@ function createStyles(colors) {
             flexDirection: "row",
             justifyContent: "space-between",
             marginBottom: 20,
-            padding: 16,
+            paddingVertical: 16,
+            paddingHorizontal: 12,
             backgroundColor: colors.background2,
             borderRadius: 12,
             elevation: 2,
@@ -305,7 +307,9 @@ function createStyles(colors) {
             shadowRadius: 4,
         },
         icon: {
-            marginRight: 16,
+            color: colors.highlight1,
+            fontSize: 30,
+            marginRight: 12,
         },
         transactionDetails: {
             flex: 1,

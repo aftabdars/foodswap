@@ -294,14 +294,14 @@ function createStyles(colors) {
       marginTop: 10,
     },
     requestButton: {
-      backgroundColor: '#3498db',
+      backgroundColor: colors.highlight2,
       padding: 14,
       borderRadius: 10,
       alignItems: 'center',
       marginTop: 15,
     },
     requestButtonText: {
-      color: '#ecf0f1',
+      color: colors.foreground,
       fontSize: 18,
       fontWeight: 'bold',
     },
@@ -358,6 +358,7 @@ function createStyles(colors) {
     feedbackInput: {
       height: 40,
       backgroundColor: colors.background2,
+      color: colors.foreground,
       borderColor: 'gray',
       borderWidth: 1,
       borderRadius: 8,
@@ -365,13 +366,13 @@ function createStyles(colors) {
       padding: 10,
     },
     sendFeedbackButton: {
-      backgroundColor: '#3498db',
+      backgroundColor: colors.highlight2,
       padding: 14,
       borderRadius: 10,
       alignItems: 'center',
     },
     sendFeedbackButtonText: {
-      color: '#ecf0f1',
+      color: colors.foreground,
       fontSize: 18,
       fontWeight: 'bold',
     },

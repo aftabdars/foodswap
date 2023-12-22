@@ -105,19 +105,19 @@ function createStyles(colors) {
                 marginVertical: 20,
             },
             button: {
-                backgroundColor: '#333',
+                backgroundColor: colors.background2,
                 paddingVertical: 15,
                 paddingHorizontal: 30,
                 marginVertical: 10,
                 borderRadius: 8,
             },
             buttonText: {
-                color: '#fff',
+                color: colors.foreground,
                 fontSize: 18,
                 fontWeight: 'bold',
             },
             buttonContinue: {
-                backgroundColor: '#009688',
+                backgroundColor: colors.highlight2,
                 position: 'absolute',
                 bottom: 0,
                 paddingVertical: 10,

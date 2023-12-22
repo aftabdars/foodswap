@@ -83,17 +83,17 @@ const SideBar = (props)=> {
     return (
         <View style={styles.container}>
           <View style={styles.header}>
+            <View style={styles.userInfo}>
+              <Text style={styles.username}>{userData.username}</Text>
+              <Text style={styles.level}>{`Level ${levelData.level}`}</Text>
+              <ProgressBar xp={[userStats? userStats.xp : 0, levelData? levelData.xp_end : 1]} height={8} />
+            </View>
             <Avatar
               rounded
               style={styles.avatar}
               size="large"
               source={userData.profile_picture? {uri: userData.profile_picture} : require("../assets/images/default_profile.jpg")}
             />
-            <View style={styles.userInfo}>
-              <Text style={styles.username}>{userData.username}</Text>
-              <Text style={styles.level}>{`Level ${levelData.level}`}</Text>
-              <ProgressBar xp={[userStats? userStats.xp : 0, levelData? levelData.xp_end : 1]} height={8} />
-            </View>
         </View>
         <View style={styles.buttonContainer}>
           <SidebarButton
@@ -122,27 +122,26 @@ function createStyles(colors) {
           backgroundColor: colors.background,
           flex: 1,
           paddingTop: 50,
-          paddingHorizontal: 20,
         },
         header: {
           flexDirection: "row",
-          alignItems: "center",
+          alignItems: "flex-start",
           marginBottom: 20,
+          paddingHorizontal: 10,
         },
         buttonContainer: {
           marginTop: 10,
         },
         avatar: {
-          position:'absolute',
-          right:-10,
-          top:-10,
+          position: 'absolute',
+          right: 10,
+          top: -10,
           width: 80,
           height: 80,
           borderRadius: 40,
         },
         userInfo: {
-          marginLeft: -10,
-          
+          marginLeft: 0,
         },
         username: {
           fontSize: 24,

@@ -1,32 +1,42 @@
 import { createContext } from 'react';
-import {Appearance} from 'react-native';
+import { Appearance } from 'react-native';
 
 export const ThemeContext = createContext(null);
 
 export function getColors(scheme) {
-    //const colorScheme = Appearance.getColorScheme() || 'light';
-    let colors = {}
-    if (scheme === 'dark') {
-        colors = {
-            highlight1: '#fe724c',
-            highlight2: '#009688',
-            background: '#272d2f',
-            background2: '#555555',
-            foreground: '#d7d7d7',
-            error: "rgba(254,114,76,1)"
-        }
+  //const colorScheme = Appearance.getColorScheme() || 'light';
+  let colors = {}
+  if (scheme === 'dark') {
+    colors = {
+      highlight1: '#fe724c',
+      highlight2: '#009688',
+      background: '#272d2f',
+      background2: '#555555',
+      foreground: '#d7d7d7',
+      error: "#d0312d"
     }
-    else {
-        colors = {
-            highlight1: '#fe724c',
-            highlight2: '#009688',
-            background: '#d7d7d7',
-            background2: '#e6e6e6',
-            foreground: '#272d2f',
-            error: "rgba(254,114,76,1)"
-        }
+  }
+  else if (scheme === 'christmas') {
+    colors = {
+      highlight1: '#cc231e',
+      highlight2: '#582412',
+      background: '#0f8a5f',
+      background2: '#fbfcf8',
+      foreground: '#ceac5c',
+      error: "#0f52ba"
     }
-    return colors
+  }
+  else { // 'light' theme
+    colors = {
+      highlight1: '#fe724c',
+      highlight2: '#009688',
+      background: '#d7d7d7',
+      background2: '#e6e6e6',
+      foreground: '#272d2f',
+      error: "#d0312d"
+    }
+  }
+  return colors
 }
 
 /*
