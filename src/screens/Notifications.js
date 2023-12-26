@@ -8,7 +8,7 @@ import { getClientNotifications } from "../api/backend/User";
 import { getUserToken } from "../storage/UserToken";
 import { useNavigation } from "@react-navigation/native";
 import { getProfile } from "../storage/User";
-import { deleteFoodSwapRequest } from "../api/backend/Food";
+import { deleteFoodSwapRequest, postFoodSwap } from "../api/backend/Food";
 
 function Notifications() {
     // Theme
@@ -58,7 +58,7 @@ function Notifications() {
           }
     };
 
-    const swapAccept = async (notifcationID, foodSwapRequestID) => {
+    const swapAccept = async (notifcationID, foodSwapRequestID, object) => {
         try {
             // Delete swap request from backend
             const token = (await getUserToken()).token;
@@ -67,8 +67,19 @@ function Notifications() {
             // Remove the swap request notification from screen
             setNotifications(notifications.filter((item) => item.id !== notifcationID));
 
-            // Will make post request to FoodSwap here
-            // Navigation here
+            postFoodSwap(token, {
+                'food_a': object.food_a,
+                'food_b': object.food_b,
+                'location_latitude': object.proposed_location_latitude,
+                'location_longitude': object.proposed_location_longitude
+            })
+            .then(response => {
+                console.log(response.data);
+                navigation.navigate("FoodSwapRoom", {data: response.data});
+            })
+            .catch(error => {
+                console.log(error.response.data);
+            })
           } catch (error) {
             console.log(error.response.data);
           }
@@ -128,7 +139,7 @@ const SwapRequestNotification = ({ colors, styles, data, userID, navigation, swa
     }
 
     const onAccept = () => {
-        swapAccept(data.id, data.object_id);
+        swapAccept(data.id, data.object_id, data.content_object);
     }
 
     const onDecline = () => {

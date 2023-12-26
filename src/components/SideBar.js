@@ -102,6 +102,11 @@ const SideBar = (props)=> {
             icon="search"
           />
           <SidebarButton 
+            title="Active FoodSwaps" 
+            onPress={() => navigation.navigate('ActiveFoodSwaps')}
+            icon="home"
+          />
+          <SidebarButton 
             title="Transactions History" 
             onPress={transactionHistoryPressed}
             icon="timeline"

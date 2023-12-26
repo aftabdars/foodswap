@@ -68,6 +68,24 @@ export async function updateFoodCategory(id, token, body) {
     return await makePutRequest(url, token, body, contentType);
 }
 
+// Posts foodswap
+export async function postFoodSwap(token, body) {
+    const url = `/food/foodswap/`;
+    return await makePostRequest(url, token, body);
+}
+
+// Updates the foodswap
+export async function updateFoodSwap(id, token, body) {
+    const url = `/food/foodswap/${id}`;
+    return await makePutRequest(url, token, body);
+}
+
+// Get foodswaps
+export async function getFoodSwaps(token, params) {
+    const url = `/food/foodswap/`;
+    return await makeGetRequest(url, token, params);
+}
+
 // Posts foodswap request
 export async function postFoodSwapRequest(token, body) {
     const url = `/food/foodswap-requests/`;

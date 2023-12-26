@@ -8,6 +8,7 @@ import { ThemeContext, getColors } from '../assets/Theme';
 import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
 import { postFoodSwapRequest, updateFoodSwapRequest } from '../api/backend/Food';
 import { getUserToken } from '../storage/UserToken';
+import { animateToNewCoordinates } from '../utils/Map';
 
 function LocationSelection() {
     // Theme
@@ -45,25 +46,11 @@ function LocationSelection() {
                 longitude: location.coords.longitude
             }
             setLocation(location);
-            animateToNewCoordinates(location.latitude, location.longitude, 0.003);
+            animateToNewCoordinates(mapRef, location.latitude, location.longitude, true);
         })();
     }, []);
 
     console.log(location, typeof location);
-
-    const animateToNewCoordinates = (latitude, longitude, delta) => {
-        if (mapRef && mapRef.current) {
-            mapRef.current.animateToRegion(
-                {
-                    latitude: latitude,
-                    longitude: longitude,
-                    latitudeDelta: delta && delta,
-                    longitudeDelta: delta && delta,
-                },
-                1000 // Duration in milliseconds for the animation
-            );
-        }
-    };
 
     const findMePressed = async () => {
         // Gets user's current location
@@ -74,7 +61,7 @@ function LocationSelection() {
             longitude: location.coords.longitude
         }
         setLocation(location);
-        animateToNewCoordinates(location.latitude, location.longitude, 0.003);
+        animateToNewCoordinates(mapRef, location.latitude, location.longitude, true);
     }
 
     const mapPressed = (event) => {
@@ -86,7 +73,7 @@ function LocationSelection() {
             longitude: loc?.coordinate.longitude
         }
         setLocation(location);
-        animateToNewCoordinates(location.latitude, location.longitude, false);
+        animateToNewCoordinates(mapRef, location.latitude, location.longitude);
     };
 
     const handleSend = async () => {

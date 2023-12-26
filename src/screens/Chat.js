@@ -10,7 +10,7 @@ import { getUserToken } from '../storage/UserToken';
 import { getMessages, postMessage } from '../api/backend/Social';
 import { SerializeImage } from '../api/backend/utils/Serialize';
 import { ThemeContext, getColors } from '../assets/Theme';
-import { BACKEND_WS_ENDPOINT } from '../api/config';
+import { WSChat } from '../api/backend/WebSocket';
 
 
 function Chat() {
@@ -37,7 +37,7 @@ function Chat() {
         chatRoom = `${chatPreviewMessage.sender}_${chatPreviewMessage.receiver}`
         else
         chatRoom = `${chatPreviewMessage.receiver}_${chatPreviewMessage.sender}`
-        const ws = new WebSocket(`${BACKEND_WS_ENDPOINT}/chat/${chatRoom}/`);
+        const ws = WSChat(chatRoom);
     
         ws.onopen = () => {
           console.log(`WebSocket connected, chatroom: ${chatRoom}`);

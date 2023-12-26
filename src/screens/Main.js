@@ -23,6 +23,8 @@ import TransferFoodiez from './TransferFoodiez';
 import LocationSelection from './LocationSelection'
 import FoodSwapSelection from './FoodSwapSelection';
 import TransferFoodiezSuccess from './TransferFoodiezSuccess';
+import FoodSwapRoom from './FoodSwapRoom';
+import ActiveFoodSwaps from './ActiveFoodSwaps';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -88,12 +90,14 @@ function HomeContainer() {
           <Stack.Screen name="FoodInfo" component={FoodInfo} options={{headerTintColor:'#fff',headerShown: false}}/>
           <Stack.Screen name="FoodSwapSelection" component={FoodSwapSelection} options={{title: 'Food Selection', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="LocationSelection" component={LocationSelection} options={{title:'Location Selection', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
+          <Stack.Screen name="FoodSwapRoom" component={FoodSwapRoom} options={{title:'FoodSwap Room', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
 
           <Stack.Screen name="Notifications" component={Notifications} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="Search" component={Search} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{title:'Foodiez and XP', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="TransferFoodiez" component={TransferFoodiez} options={{title:'Transfer Foodiez', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="TransferFoodiezSuccess" component={TransferFoodiezSuccess} options={{title:'Transfer Foodiez', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{title:'Active FoodSwaps', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
       </Stack.Navigator>
   )
 }
