@@ -25,6 +25,8 @@ import FoodSwapSelection from './FoodSwapSelection';
 import TransferFoodiezSuccess from './TransferFoodiezSuccess';
 import FoodSwapRoom from './FoodSwapRoom';
 import ActiveFoodSwaps from './ActiveFoodSwaps';
+import Leaderboard from './Leaderboard';
+import Achievements from './Achievements';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -97,7 +99,9 @@ function HomeContainer() {
           <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{title:'Foodiez and XP', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="TransferFoodiez" component={TransferFoodiez} options={{title:'Transfer Foodiez', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="TransferFoodiezSuccess" component={TransferFoodiezSuccess} options={{title:'Transfer Foodiez', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="Leaderboard" component={Leaderboard} options={{title:'Leaderboard', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
           <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{title:'Active FoodSwaps', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
+          <Stack.Screen name="Achievements" component={Achievements} options={{title:'Achievements', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
       </Stack.Navigator>
   )
 }

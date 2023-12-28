@@ -19,6 +19,12 @@ export async function getLevel(id) {
     return await makeGetRequest(url, undefined);
 }
 
+// Gets leaderboard data
+export async function getLeaderboard(token, params) {
+    const url = `/gamification/leaderboard/`;
+    return await makeGetRequest(url, token, params);
+}
+
 // Posts client's Foodiez Transfer Transaction
 export async function postClientFoodiezTransferTransactions(token, body) {
     const url = `/gamification/foodieztransactions/transfer/`;
@@ -40,5 +46,11 @@ export async function getFoodiezTransactions(token, params) {
 // Gets all XP Transactions matching params
 export async function getXPTransactions(token, params) {
     const url = `/gamification/xptransactions/`;
+    return await makeGetRequest(url, token, params);
+}
+
+// Gets all achievements matching params
+export async function getAchievements(token, params) {
+    const url = `/gamification/achievements/`;
     return await makeGetRequest(url, token, params);
 }
