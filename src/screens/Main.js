@@ -28,95 +28,54 @@ import Achievements from './Achievements';
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function ProfileContainer() {
-  // Theme
-  const theme = useContext(ThemeContext).theme;
-  const colors = getColors(theme);
-
-  return (
-    <Stack.Navigator initialRouteName={"Profile "}>
-      <Stack.Screen name="Profile " component={Profile} options={{ headerShown: false }} />
-      <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-    </Stack.Navigator>
-  )
-}
-
-function MessagesContainer() {
-  // Theme
-  const theme = useContext(ThemeContext).theme;
-  const colors = getColors(theme);
-
-  return (
-    <Stack.Navigator initialRouteName={"Messages "}>
-      <Stack.Screen name="Messages " component={Inbox} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-    </Stack.Navigator>
-  )
-}
-
-function FoodUploadContainer() {
-  // Theme
-  const theme = useContext(ThemeContext).theme;
-  const colors = getColors(theme);
-
-  return (
-    <Stack.Navigator initialRouteName={"FoodImageSelection"}>
-      <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{ title: 'Food Upload', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
-      <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{ title: 'Food Upload', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
-    </Stack.Navigator>
-  )
-}
-
-function SettingsContainer() {
-  // Theme
-  const theme = useContext(ThemeContext).theme;
-  const colors = getColors(theme);
-
-  return (
-    <Stack.Navigator initialRouteName={"Settings "}>
-      <Stack.Screen name="Settings " component={Settings} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-    </Stack.Navigator>
-  )
-}
-
-function HomeContainer() {
-  // Theme
-  const theme = useContext(ThemeContext).theme;
-  const colors = getColors(theme);
-  return (
-    <Stack.Navigator initialRouteName={"Home"}>
-      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      <Stack.Screen name="FoodInfo" component={FoodInfo} options={{ headerTintColor: '#fff', headerShown: false }} />
-      <Stack.Screen name="FoodSwapSelection" component={FoodSwapSelection} options={{ title: 'Food Selection', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="LocationSelection" component={LocationSelection} options={{ title: 'Location Selection', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
-      <Stack.Screen name="FoodSwapRoom" component={FoodSwapRoom} options={{ title: 'FoodSwap Room', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
-
-      <Stack.Screen name="Notifications" component={Notifications} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="Search" component={Search} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{ title: 'Foodiez and XP', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="TransferFoodiez" component={TransferFoodiez} options={{ title: 'Transfer Foodiez', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="TransferFoodiezSuccess" component={TransferFoodiezSuccess} options={{ title: 'Transfer Foodiez', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="Leaderboard" component={Leaderboard} options={{ title: 'Leaderboard', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{ title: 'Active FoodSwaps', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-      <Stack.Screen name="Achievements" component={Achievements} options={{ title: 'Achievements', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
-    </Stack.Navigator>
-  )
-}
-
 const Main = () => {
   // Theme
   const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
 
   return (
+    <Stack.Navigator
+      initialRouteName={"MainTabs"}
+      screenOptions={{
+        headerMode: 'screen',
+        headerTintColor: '#fff',
+        headerStyle: { backgroundColor: colors.highlight1 },
+      }}
+    >
+      <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
 
+      <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile' }} />
+      <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+      <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{ title: 'Food Upload' }} />
+      <Stack.Screen name="FoodInfo" component={FoodInfo} options={{ headerTintColor: '#fff', headerShown: false }} />
+      <Stack.Screen name="FoodSwapSelection" component={FoodSwapSelection} options={{ title: 'Food Selection' }} />
+      <Stack.Screen name="LocationSelection" component={LocationSelection} options={{ title: 'Location Selection', }} />
+      <Stack.Screen name="FoodSwapRoom" component={FoodSwapRoom} options={{ title: 'FoodSwap Room', }} />
+      <Stack.Screen name="Notifications" component={Notifications} />
+      <Stack.Screen name="Search" component={Search} />
+      <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{ title: 'Foodiez and XP' }} />
+      <Stack.Screen name="TransferFoodiez" component={TransferFoodiez} options={{ title: 'Transfer Foodiez' }} />
+      <Stack.Screen name="TransferFoodiezSuccess" component={TransferFoodiezSuccess} options={{ title: 'Transfer Foodiez' }} />
+      <Stack.Screen name="Leaderboard" component={Leaderboard} options={{ title: 'Leaderboard' }} />
+      <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{ title: 'Active FoodSwaps' }} />
+      <Stack.Screen name="Achievements" component={Achievements} options={{ title: 'Achievements' }} />
+    </Stack.Navigator>
+  )
+};
+
+const MainTabs = () => {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
+  return (
     <Tab.Navigator tabBarPosition='bottom'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
           switch (route.name) {
-            case 'HomeContainer': iconName = 'home-minus'; break;
+            case 'Home': iconName = 'home-minus'; break;
             case 'Profile': iconName = 'account-circle'; break;
             case 'Camera': iconName = 'camera'; break;
             case 'Messages': iconName = 'message-processing'; break;
@@ -131,7 +90,7 @@ const Main = () => {
         tabBarInactiveBackgroundColor: colors.background,
         tabBarLabelStyle: { fontSize: 11 },
         tabBarLabel: () => {
-          let label = route.name == 'HomeContainer' ? 'Home' : route.name
+          let label = route.name
           return <Text style={{ color: colors.foreground }}>{label}</Text>
         },
         tabBarItemStyle: { padding: 0, margin: 0 },
@@ -140,14 +99,50 @@ const Main = () => {
         }
       })}
     >
-      <Tab.Screen name="HomeContainer" component={HomeContainer} options={{ headerShown: false }} />
-      <Tab.Screen name="Profile" component={ProfileContainer} options={{ headerShown: false }} />
-      <Tab.Screen name="Camera" component={FoodUploadContainer} options={{ headerShown: false }} />
-      <Tab.Screen name="Messages" component={MessagesContainer} options={{ headerShown: false }} />
-      <Tab.Screen name="Settings" component={SettingsContainer} options={{ headerShown: false }} />
+      <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
+      <Tab.Screen name="Profile" component={Profile} options={{ headerShown: true }} />
+      <Tab.Screen name="Camera" component={CameraStack} options={{ headerShown: true }} />
+      <Tab.Screen name="Messages" component={MessagesStack} options={{ headerShown: true }} />
+      <Tab.Screen name="Settings" component={SettingsStack} options={{ headerShown: true }} />
     </Tab.Navigator>
 
   );
 };
+
+const CameraStack = () => {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
+  return (
+    <Stack.Navigator initialRouteName={"FoodImageSelection"}>
+      <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{ title: 'Food Upload', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+    </Stack.Navigator>
+  )
+}
+
+const MessagesStack = () => {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
+  return (
+    <Stack.Navigator initialRouteName={"Messages "}>
+      <Stack.Screen name="Messages " component={Inbox} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+    </Stack.Navigator>
+  )
+}
+
+const SettingsStack = () => {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+
+  return (
+    <Stack.Navigator initialRouteName={"Settings "}>
+      <Stack.Screen name="Settings " component={Settings} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+    </Stack.Navigator>
+  )
+}
 
 export default Main;
