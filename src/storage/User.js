@@ -11,7 +11,7 @@ export const getProfile = async () => {
     if(profile && profile !== null) {
         // Check if the profile is modified at server, if so then update in storage
         const token = await getUserToken();
-        getClientProfile(token.token, new Date(profile.timestamp))
+        await getClientProfile(token.token, new Date(profile.timestamp))
         .then(response => {
             if (response.status === 200) { // Data was modified and body is returned
                 // Update the stored data with returned modified data and return that data
@@ -35,8 +35,8 @@ export const getProfile = async () => {
 };
 
 // Sets or updates user profile
-export const setProfile = (profile) => {
-    return setCachedData('profile', JSON.stringify({
+export const setProfile = async (profile) => {
+    return await setCachedData('profile', JSON.stringify({
         'profile': JSON.stringify(profile),
         'timestamp': new Date()
     }));
@@ -55,7 +55,7 @@ export const getStats = async () => {
     if(stats && stats !== null) {
         // Check if the stats is modified at server, if so then update in storage
         const token = await getUserToken();
-        getClientStats(token.token, new Date(stats.timestamp))
+        await getClientStats(token.token, new Date(stats.timestamp))
         .then(response => {
             if (response.status === 200) { // Data was modified and body is returned
                 // Update the stored data with returned modified data and return that data
@@ -78,8 +78,8 @@ export const getStats = async () => {
 };
 
 // Sets or updates user stats
-export const setStats = (stats) => {
-    return setCachedData('stats', JSON.stringify({
+export const setStats = async (stats) => {
+    return await setCachedData('stats', JSON.stringify({
         'stats': JSON.stringify(stats),
         'timestamp': new Date()
     }));

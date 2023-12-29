@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute, CommonActions } from "@react-navigation/native";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -13,8 +13,9 @@ import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
 import MaterialButtonDanger from '../components/MaterialButtonDanger';
 import CircularMarker from '../components/CircularMarker';
 import { WSFoodSwap } from '../api/backend/WebSocket';
-import { updateFoodSwap } from '../api/backend/Food';
+import { getFoodSwap, updateFoodSwap } from '../api/backend/Food';
 import { getUserToken } from '../storage/UserToken';
+import { extractErrorMessage } from '../api/backend/utils/Utils';
 
 
 function FoodSwapRoom() {
@@ -22,6 +23,10 @@ function FoodSwapRoom() {
     const theme = useContext(ThemeContext).theme;
     const colors = getColors(theme);
     const styles = createStyles(colors);
+
+    const navigation = useNavigation();
+    const route = useRoute();
+    const mapRef = useRef(null);
 
     // States
     const [swapLocation, setSwapLocation] = useState();
@@ -34,18 +39,13 @@ function FoodSwapRoom() {
     const [otherUserUsername, setOtherUserUsername] = useState();
     const [otherUserProfilePic, setOtherUserProfilePic] = useState();
     const [showError, setShowError] = useState();
+    const [data, setData] = useState(route.params?.data);
+    const [formatSwapEndTime, setFormatSwapEndTime] = useState();
     // Connection and WebSocket
     const [socket, setSocket] = useState(null);
     const [timer, setTimer] = useState(null);
 
-    const navigation = useNavigation();
-    const route = useRoute();
-
-    const mapRef = useRef(null);
-
-    const data = route.params?.data;
-    /* if (!data) {
-        data = {
+    /* data = {
             "id": 2,
             "food_a": 8,
             "food_a_owner": 12,
@@ -61,11 +61,33 @@ function FoodSwapRoom() {
             "location_latitude": "25.392482",
             "location_longitude": "68.332274",
             "status": "in_progress"
-        }
-    } */
+        } */
 
-    const FOODSWAP_END_TIME = addHoursToTimestamp(data.timestamp, 3);
-    const formatSwapEndTime = formatTimeDifferenceFuture(FOODSWAP_END_TIME);
+    // Get swap data either from route or API call if swapID is passed
+    useEffect(() => {
+        const swapID = route.params?.swapID;
+        if (swapID) {
+            const getMeSwapData = async () => {
+                const token = (await getUserToken()).token;
+                await getFoodSwap(swapID, token.token)
+                    .then(response => {
+                        console.log(response.data);
+                        setData(response.data);
+                    })
+                    .catch(error => {
+                        console.log(error.response.data);
+                    })
+            }
+            getMeSwapData();
+        }
+    }, []);
+    // Extra formating in data
+    useEffect(() => {
+        if (data) {
+            const FOODSWAP_END_TIME = addHoursToTimestamp(data.timestamp, 3);
+            setFormatSwapEndTime(formatTimeDifferenceFuture(FOODSWAP_END_TIME));
+        }
+    }, [data]);
 
     // Location permissions
     useEffect(() => {
@@ -132,7 +154,7 @@ function FoodSwapRoom() {
             setSwapLocation(location);
             animateToNewCoordinates(mapRef, location.latitude, location.longitude, true);
         }
-    }, []);
+    }, [data]);
 
     const foodAImagePressed = () => {
         navigation.navigate('FoodInfo', { foodID: data.food_a })
@@ -150,12 +172,16 @@ function FoodSwapRoom() {
             .then(response => {
                 console.log(response.data);
                 if (socket && socket.readyState === WebSocket.OPEN) socket.close();
-                navigation.navigate('Home');
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [{ name: 'Main' }],
+                    })
+                );
             })
             .catch(error => {
-                const errorMessages = error.response.data;
-                console.log(errorMessages);
-                setShowError(errorMessages[Object.keys(errorMessages)[0]]);
+                console.log(error.response.data);
+                setShowError(extractErrorMessage(error.response.data));
             })
     };
 
@@ -245,7 +271,7 @@ function FoodSwapRoom() {
                 </View>
                 <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Ends in:</Text>
-                    <Text style={styles.infoText}>{data && formatSwapEndTime.difference}</Text>
+                    <Text style={styles.infoText}>{data && formatSwapEndTime && formatSwapEndTime.difference}</Text>
                 </View>
                 <View style={styles.otherInfoItem}>
                     <Text style={styles.infoLabel}>Swapped it? Press</Text>

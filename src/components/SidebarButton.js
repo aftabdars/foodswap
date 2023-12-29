@@ -3,7 +3,7 @@ import { TouchableHighlight, Text,View, StyleSheet } from "react-native";
 import { Icon } from "react-native-elements";
 import { ThemeContext, getColors } from "../assets/Theme";
 
-const SidebarButton = ({ title, onPress, style, iconColor, icon }) => {
+const SidebarButton = ({ title, onPress, style, icon, iconType, iconColor }) => {
     // Theme
     const theme = useContext(ThemeContext).theme;
     const colors = getColors(theme);
@@ -16,7 +16,7 @@ const SidebarButton = ({ title, onPress, style, iconColor, icon }) => {
         underlayColor={colors.highlight2} // Change the color on touch
       >
       <View style={styles.buttonContent}>
-        <Icon name={icon} color={colors.foreground} style={styles.icon}/>
+        <Icon name={icon} color={colors.foreground} style={styles.icon} type={iconType}/>
         <Text style={styles.title}>{title}</Text>
       </View>
     </TouchableHighlight>

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity, RefreshControl } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { ThemeContext, getColors } from "../assets/Theme";
@@ -9,6 +9,8 @@ import { getUserToken } from "../storage/UserToken";
 import { useNavigation } from "@react-navigation/native";
 import { getProfile } from "../storage/User";
 import { deleteFoodSwapRequest, postFoodSwap } from "../api/backend/Food";
+import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
+import MaterialButtonDanger from "../components/MaterialButtonDanger";
 
 function Notifications() {
     // Theme
@@ -16,34 +18,50 @@ function Notifications() {
     const colors = getColors(theme);
     const styles = createStyles(colors);
 
+    const [refresh, setRefresh] = useState(false);
+    const [refreshCount, setRefreshCount] = useState(0);
     const [notifications, setNotifications] = useState();
     const [userID, setUserID] = useState();
 
     const navigation = useNavigation();
 
-    // Get client's notifications
+    // Gets the data
     useEffect(() => {
+        let completedCount = 0;
+        const MAX_COUNT = 2;
+
+        const checkAllDataFetched = () => {
+            if (completedCount === MAX_COUNT) {
+                if (refresh) setRefresh(false);
+            }
+        };
+
+        // Get user's ID
+        const getMeUserID = async () => {
+            setUserID((await getProfile()).id);
+            completedCount++;
+            checkAllDataFetched();
+        }
+
+        // Get client's notifications
         const getMeClientNotifications = async () => {
             const token = await getUserToken();
             await getClientNotifications(token.token)
                 .then(response => {
                     console.log(response.data);
                     setNotifications(response.data.results);
+                    completedCount++;
+                    checkAllDataFetched();
                 })
                 .catch(error => {
                     console.log(error.response.data);
                 })
         }
-        getMeClientNotifications();
-    }, []);
 
-    // Get user's ID
-    useEffect(() => {
-        const getMeUserID = async () => {
-            setUserID((await getProfile()).id);
-        }
         getMeUserID();
-    }, []);
+        getMeClientNotifications();
+
+    }, [refreshCount]);
 
     const swapDecline = async (notifcationID, foodSwapRequestID) => {
         try {
@@ -53,36 +71,36 @@ function Notifications() {
             console.log(response.data);
             // Remove the swap request notification from screen
             setNotifications(notifications.filter((item) => item.id !== notifcationID));
-          } catch (error) {
+        } catch (error) {
             console.log(error.response.data);
-          }
+        }
     };
 
     const swapAccept = async (notifcationID, foodSwapRequestID, object) => {
         try {
             // Delete swap request from backend
             const token = (await getUserToken()).token;
-            const response = await deleteFoodSwapRequest(foodSwapRequestID, token, {'accepted': true});
+            const response = await deleteFoodSwapRequest(foodSwapRequestID, token, { 'accepted': true });
             console.log(response.data);
             // Remove the swap request notification from screen
             setNotifications(notifications.filter((item) => item.id !== notifcationID));
 
-            postFoodSwap(token, {
+            await postFoodSwap(token, {
                 'food_a': object.food_a,
                 'food_b': object.food_b,
                 'location_latitude': object.proposed_location_latitude,
                 'location_longitude': object.proposed_location_longitude
             })
-            .then(response => {
-                console.log(response.data);
-                navigation.navigate("FoodSwapRoom", {data: response.data});
-            })
-            .catch(error => {
-                console.log(error.response.data);
-            })
-          } catch (error) {
+                .then(response => {
+                    console.log(response.data);
+                    navigation.navigate("FoodSwapRoom", { swapID: response.data.id });
+                })
+                .catch(error => {
+                    console.log(error.response.data);
+                })
+        } catch (error) {
             console.log(error.response.data);
-          }
+        }
     };
 
     const renderNotificationItem = ({ item }) => {
@@ -94,6 +112,11 @@ function Notifications() {
         }
     };
 
+    const onRefresh = () => {
+        setRefreshCount(refreshCount + 1);
+        setRefresh(true);
+    };
+
     return (
         <View style={styles.container}>
             {notifications && notifications.length > 0 ?
@@ -101,6 +124,14 @@ function Notifications() {
                     data={notifications}
                     keyExtractor={(item) => item.id}
                     renderItem={renderNotificationItem}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refresh}
+                            onRefresh={onRefresh}
+                            colors={[colors.highlight1, colors.highlight2]}
+                            tintColor={colors.highlight2}
+                        />
+                    }
                 />
                 :
                 <Text style={styles.noNotificationsText}>No notifications to show</Text>
@@ -191,17 +222,17 @@ const SwapRequestNotification = ({ colors, styles, data, userID, navigation, swa
                     <Text style={styles.swapRequestReproposedText}>You reproposed the location!</Text>
                 ) : (
                     <View style={styles.swapRequestButtonsContainer}>
-                        <TouchableOpacity style={styles.swapRequestButton} onPress={onAccept}>
+                        <MaterialButtonSuccess style={styles.swapRequestButton} onPress={onAccept}>
                             <Text style={styles.swapRequestButtonText}>Accept</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.swapRequestButton, styles.swapRequestDeclineButton]} onPress={onDecline}>
-                            <Text style={styles.swapRequestButtonText}>Decline</Text>
-                        </TouchableOpacity>
+                        </MaterialButtonSuccess>
                         {!data.content_object.is_location_reproposed && (
-                            <TouchableOpacity style={styles.swapRequestButton} onPress={onRepropose}>
+                            <MaterialButtonSuccess style={styles.swapRequestButton} onPress={onRepropose}>
                                 <Text style={styles.swapRequestButtonText}>Repropose</Text>
-                            </TouchableOpacity>
+                            </MaterialButtonSuccess>
                         )}
+                        <MaterialButtonDanger style={styles.swapRequestButton} onPress={onDecline}>
+                            <Text style={styles.swapRequestButtonText}>Decline</Text>
+                        </MaterialButtonDanger>
                     </View>
                 )}
 
@@ -326,14 +357,10 @@ function createStyles(colors) {
             marginTop: 6,
         },
         swapRequestButton: {
-            backgroundColor: colors.highlight2,
             borderRadius: 8,
             padding: 8,
             width: '30%',
             alignItems: 'center',
-        },
-        swapRequestDeclineButton: {
-            backgroundColor: colors.error,
         },
         swapRequestButtonText: {
             fontSize: 12,

@@ -1,7 +1,7 @@
-import  React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, View, Text,TouchableOpacity } from "react-native";
-import { Avatar, Icon } from 'react-native-elements'; 
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { Avatar, Icon } from 'react-native-elements';
 
 import { getUserToken } from "../storage/UserToken";
 import { getUserInbox } from "../api/backend/Social";
@@ -20,26 +20,26 @@ function Inbox() {
     useEffect(() => {
         const getMeUserInbox = async () => {
             const token = await getUserToken();
-            getUserInbox(token.token)
-            .then(response => {
-                console.log(response.data);
-                setInboxData(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            })
+            await getUserInbox(token.token)
+                .then(response => {
+                    console.log(response.data);
+                    setInboxData(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
         };
         getMeUserInbox();
     }, []);
 
     return (
         <View style={styles.container}>
-            {inboxData?
+            {inboxData ?
                 inboxData.map((data, index) => (
-                    <ChatPreview key={data.id} data={data} index={index} dataLength={inboxData.length} styles={styles}/>
+                    <ChatPreview key={data.id} data={data} index={index} dataLength={inboxData.length} styles={styles} />
                 ))
                 :
-                <Text style={[styles.message, {'textAlign': 'center'}]}>No chats to show</Text>
+                <Text style={[styles.message, { 'textAlign': 'center' }]}>No chats to show</Text>
             }
         </View>
     )
@@ -52,106 +52,106 @@ function ChatPreview(props) {
     const navigation = useNavigation();
 
     const handleDataPress = (data) => {
-        navigation.navigate('Chat', {chatPreviewMessage: data});
+        navigation.navigate('Chat', { chatPreviewMessage: data });
     };
-    
+
     return (
-        <TouchableOpacity key={props.index} onPress={() => handleDataPress(props.data)}> 
-        <View>
-            <View style ={styles.notificationContainer}>
-                <Avatar
-                    rounded
-                    source={props.data.sender_profile_picture? {uri: props.data.sender_profile_picture} : require("../assets/images/default_profile.jpg")}
-                    size="medium"
-                    containerStyle={styles.avatarContainer}
-                />
-                <View style={styles.textContainer}>
-                    <Text style={styles.name}>
-                        {props.data.sender_username}
-                    </Text>
-                    <Text style={styles.message}>
-                        {props.data.attachment?
-                            (<Icon name="paperclip" type="font-awesome" size={16} color="#666" />)
-                            : ""
-                        }
-                        {props.data.message?
-                            (props.data.message.substring(0, 100) + (props.data.message.length > 100? '...' : ''))
-                            : ''
-                        }
-                    </Text>
-                
-                    <Text style={styles.time}>
-                        {formatTimeDifferencePast(props.data.timestamp)} ago
-                    </Text>
+        <TouchableOpacity key={props.index} onPress={() => handleDataPress(props.data)}>
+            <View>
+                <View style={styles.notificationContainer}>
+                    <Avatar
+                        rounded
+                        source={props.data.sender_profile_picture ? { uri: props.data.sender_profile_picture } : require("../assets/images/default_profile.jpg")}
+                        size="medium"
+                        containerStyle={styles.avatarContainer}
+                    />
+                    <View style={styles.textContainer}>
+                        <Text style={styles.name}>
+                            {props.data.sender_username}
+                        </Text>
+                        <Text style={styles.message}>
+                            {props.data.attachment ?
+                                (<Icon name="paperclip" type="font-awesome" size={16} color="#666" />)
+                                : ""
+                            }
+                            {props.data.message ?
+                                (props.data.message.substring(0, 100) + (props.data.message.length > 100 ? '...' : ''))
+                                : ''
+                            }
+                        </Text>
+
+                        <Text style={styles.time}>
+                            {formatTimeDifferencePast(props.data.timestamp)} ago
+                        </Text>
+                    </View>
+                    <Icon
+                        name='arrow-right'
+                        type='feather'
+                        color={colors.highlight2}
+                        size={24}
+                    />
                 </View>
-                <Icon
-                    name='arrow-right'
-                    type='feather'
-                    color={colors.highlight2}
-                    size={24}
-                />
+                {props.index < props.dataLength - 1 && <View style={styles.notificationBorder} />}
             </View>
-            {props.index < props.dataLength - 1 && <View style={styles.notificationBorder} />}
-        </View>
-    </TouchableOpacity>
+        </TouchableOpacity>
     )
 }
 
 
 
-function createStyles(colors){
+function createStyles(colors) {
     return StyleSheet.create({
-            container: {
-                flex: 1,
-                padding:16,
-                backgroundColor: colors.background,
-            },
-        
-            notificationContainer: {
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop:0,
-                paddingHorizontal: 16,
-                backgroundColor: colors.background2,
-                borderRadius: 10,
-                elevation: 3,
-                shadowColor: colors.foreground,
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.2,
-                shadowRadius: 4,
-                padding: 16,
-            },
-            avatarContainer: {
-                marginRight: 16,
-                },
-            textContainer: {
-                flex:1,
-                
-            },
-            name: {
-                fontSize: 16,
-                fontWeight: 'bold',
-                marginBottom: 4,
-                color: colors.foreground,
-            },
-            message: {
-                fontSize: 16,
-                color: colors.foreground,
-                marginBottom:4,
-                },
-        
-            time: {
+        container: {
+            flex: 1,
+            padding: 16,
+            backgroundColor: colors.background,
+        },
+
+        notificationContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 0,
+            paddingHorizontal: 16,
+            backgroundColor: colors.background2,
+            borderRadius: 10,
+            elevation: 3,
+            shadowColor: colors.foreground,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            padding: 16,
+        },
+        avatarContainer: {
+            marginRight: 16,
+        },
+        textContainer: {
+            flex: 1,
+
+        },
+        name: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginBottom: 4,
             color: colors.foreground,
-            fontSize: 12,       
-            },
-        
-            notificationBorder:{
+        },
+        message: {
+            fontSize: 16,
+            color: colors.foreground,
+            marginBottom: 4,
+        },
+
+        time: {
+            color: colors.foreground,
+            fontSize: 12,
+        },
+
+        notificationBorder: {
             height: 1,
             borderBottomColor: '#ddd',
             marginVertical: 10,
-            }
         }
+    }
     )
 }
 
- export default Inbox;
+export default Inbox;

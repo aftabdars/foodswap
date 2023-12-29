@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import { useState, useEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
-import { View, Text, StyleSheet,TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
 //import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,6 +11,7 @@ import { getMessages, postMessage } from '../api/backend/Social';
 import { SerializeImage } from '../api/backend/utils/Serialize';
 import { ThemeContext, getColors } from '../assets/Theme';
 import { WSChat } from '../api/backend/WebSocket';
+import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
 
 
 function Chat() {
@@ -18,7 +19,7 @@ function Chat() {
     const theme = useContext(ThemeContext).theme;
     const colors = getColors(theme);
     const styles = createStyles(colors);
-    
+
     const route = useRoute(); // Use useRoute to access route parameters
     const messagesScrollRef = useRef();
 
@@ -34,31 +35,31 @@ function Chat() {
     useEffect(() => {
         let chatRoom = null;
         if (chatPreviewMessage.sender < chatPreviewMessage.receiver)
-        chatRoom = `${chatPreviewMessage.sender}_${chatPreviewMessage.receiver}`
+            chatRoom = `${chatPreviewMessage.sender}_${chatPreviewMessage.receiver}`
         else
-        chatRoom = `${chatPreviewMessage.receiver}_${chatPreviewMessage.sender}`
+            chatRoom = `${chatPreviewMessage.receiver}_${chatPreviewMessage.sender}`
         const ws = WSChat(chatRoom);
-    
+
         ws.onopen = () => {
-          console.log(`WebSocket connected, chatroom: ${chatRoom}`);
+            console.log(`WebSocket connected, chatroom: ${chatRoom}`);
         };
-    
+
         ws.onmessage = (event) => {
             const receivedMessage = JSON.parse(JSON.parse(event.data)['message']);
             setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
         };
-    
+
         ws.onclose = () => {
-          console.log(`WebSocket disconnected, chatroom: ${chatRoom}`);
-          // Reconnect logic can be added here if needed
+            console.log(`WebSocket disconnected, chatroom: ${chatRoom}`);
+            // Reconnect logic can be added here if needed
         };
-    
+
         setSocket(ws);
-    
+
         return () => {
-          ws.close();
+            ws.close();
         };
-      }, []);
+    }, []);
 
     // Get chat messages
     useEffect(() => {
@@ -71,13 +72,13 @@ function Chat() {
                 'or_receiver': chatPreviewMessage.sender,
             }
             getMessages(token.token, params)
-            .then(response => {
-                console.log(response.data);
-                setMessages(response.data.results);
-            })
-            .catch(error => {
-                console.log(error);
-            })
+                .then(response => {
+                    console.log(response.data);
+                    setMessages(response.data.results);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
         };
         getMeMessages();
     }, []);
@@ -85,8 +86,8 @@ function Chat() {
     // Scroll to bottom once messages are loaded initially
     useEffect(() => {
         if (!initialScrollDone && messages && messages.length > 0) {
-          scrollToBottom();
-          setInitialScrollDone(true);
+            scrollToBottom();
+            setInitialScrollDone(true);
         }
     }, [messages]);
 
@@ -96,35 +97,35 @@ function Chat() {
             const token = await getUserToken();
             const data = new FormData();
             data.append('receiver', chatPreviewMessage.sender);
-            if (newMessage) 
+            if (newMessage)
                 data.append('message', newMessage);
             if (attachment)
                 data.append('attachment', SerializeImage(attachment, `chat-photo-${chatPreviewMessage.receiver}-${chatPreviewMessage.sender}`));
             postMessage(token.token, data)
-            .then(response => {
-                console.log(response.data);
-                
-                // Pass the successful sent message to WebSocket
-                if (socket && socket.readyState === WebSocket.OPEN) {
-                    socket.send(JSON.stringify(response.data));
-                }
-                // Update user's screen with the message user has typed if no socket
-                // This way the user will still see their own message even if socket connection is not on or it is lost
-                else {
-                    setMessages([{
-                        id: messages[0].id + 1,
-                        sender: chatPreviewMessage.receiver,
-                        receiver: chatPreviewMessage.sender,
-                        message: newMessage,
-                        attachment: attachment && attachment.uri
-                    }, ...messages]); 
-                }
-                scrollToBottom();
-            })
-            .catch(error => {
-                console.log(error);
-                console.log(error.response.data);
-            })
+                .then(response => {
+                    console.log(response.data);
+
+                    // Pass the successful sent message to WebSocket
+                    if (socket && socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify(response.data));
+                    }
+                    // Update user's screen with the message user has typed if no socket
+                    // This way the user will still see their own message even if socket connection is not on or it is lost
+                    else {
+                        setMessages([{
+                            id: messages[0].id + 1,
+                            sender: chatPreviewMessage.receiver,
+                            receiver: chatPreviewMessage.sender,
+                            message: newMessage,
+                            attachment: attachment && attachment.uri
+                        }, ...messages]);
+                    }
+                    scrollToBottom();
+                })
+                .catch(error => {
+                    console.log(error);
+                    console.log(error.response.data);
+                })
 
             // Empty the new message and attachment states
             setNewMessage('');
@@ -144,14 +145,14 @@ function Chat() {
                     allowsEditing: true,
                     quality: 1,
                 });
-      
+
                 if (!picture.canceled) {
                     console.log(picture);
                     setAttachment(picture);
                 }
-              } catch (error) {
-                    console.error('Error picking image:', error);
-              }
+            } catch (error) {
+                console.error('Error picking image:', error);
+            }
         }
     };
 
@@ -159,44 +160,44 @@ function Chat() {
         messagesScrollRef.current.scrollToEnd({ animated: true });
     };
 
-    return ( 
+    return (
         <View style={styles.container}>
-            <View style={styles.headerExtraSpaceTop}/>
+            <View style={styles.headerExtraSpaceTop} />
             <View style={styles.header}>
                 <TouchableOpacity></TouchableOpacity>
-                <Image source={chatPreviewMessage.sender_profile_picture? {uri: chatPreviewMessage.sender_profile_picture} : require("../assets/images/default_profile.jpg")} style={styles.profilePic} />
+                <Image source={chatPreviewMessage.sender_profile_picture ? { uri: chatPreviewMessage.sender_profile_picture } : require("../assets/images/default_profile.jpg")} style={styles.profilePic} />
                 <Text style={styles.senderName}>
                     {
-                        chatPreviewMessage.sender_first_name? (chatPreviewMessage.sender_last_name? chatPreviewMessage.sender_first_name + chatPreviewMessage.sender_last_name : chatPreviewMessage.sender_username)
-                    :
-                        chatPreviewMessage.sender_username
+                        chatPreviewMessage.sender_first_name ? (chatPreviewMessage.sender_last_name ? chatPreviewMessage.sender_first_name + chatPreviewMessage.sender_last_name : chatPreviewMessage.sender_username)
+                            :
+                            chatPreviewMessage.sender_username
                     }
                 </Text>
             </View>
-            <ScrollView 
+            <ScrollView
                 style={styles.messagesContainer}
                 ref={messagesScrollRef}
             >
                 {messages && messages.slice().reverse().map((msg, index) => (
-                    <Message key={msg.id && msg.id} index={index} msg={msg} isYourMessage={msg.sender === chatPreviewMessage.receiver} styles={styles}/>
-                 ))}
+                    <Message key={msg.id && msg.id} index={index} msg={msg} isYourMessage={msg.sender === chatPreviewMessage.receiver} styles={styles} />
+                ))}
 
-                 <Text styles={{"marginVertican": 10}} />
+                <Text styles={{ "marginVertican": 10 }} />
             </ScrollView>
             <View style={styles.inputContainer}>
                 <TouchableOpacity style={styles.imagePickerButton} onPress={handleImagePick}>
-                <Icon name="camera" size={20} color="#707070" />
+                    <Icon name="camera" size={20} color={colors.foreground} />
                 </TouchableOpacity>
-                    <TextInput
+                <TextInput
                     style={styles.input}
                     placeholder="Type your message..."
                     placeholderTextColor={colors.foreground}
                     value={newMessage}
                     onChangeText={(text) => setNewMessage(text)}
                 />
-                <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-                <Icon name="send" size={18}  color={colors.foreground} />
-            </TouchableOpacity>
+                <MaterialButtonSuccess style={styles.sendButton} onPress={handleSend}>
+                    <Icon name="send" size={18} color={colors.foreground} />
+                </MaterialButtonSuccess>
             </View>
         </View>
     );
@@ -204,13 +205,13 @@ function Chat() {
 
 function Message(props) {
     const styles = props.styles;
-    const msg = props.msg? props.msg : [];
+    const msg = props.msg ? props.msg : [];
     const isYourMessage = props.isYourMessage;
 
     return (
         <View key={props.index} style={isYourMessage ? styles.yourMessage : styles.otherMessage}>
             <TouchableOpacity>
-                <Text style={styles.sender}>{isYourMessage == true? 'You' : msg.sender_username}:</Text>
+                <Text style={styles.sender}>{isYourMessage == true ? 'You' : msg.sender_username}:</Text>
                 {msg.attachment ? (
                     <Image source={{ uri: msg.attachment }} style={styles.messageImage} />
                 ) : ''
@@ -221,7 +222,7 @@ function Message(props) {
     );
 }
 
-function createStyles(colors){
+function createStyles(colors) {
     return StyleSheet.create({
         container: {
             flex: 1,
@@ -293,19 +294,18 @@ function createStyles(colors){
         inputContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            paddingHorizontal: 16,
+            paddingHorizontal: 14,
             paddingVertical: 12,
             backgroundColor: colors.background,
             borderTopWidth: 1,
             borderTopColor: colors.background2,
         },
-        imagePickerButton:{
-            padding: 8,
-            
+        imagePickerButton: {
+            marginRight: 10
         },
         messageImage: {
-            width: 200, // Adjust the width as needed
-            height: 150, // Adjust the height as needed
+            width: 200,
+            height: 150,
             borderRadius: 8,
             resizeMode: 'contain'
         },
@@ -320,17 +320,16 @@ function createStyles(colors){
             backgroundColor: colors.background2,
             color: colors.foreground
         },
-        
         sendButton: {
             backgroundColor: colors.highlight2,
             padding: 8,
             borderRadius: 20,
         },
         sendButtonText: {
-            color: '#fff',
+            color: colors.foreground,
             fontWeight: 'bold',
         },
     })
 }
-    
+
 export default Chat;    

@@ -9,7 +9,7 @@ function FoodCarousel(props) {
 
   // References and others
   const carouselRef = useRef(null);
-  const dummyFoodItems = [{"id": 0, "name": "food", "descripttion": "Healthy food", "status": "up"}];
+  const dummyFoodItems = [{"id": -1, "name": " ", "descripttion": " ", "status": " "}];
   const navigation = useNavigation();
 
   // Render food items in carousel

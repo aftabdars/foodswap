@@ -1,13 +1,10 @@
 import React, { useContext } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import {View, Text} from 'react-native'
+import { Text } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Home from './Home';
 import Profile from './Profile';
 import EditProfile from './EditProfile';
-import CupertinoFooter1 from '../components/CupertinoFooter1';
 import FoodImageSelection from '../screens/FoodImageSelection';
 import Settings from '../screens/Settings';
 import Inbox from '../screens/Messages';
@@ -37,24 +34,24 @@ function ProfileContainer() {
   const colors = getColors(theme);
 
   return (
-      <Stack.Navigator initialRouteName={"Profile "}>
-          <Stack.Screen name="Profile " component={Profile} options={{headerShown:false}}/>
-          <Stack.Screen name="EditProfile" component={EditProfile} options={{title:'Edit Profile', headerTintColor:'#fff',headerStyle: {backgroundColor:colors.highlight1}}}/>
-      </Stack.Navigator>
+    <Stack.Navigator initialRouteName={"Profile "}>
+      <Stack.Screen name="Profile " component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+    </Stack.Navigator>
   )
 }
 
 function MessagesContainer() {
-    // Theme
-    const theme = useContext(ThemeContext).theme;
-    const colors = getColors(theme);
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
 
-    return (
-        <Stack.Navigator initialRouteName={"Messages "}>
-            <Stack.Screen name="Messages " component={Inbox} options={{headerTintColor:'#fff',headerStyle: {backgroundColor:colors.highlight1}}}/>
-            <Stack.Screen name="Chat" component={Chat} options={{headerShown:false}}/>
-        </Stack.Navigator>
-    )
+  return (
+    <Stack.Navigator initialRouteName={"Messages "}>
+      <Stack.Screen name="Messages " component={Inbox} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  )
 }
 
 function FoodUploadContainer() {
@@ -63,10 +60,10 @@ function FoodUploadContainer() {
   const colors = getColors(theme);
 
   return (
-      <Stack.Navigator initialRouteName={"FoodImageSelection"}>
-          <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{title: 'Food Upload', headerStyle: {backgroundColor:colors.highlight1}, headerTintColor:'#fff'}}/>
-          <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{title:'Food Upload', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
-      </Stack.Navigator>
+    <Stack.Navigator initialRouteName={"FoodImageSelection"}>
+      <Stack.Screen name="FoodImageSelection" component={FoodImageSelection} options={{ title: 'Food Upload', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+      <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{ title: 'Food Upload', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+    </Stack.Navigator>
   )
 }
 
@@ -76,9 +73,9 @@ function SettingsContainer() {
   const colors = getColors(theme);
 
   return (
-      <Stack.Navigator initialRouteName={"Settings "}>
-          <Stack.Screen name="Settings " component={Settings} options={{headerTintColor:'#fff',headerStyle: {backgroundColor:colors.highlight1}}}/>
-      </Stack.Navigator>
+    <Stack.Navigator initialRouteName={"Settings "}>
+      <Stack.Screen name="Settings " component={Settings} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+    </Stack.Navigator>
   )
 }
 
@@ -87,46 +84,43 @@ function HomeContainer() {
   const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
   return (
-      <Stack.Navigator initialRouteName={"Home"}>
-          <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
-          <Stack.Screen name="FoodInfo" component={FoodInfo} options={{headerTintColor:'#fff',headerShown: false}}/>
-          <Stack.Screen name="FoodSwapSelection" component={FoodSwapSelection} options={{title: 'Food Selection', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="LocationSelection" component={LocationSelection} options={{title:'Location Selection', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
-          <Stack.Screen name="FoodSwapRoom" component={FoodSwapRoom} options={{title:'FoodSwap Room', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
+    <Stack.Navigator initialRouteName={"Home"}>
+      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+      <Stack.Screen name="FoodInfo" component={FoodInfo} options={{ headerTintColor: '#fff', headerShown: false }} />
+      <Stack.Screen name="FoodSwapSelection" component={FoodSwapSelection} options={{ title: 'Food Selection', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="LocationSelection" component={LocationSelection} options={{ title: 'Location Selection', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+      <Stack.Screen name="FoodSwapRoom" component={FoodSwapRoom} options={{ title: 'FoodSwap Room', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
 
-          <Stack.Screen name="Notifications" component={Notifications} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="Search" component={Search} options={{headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{title:'Foodiez and XP', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="TransferFoodiez" component={TransferFoodiez} options={{title:'Transfer Foodiez', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="TransferFoodiezSuccess" component={TransferFoodiezSuccess} options={{title:'Transfer Foodiez', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="Leaderboard" component={Leaderboard} options={{title:'Leaderboard', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{title:'Active FoodSwaps', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-          <Stack.Screen name="Achievements" component={Achievements} options={{title:'Achievements', headerTintColor:'#fff', headerStyle: {backgroundColor:colors.highlight1}}}/>
-      </Stack.Navigator>
+      <Stack.Screen name="Notifications" component={Notifications} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="Search" component={Search} options={{ headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="TransactionsHistory" component={TransactionsHistory} options={{ title: 'Foodiez and XP', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="TransferFoodiez" component={TransferFoodiez} options={{ title: 'Transfer Foodiez', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="TransferFoodiezSuccess" component={TransferFoodiezSuccess} options={{ title: 'Transfer Foodiez', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="Leaderboard" component={Leaderboard} options={{ title: 'Leaderboard', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{ title: 'Active FoodSwaps', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+      <Stack.Screen name="Achievements" component={Achievements} options={{ title: 'Achievements', headerTintColor: '#fff', headerStyle: { backgroundColor: colors.highlight1 } }} />
+    </Stack.Navigator>
   )
 }
 
 const Main = () => {
   // Theme
-  const {
-    theme,
-    setTheme
-  } = useContext(ThemeContext);
+  const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
-  
+
   return (
 
-      <Tab.Navigator tabBarPosition='bottom'
+    <Tab.Navigator tabBarPosition='bottom'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
           switch (route.name) {
-            case 'HomeContainer' : iconName = 'home-minus'; break;
-            case 'Profile' : iconName = 'account-circle'; break;
-            case 'Camera' : iconName = 'camera'; break;
-            case 'Messages' : iconName = 'message-processing'; break;
-            case 'Settings' : iconName = 'cog'; break;
+            case 'HomeContainer': iconName = 'home-minus'; break;
+            case 'Profile': iconName = 'account-circle'; break;
+            case 'Camera': iconName = 'camera'; break;
+            case 'Messages': iconName = 'message-processing'; break;
+            case 'Settings': iconName = 'cog'; break;
           }
 
           return <MaterialCommunityIconsIcon name={iconName} size={23} color={color} />;
@@ -135,24 +129,23 @@ const Main = () => {
         tabBarInactiveTintColor: colors.foreground,
         tabBarActiveBackgroundColor: colors.background,
         tabBarInactiveBackgroundColor: colors.background,
-        tabBarLabelStyle: {fontSize :11},
-        tabBarLabel: ()=>{
-          let label = route.name=='HomeContainer'? 'Home': route.name
-          return <Text style={{color: colors.foreground}}>{label}</Text>
+        tabBarLabelStyle: { fontSize: 11 },
+        tabBarLabel: () => {
+          let label = route.name == 'HomeContainer' ? 'Home' : route.name
+          return <Text style={{ color: colors.foreground }}>{label}</Text>
         },
-        tabBarItemStyle: {padding:0, margin: 0},
+        tabBarItemStyle: { padding: 0, margin: 0 },
         tabBarStyle: {
           backgroundColor: colors.background2,
         }
       })}
-      >
-        
-        <Tab.Screen name="HomeContainer" component={HomeContainer} options={{headerShown:false}}/>
-        <Tab.Screen name="Profile" component={ProfileContainer} options={{headerShown:false}}/>
-        <Tab.Screen name="Camera" component={FoodUploadContainer} options={{headerShown:false}}/>
-        <Tab.Screen name="Messages" component={MessagesContainer} options={{headerShown:false}}/>
-        <Tab.Screen name="Settings" component={SettingsContainer} options={{headerShown:false}}/>
-      </Tab.Navigator>
+    >
+      <Tab.Screen name="HomeContainer" component={HomeContainer} options={{ headerShown: false }} />
+      <Tab.Screen name="Profile" component={ProfileContainer} options={{ headerShown: false }} />
+      <Tab.Screen name="Camera" component={FoodUploadContainer} options={{ headerShown: false }} />
+      <Tab.Screen name="Messages" component={MessagesContainer} options={{ headerShown: false }} />
+      <Tab.Screen name="Settings" component={SettingsContainer} options={{ headerShown: false }} />
+    </Tab.Navigator>
 
   );
 };

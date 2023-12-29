@@ -35,11 +35,11 @@ const FoodInfo = () => {
 
   // Get foodItem either from route or API call if foodID is passed
   useEffect(() => {
-    foodID = route.params?.foodID;
+    const foodID = route.params?.foodID;
     if (foodID) {
       const getMeFoodItem = async () => {
         const token = await getUserToken();
-        getFood(foodID, token.token)
+        await getFood(foodID, token.token)
           .then(response => {
             console.log(response.data);
             setFoodItem(response.data);
@@ -184,7 +184,7 @@ const FoodInfo = () => {
         <Text style={styles.upFor}>Up for: {foodItem && foodItem.up_for}</Text>
         <Text style={styles.status}>Status: {foodItem && (foodItem.status == 'up' ? 'Available' : stringCapitalize(foodItem.status))}</Text>
 
-        {foodItem &&
+        {foodItem && userID &&
           <RequestButtonOrAlternativeText />
         }
       </View>

@@ -1,4 +1,4 @@
-import React, { Component, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 import { ThemeContext, getColors } from "../assets/Theme";
 
@@ -8,8 +8,23 @@ function MaterialButtonDanger(props) {
   const colors = getColors(theme);
   const styles = createStyles(colors);
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const handlePress = () => {
+    if (!isButtonDisabled) {
+      setIsButtonDisabled(true);
+
+      props.onPress && props.onPress();
+
+      // Lock will release after 3 seconds
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 3000);
+    }
+  }
+
   return (
-    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={handlePress}>
       <Text style={styles.caption}>{props.children}</Text>
     </TouchableOpacity>
   );
@@ -31,7 +46,7 @@ function createStyles(colors) {
       shadowOpacity: 0.35,
       shadowRadius: 5,
       elevation: 2,
-      minWidth: 88,
+      //minWidth: 88,
       paddingLeft: 16,
       paddingRight: 16
     },

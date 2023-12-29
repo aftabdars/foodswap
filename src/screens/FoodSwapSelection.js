@@ -30,7 +30,7 @@ const FoodSwapSelection = () => {
         getUserFoodItemsForSwap();
     }, []);
 
-    const FoodPreview = ({item}) => {
+    const FoodPreview = ({ item }) => {
 
         const handlePress = () => {
             navigation.navigate('LocationSelection', {
@@ -95,7 +95,7 @@ const FoodSwapSelection = () => {
 
     return (
         <View style={styles.container}>
-            {userFoods &&
+            {userFoods ?
                 <FlatList
                     data={userFoods}
                     keyExtractor={(item) => item.id}
@@ -104,6 +104,8 @@ const FoodSwapSelection = () => {
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.2}
                 />
+                :
+                <Text style={styles.noFoodSwapsText}>You don't have any active FoodSwaps</Text>
             }
         </View>
     );
@@ -118,6 +120,10 @@ function createStyles(colors) {
         },
         flatList: {
             padding: 0,
+        },
+        noFoodSwapsText: {
+            color: colors.foreground,
+            textAlign: 'center',
         },
         foodItem: {
             flexDirection: 'row',

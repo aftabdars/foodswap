@@ -86,6 +86,12 @@ export async function getFoodSwaps(token, params) {
     return await makeGetRequest(url, token, params);
 }
 
+// Gets Foodswap
+export async function getFoodSwap(id, token) {
+    const url = `/food/foodswap/${id}`;
+    return await makeGetRequest(url, token);
+}
+
 // Posts foodswap request
 export async function postFoodSwapRequest(token, body) {
     const url = `/food/foodswap-requests/`;

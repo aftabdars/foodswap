@@ -23,7 +23,17 @@ export const getCachedData = async (key) => {
 };
 
 // Sets or updates(if data already exists) data in cache and storage
-export const setCachedData = (key, data) => {
+export const setCachedData = async (key, data) => {
+  console.log('Setting ' + key + ': ' + data)
+  await AsyncStorage.setItem(key, data);
+  const item = { data, timestamp: Date.now() };
+  cache.set(key, item);
+  if (cache.size > MAX_CACHE_SIZE) {
+    cache.delete(cache.keys().next().value);
+  }
+  console.log('Data is set');
+};
+export const setCachedDataNoAsync = (key, data) => {
   console.log('Setting ' + key + ': ' + data)
   AsyncStorage.setItem(key, data);
   const item = { data, timestamp: Date.now() };
@@ -33,6 +43,7 @@ export const setCachedData = (key, data) => {
   }
   console.log('Data is set');
 };
+
 
 // Removes data from cache and storage
 export const removeCachedData = (key) => {

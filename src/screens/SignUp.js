@@ -7,8 +7,8 @@ import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrange
 import { useFonts } from 'expo-font';
 
 import { postSignup } from "../api/backend/User";
-import { setUserToken } from "../storage/UserToken";
 import { ThemeContext, getColors } from '../assets/Theme';
+import { extractErrorMessage } from "../api/backend/utils/Utils";
 
 
 function SignUp({navigation}) {
@@ -60,9 +60,7 @@ function SignUp({navigation}) {
             setShowError(error.response.data["email"][0])
           }
           else {
-            const errorMessages = error.response.data;
-            const errorMessage = errorMessages[Object.keys(errorMessages)[0]];
-            setShowError(errorMessage)
+            setShowError(extractErrorMessage(error.response.data));
           }
         })
 

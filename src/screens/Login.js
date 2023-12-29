@@ -5,7 +5,6 @@ import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonWithVioletText from "../components/MaterialButtonWithVioletText";
-import { useFonts } from 'expo-font';
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
 
 import { postLogin } from "../api/backend/Auth";
@@ -13,6 +12,8 @@ import { getUserToken, setUserToken } from "../storage/UserToken";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { setProfile, setStats } from "../storage/User";
 import { getClientProfile, getClientStats } from "../api/backend/User";
+import { useLoading } from "../assets/LoadingContext";
+import { extractErrorMessage } from "../api/backend/utils/Utils";
 
 
 function Login({navigation}) {
@@ -20,6 +21,8 @@ function Login({navigation}) {
   const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
   const styles = createStyles(colors);
+  // Loading
+  const { showLoading, hideLoading } = useLoading();
 
   // States
   const [username, setUsername] = useState();
@@ -33,6 +36,7 @@ function Login({navigation}) {
         const token = await getUserToken();
         if (token && token !== null) {
           // Navigate to home forgetting login and previous screens
+          showLoading();
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
@@ -45,12 +49,14 @@ function Login({navigation}) {
       }
     };
     checkUserToken();
+    hideLoading(); // After logout loading may be shown or the above token may raise error
   }, []);
 
   const handleLogin = () => {
     // Check if all of the fields are not empty
     if (!username || !password) {
       setShowError("Please fill out all the fields");
+      return;
     }
 
     body = {
@@ -62,6 +68,7 @@ function Login({navigation}) {
       console.log(response.status);
       console.log(response.data);
       if (response.status == 200) {
+        showLoading();
         // Set some user data and token to storage
         const setSomeData = async () => {
           try {
@@ -69,11 +76,11 @@ function Login({navigation}) {
             const statsResponse = await getClientStats(response.data.token);
 
             if (profileResponse && statsResponse) {
-              setUserToken(response.data);
+              await setUserToken(response.data);
               console.log(profileResponse.data);
-              setProfile(profileResponse.data);
+              await setProfile(profileResponse.data);
               console.log(statsResponse.data);
-              setStats(statsResponse.data);
+              await setStats(statsResponse.data);
 
               // Navigate to home forgetting login and previous screens
               navigation.dispatch(
@@ -86,23 +93,24 @@ function Login({navigation}) {
           }
           catch(error) {
             console.error(error.response.data);
+            hideLoading();
           }
         }
         setSomeData();
       }
     })
     .catch(error => {
-      console.log(error)
-      console.log(error.response.data)
-      errorMessages = error.response.data;
+      hideLoading();
+      console.log(error);
+      console.log(error.response.data);
 
-      if (error.response.status == 401) { // Unauthorized
+      if (error.response.status == 401) { // Unauthorized (Meaning in this case, that user is not verified)
         navigation.navigate('EmailConfirmation', {
           fromLogin: true // From login specifies that we are navigating from login screen (and not from SignUp)
         });
       }
       else {
-        setShowError(errorMessages[Object.keys(errorMessages)[0]][0]);
+        setShowError(extractErrorMessage(error.response.data));
       }
     })
   }

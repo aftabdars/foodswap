@@ -46,8 +46,7 @@ function EmailConfirmation({navigation}) {
       .catch(error => {
         console.log(error.response.status);
         console.log(error.response.data);
-        errorMessage = error.response.data[Object.keys(error.response.data)[0]];
-        setShowError(errorMessage);
+        setShowError(extractErrorMessage(error.response.data));
       });
     }
   }

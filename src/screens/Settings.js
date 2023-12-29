@@ -1,14 +1,11 @@
 import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Switch } from "react-native";
-import MaterialButtonDanger from "../components/MaterialButtonDanger";
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 
-import { getUserToken, removeUserToken } from "../storage/UserToken";
-import { postLogout } from "../api/backend/Auth";
 import { getColors, ThemeContext } from "../assets/Theme";
 import { setUserTheme } from "../storage/UserSettings";
-import { removeProfile, removeStats } from "../storage/User";
+
 
 function Settings() {
   // Theme
@@ -24,39 +21,11 @@ function Settings() {
 
   const navigation = useNavigation();
 
-  const handleSwitchTheme = async (toTheme) => {
-    // const toTheme = (theme === 'light') ? 'dark' : 'light';
-    // setThemeEnabled(!themeEnabled); 
-    setTheme(toTheme); // Updates user theme in real-time by changing the theme State
-
-    // Save user theme settings in cache and storage
-    await setUserTheme(toTheme);
-  }
-
-  const handleLogout = async () => {
-    const token = await getUserToken();
-    postLogout(token.token)
-      .then(response => { // Response status 204 if deleted
-        console.log(response.status);
-        console.log(response.data);
-
-        // Clears some data from user storage
-        removeUserToken();
-        removeProfile();
-        removeStats();
-        //removeUserTheme();
-
-        // Navigate to initial page like Login (forgetting current screens)
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-          })
-        );
-      })
-      .catch(error => {
-        console.log(error);
-      })
+  const handleSwitchTheme = (toTheme) => {
+    // Save user theme settings in cache and storage (It should not be asynchrouns )
+    setUserTheme(toTheme);
+    // Updates user theme in real-time by changing the theme State
+    setTheme(toTheme);
   }
 
   return (
@@ -73,11 +42,6 @@ function Settings() {
           value={notificationEnabled}
           onValueChange={() => setNotificationEnabled(!notificationEnabled)}
         />
-        {/* <Switch  
-                style={[styles.childText4,styles.commonStyle]}
-                value={themeEnabled}
-                onValueChange={ handleSwitchTheme } 
-            />  */}
         <View style={[styles.childText4, styles.commonStyle, { flex: 1, flexDirection: 'row', justifyContent: "space-between", width: 80, marginLeft: 260 }]}>
           <Picker
             placeholder='Select Theme'
@@ -94,9 +58,6 @@ function Settings() {
           </Picker>
         </View>
       </View>
-      <MaterialButtonDanger style={styles.logoutButton} onPress={handleLogout}>
-        Logout
-      </MaterialButtonDanger>
     </View>
 
   );
@@ -189,14 +150,6 @@ function createStyles(colors) {
       marginTop: 123,
       marginLeft: 12,
     },
-    logoutButton: {
-      position: 'absolute',
-      width: 40,
-      height: 30,
-      marginHorizontal: 150,
-      marginVertical: 20,
-      bottom: 0,
-    }
   })
 }
 

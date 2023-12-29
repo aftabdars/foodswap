@@ -7,6 +7,7 @@ import { postClientFoodiezTransferTransactions } from "../api/backend/Gamificati
 import { getUserToken } from "../storage/UserToken";
 import { getUsers } from "../api/backend/User";
 import { useNavigation } from "@react-navigation/native";
+import { extractErrorMessage } from "../api/backend/utils/Utils";
 
 
 const TransferFoodiez = () => {
@@ -64,10 +65,8 @@ const TransferFoodiez = () => {
             navigation.navigate('TransferFoodiezSuccess', {amount: parseFloat(amount)});
           })
           .catch(error => {
-            errorMessages = error.response.data;
-            console.log(errorMessages);
-
-            setShowError(errorMessages[Object.keys(errorMessages)[0]][0]);
+            console.log(error.response.data);
+            setShowError(extractErrorMessage(error.response.data));
           })
       }
     }

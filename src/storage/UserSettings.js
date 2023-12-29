@@ -1,4 +1,4 @@
-import { getCachedData, setCachedData, removeCachedData } from "./Storage";
+import { getCachedData, setCachedData, removeCachedData, setCachedDataNoAsync } from "./Storage";
 
 //==========================Theme Settings================================//
 
@@ -9,8 +9,8 @@ export const getUserTheme = async () => {
 };
 
 // Sets or updates user theme
-export const setUserTheme = async (theme) => {
-    return await setCachedData('theme', JSON.stringify(theme));
+export const setUserTheme = (theme) => {
+    return setCachedDataNoAsync('theme', JSON.stringify(theme));
 };
 
 // Removes user theme

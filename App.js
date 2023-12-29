@@ -13,6 +13,7 @@ import { ThemeContext, getColors } from './src/assets/Theme'
 import { useColorScheme } from 'react-native';
 import { useEffect, useState } from 'react';
 import { getUserTheme, setUserTheme } from './src/storage/UserSettings';
+import { LoadingProvider } from './src/assets/LoadingContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,7 @@ export default function App() {
         console.log(userThemeSettings)
         // If user has theme settings, then set the theme to that
         if (userThemeSettings && userThemeSettings !== null) {
-          userThemeSettings == 'auto'? setTheme(systemTheme) : setTheme(userThemeSettings);
+          userThemeSettings == 'auto' ? setTheme(systemTheme) : setTheme(userThemeSettings);
         } else {
           // Also save in cache and storage
           setUserTheme('auto');
@@ -52,24 +53,27 @@ export default function App() {
   if (!loaded) {
     return null;
   }
-  
+
   return (
+
     <ThemeContext.Provider
       value={
-        {theme, setTheme}
+        { theme, setTheme }
       }
     >
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName={"Login"}>
-          <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
-          <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{title:'Account Verification', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
-          <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
-          <Stack.Screen name="Forgot" component={Forgot} options={{title:'Forgot', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
-          <Stack.Screen name="Forgot2" component={Forgot2} options={{title:'Forgot', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
-          <Stack.Screen name="Forgot3" component={Forgot3} options={{title:'Forgot', headerStyle: {backgroundColor: colors.highlight1}, headerTintColor: '#fff'}}/>
-          <Stack.Screen name="Main" component={Main} options={{headerShown:false}}/>
-        </Stack.Navigator>
-      </NavigationContainer>
+      <LoadingProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={"Login"}>
+            <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+            <Stack.Screen name="EmailConfirmation" component={EmailConfirmation} options={{ title: 'Account Verification', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="Forgot" component={Forgot} options={{ title: 'Forgot', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+            <Stack.Screen name="Forgot2" component={Forgot2} options={{ title: 'Forgot', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+            <Stack.Screen name="Forgot3" component={Forgot3} options={{ title: 'Forgot', headerStyle: { backgroundColor: colors.highlight1 }, headerTintColor: '#fff' }} />
+            <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </LoadingProvider>
     </ThemeContext.Provider>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, RefreshControl } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { getLeaderboard } from "../api/backend/Gamification";
@@ -12,7 +12,9 @@ const Leaderboard = () => {
     const theme = useContext(ThemeContext).theme;
     const colors = getColors(theme);
     const styles = createStyles(colors);
-
+    // States
+    const [refresh, setRefresh] = useState(false);
+    const [refreshCount, setRefreshCount] = useState(0);
     const [data, setData] = useState();
 
     // Keeping this sample data for now
@@ -29,10 +31,20 @@ const Leaderboard = () => {
         { id: '100', username: 'IvyClark', xp: 400 },
     ];
 
+    // Gets the data
     useEffect(() => {
+        let completedCount = 0;
+        const MAX_COUNT = 1;
+
+        const checkAllDataFetched = () => {
+            if (completedCount === MAX_COUNT) {
+                setRefresh(false);
+            }
+        };
+
         (async () => {
             const token = (await getUserToken()).token;
-            getLeaderboard(token, { 'name': 'xp' })
+            await getLeaderboard(token, { 'name': 'xp' })
                 .then(response => {
                     console.log(response.status);
                     console.log(response.data);
@@ -40,12 +52,15 @@ const Leaderboard = () => {
                     // API request to user for Top 3 users' profile pictures here
 
                     setData([...leaderboardData, ...response.data.results]);
+
+                    completedCount++;
+                    checkAllDataFetched();
                 })
                 .catch(error => {
                     console.log(error.response.data);
                 });
         })();
-    }, []);
+    }, [refreshCount]);
 
     const renderLeaderboardItem = ({ item, index }) => {
         const isTopThree = index < 3;
@@ -90,6 +105,11 @@ const Leaderboard = () => {
         console.log(`Profile pressed: ${item.username}`);
     };
 
+    const onRefresh = () => {
+        setRefreshCount(refreshCount + 1);
+        setRefresh(true);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.titleContainer}>
@@ -100,6 +120,14 @@ const Leaderboard = () => {
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={renderLeaderboardItem}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refresh}
+                        onRefresh={onRefresh}
+                        colors={[colors.highlight1, colors.highlight2]}
+                        tintColor={colors.highlight2}
+                    />
+                }
             />
         </View>
     );

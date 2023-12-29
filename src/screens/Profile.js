@@ -7,9 +7,7 @@ import OcticonsIcon from "react-native-vector-icons/Octicons";
 import { useFonts } from 'expo-font';
 
 import ProgressBar from '../components/ProgressBar'
-import { getUserStats } from '../api/backend/User';
 import { getProfile, getStats } from "../storage/User";
-import { getUserToken } from "../storage/UserToken";
 import { getLevels } from "../api/backend/Gamification";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { useNavigation } from "@react-navigation/native";
@@ -88,9 +86,9 @@ function Profile(props) {
             'xp_start__lte': userStats? userStats.xp: 0,
             'xp_end__gte': userStats? userStats.xp: 199
           }
-          getLevels(params)
+          await getLevels(params)
           .then(response => {
-            console.log(response.data);
+            //console.log(response.data);
             if (response.status == 200) setLevelData(response.data.results[0]);
           })
           .catch(error => {

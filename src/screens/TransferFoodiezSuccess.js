@@ -63,6 +63,7 @@ const TransferFoodiezSuccess = () => {
         </View>
     );
 };
+
 function createStyles(colors) {
     return StyleSheet.create({
         container: {
