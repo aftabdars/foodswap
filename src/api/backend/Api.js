@@ -9,7 +9,7 @@ export async function makeGetRequest(url, token = undefined, params = undefined,
 
     const headers = {
         'Content-Type': 'application/json',
-        'If-Modified-Since': ifModifiedSince? ifModifiedSince.toUTCString() : NO_IF_MODIFIED_SINCE,
+        'If-Modified-Since': ifModifiedSince ? ifModifiedSince.toUTCString() : NO_IF_MODIFIED_SINCE,
     };
 
     if (token) {
@@ -17,7 +17,14 @@ export async function makeGetRequest(url, token = undefined, params = undefined,
     }
 
     try {
-        const response = await axios.get(fullUrl, { headers, params });
+        const response = await axios.get(fullUrl, {
+            headers,
+            params,
+            validateStatus: function (status) {
+                // Valid status from 200 to 299 and 304
+                return (status >= 200 && status < 300) || status === 304;
+            },
+        });
         return response
     } catch (error) {
         console.error(`Error making GET request to ${BACKEND_API_ENDPOINT}${url}`, error);
@@ -28,7 +35,6 @@ export async function makeGetRequest(url, token = undefined, params = undefined,
         if (detail && typeof detail == "string" && detail.toLowerCase() == 'invalid token.') {
             removeUserToken();
         }*/
-
         throw error
     }
 }
@@ -101,12 +107,12 @@ export async function makeDeleteRequest(url, token = undefined, body = {}) {
 
 const getCSRFToken = async () => {
     try {
-      const response = await axios.get(`${BACKEND_API_ENDPOINT}/get_csrf_token/`);
-      return response.headers['x-csrftoken'];
+        const response = await axios.get(`${BACKEND_API_ENDPOINT}/get_csrf_token/`);
+        return response.headers['x-csrftoken'];
     } catch (error) {
-      console.error(error);
-      throw error;
+        console.error(error);
+        throw error;
     }
-  };
-  
-  export default getCSRFToken;
+};
+
+export default getCSRFToken;

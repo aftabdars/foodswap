@@ -64,7 +64,6 @@ const SideBar = (props) => {
         }
         await getLevels(params)
           .then(response => {
-            console.log(response.data);
             if (response.status == 200) setLevelData(response.data.results[0]);
           })
           .catch(error => {

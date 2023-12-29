@@ -7,8 +7,8 @@ import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonWithVioletText from "../components/MaterialButtonWithVioletText";
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
 
-import { postLogin } from "../api/backend/Auth";
-import { getUserToken, setUserToken } from "../storage/UserToken";
+import { getTokenValidation, postLogin } from "../api/backend/Auth";
+import { getUserToken, removeUserToken, setUserToken } from "../storage/UserToken";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { setProfile, setStats } from "../storage/User";
 import { getClientProfile, getClientStats } from "../api/backend/User";
@@ -16,7 +16,7 @@ import { useLoading } from "../assets/LoadingContext";
 import { extractErrorMessage } from "../api/backend/utils/Utils";
 
 
-function Login({navigation}) {
+function Login({ navigation }) {
   // Theme
   const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
@@ -28,21 +28,35 @@ function Login({navigation}) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [showError, setShowError] = useState();
-  
+
   // Check if user already has a token in storage, if so then route to Home otherwise Login
   useEffect(() => {
     const checkUserToken = async () => {
       try {
         const token = await getUserToken();
         if (token && token !== null) {
-          // Navigate to home forgetting login and previous screens
-          showLoading();
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'Main' }],
-            })
-          );
+          // Check Token validition
+          let tokenValidationResponse;
+          try {
+            tokenValidationResponse = await getTokenValidation(token.token);
+            console.log(tokenValidationResponse.data);
+          }
+          catch (error) {
+            console.log(error.response.data);
+            removeUserToken(); // For better remove the invalid(expired) token from user's cache and storage
+          }
+
+          // Navigate to home if token is valid
+          if (tokenValidationResponse && tokenValidationResponse.status == 200) {
+            // Navigate to home forgetting login and previous screens
+            showLoading();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'Main' }],
+              })
+            );
+          }
         }
       } catch (error) {
         console.log(error);
@@ -64,55 +78,55 @@ function Login({navigation}) {
       'password': password
     }
     postLogin(body)
-    .then(response => {
-      console.log(response.status);
-      console.log(response.data);
-      if (response.status == 200) {
-        showLoading();
-        // Set some user data and token to storage
-        const setSomeData = async () => {
-          try {
-            const profileResponse = await getClientProfile(response.data.token);
-            const statsResponse = await getClientStats(response.data.token);
+      .then(response => {
+        console.log(response.status);
+        console.log(response.data);
+        if (response.status == 200) {
+          showLoading();
+          // Set some user data and token to storage
+          const setSomeData = async () => {
+            try {
+              const profileResponse = await getClientProfile(response.data.token);
+              const statsResponse = await getClientStats(response.data.token);
 
-            if (profileResponse && statsResponse) {
-              await setUserToken(response.data);
-              console.log(profileResponse.data);
-              await setProfile(profileResponse.data);
-              console.log(statsResponse.data);
-              await setStats(statsResponse.data);
+              if (profileResponse && statsResponse) {
+                await setUserToken(response.data);
+                console.log(profileResponse.data);
+                await setProfile(profileResponse.data);
+                console.log(statsResponse.data);
+                await setStats(statsResponse.data);
 
-              // Navigate to home forgetting login and previous screens
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{ name: 'Main' }],
-                })
-              );
+                // Navigate to home forgetting login and previous screens
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'Main' }],
+                  })
+                );
+              }
+            }
+            catch (error) {
+              console.error(error.response.data);
+              hideLoading();
             }
           }
-          catch(error) {
-            console.error(error.response.data);
-            hideLoading();
-          }
+          setSomeData();
         }
-        setSomeData();
-      }
-    })
-    .catch(error => {
-      hideLoading();
-      console.log(error);
-      console.log(error.response.data);
+      })
+      .catch(error => {
+        hideLoading();
+        console.log(error);
+        console.log(error.response.data);
 
-      if (error.response.status == 401) { // Unauthorized (Meaning in this case, that user is not verified)
-        navigation.navigate('EmailConfirmation', {
-          fromLogin: true // From login specifies that we are navigating from login screen (and not from SignUp)
-        });
-      }
-      else {
-        setShowError(extractErrorMessage(error.response.data));
-      }
-    })
+        if (error.response.status == 401) { // Unauthorized (Meaning in this case, that user is not verified)
+          navigation.navigate('EmailConfirmation', {
+            fromLogin: true // From login specifies that we are navigating from login screen (and not from SignUp)
+          });
+        }
+        else {
+          setShowError(extractErrorMessage(error.response.data));
+        }
+      })
   }
 
   return (
@@ -129,7 +143,7 @@ function Login({navigation}) {
       ></MaterialFixedLabelTextbox>
       <MaterialButtonSuccess
         style={styles.loginbtn}
-        onPress={ handleLogin }
+        onPress={handleLogin}
       >Login</MaterialButtonSuccess>
       <MaterialRightIconTextbox
         placeholder="Password"
@@ -139,11 +153,11 @@ function Login({navigation}) {
       <MaterialButtonWithVioletText
         caption="Forgot Password?"
         style={styles.forgotpasswordbtn}
-        onPress={()=>{navigation.navigate('Forgot')}}
+        onPress={() => { navigation.navigate('Forgot') }}
       ></MaterialButtonWithVioletText>
       {showError && (
         <Text style={styles.errormsg}>
-          { showError }
+          {showError}
         </Text>
       )}
       <View style={styles.notAUserRow}>
@@ -151,7 +165,7 @@ function Login({navigation}) {
         <MaterialButtonWithOrangeText
           caption="Sign Up"
           style={styles.signupbtn}
-          onPress={()=>{navigation.navigate('SignUp')}}
+          onPress={() => { navigation.navigate('SignUp') }}
         ></MaterialButtonWithOrangeText>
       </View>
     </KeyboardAvoidingView>
@@ -160,71 +174,71 @@ function Login({navigation}) {
 
 function createStyles(colors) {
   return StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: colors.background
-      },
-      foodswaplogo: {
-        width: 375,
-        height: 375,
-        marginTop: 58
-      },
-      usernameinput: {
-        height: 43,
-        width: 278,
-        backgroundColor: colors.background2,
-        color: colors.foreground,
-        borderRadius: 9,
-        marginTop: 37,
-        marginLeft: 49
-      },
-      loginbtn: {
-        height: 36,
-        width: 100,
-        borderRadius: 9,
-        marginTop: 68,
-        marginLeft: 138
-      },
-      passwordinput: {
-        height: 43,
-        width: 278,
-        borderRadius: 9,
-        backgroundColor: colors.background2,
-        color: colors.foreground,
-        marginTop: -93,
-        marginLeft: 49
-      },
-      forgotpasswordbtn: {
-        height: 36,
-        width: 200,
-        marginTop: 50,
-        marginLeft: 88,
-        color: colors.highlight2
-      },
-      notAUser: {
-        fontFamily: "roboto-regular",
-        color: colors.foreground,
-        marginTop: 9
-      },
-      signupbtn: {
-        height: 36,
-        width: 100
-      },
-      notAUserRow: {
-        height: 36,
-        flexDirection: "row",
-        marginTop: 60,
-        marginLeft: 114,
-        marginRight: 87
-      },
-      errormsg: {
-        fontFamily: "roboto-regular",
-        color: colors.error,
-        marginTop: 20,
-        marginRight: 15,
-        textAlign: "center"
-      },
-    }
+    container: {
+      flex: 1,
+      backgroundColor: colors.background
+    },
+    foodswaplogo: {
+      width: 375,
+      height: 375,
+      marginTop: 58
+    },
+    usernameinput: {
+      height: 43,
+      width: 278,
+      backgroundColor: colors.background2,
+      color: colors.foreground,
+      borderRadius: 9,
+      marginTop: 37,
+      marginLeft: 49
+    },
+    loginbtn: {
+      height: 36,
+      width: 100,
+      borderRadius: 9,
+      marginTop: 68,
+      marginLeft: 138
+    },
+    passwordinput: {
+      height: 43,
+      width: 278,
+      borderRadius: 9,
+      backgroundColor: colors.background2,
+      color: colors.foreground,
+      marginTop: -93,
+      marginLeft: 49
+    },
+    forgotpasswordbtn: {
+      height: 36,
+      width: 200,
+      marginTop: 50,
+      marginLeft: 88,
+      color: colors.highlight2
+    },
+    notAUser: {
+      fontFamily: "roboto-regular",
+      color: colors.foreground,
+      marginTop: 9
+    },
+    signupbtn: {
+      height: 36,
+      width: 100
+    },
+    notAUserRow: {
+      height: 36,
+      flexDirection: "row",
+      marginTop: 60,
+      marginLeft: 114,
+      marginRight: 87
+    },
+    errormsg: {
+      fontFamily: "roboto-regular",
+      color: colors.error,
+      marginTop: 20,
+      marginRight: 15,
+      textAlign: "center"
+    },
+  }
   )
 }
 

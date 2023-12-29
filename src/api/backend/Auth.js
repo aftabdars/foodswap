@@ -1,5 +1,10 @@
-import { makePostRequest } from "./Api";
+import { makeGetRequest, makePostRequest } from "./Api";
 
+// Checks token validation
+export async function getTokenValidation(token) {
+    const url = `/accounts/token-validation/`;
+    return await makeGetRequest(url, token);
+}
 
 // Verifies user account from the provided code
 export async function postVerifyAccount(body) {

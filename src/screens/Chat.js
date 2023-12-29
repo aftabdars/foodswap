@@ -64,16 +64,15 @@ function Chat() {
     // Get chat messages
     useEffect(() => {
         const getMeMessages = async () => {
-            const token = await getUserToken();
+            const token = (await getUserToken()).token;
             const params = {
                 'sender': chatPreviewMessage.sender,
                 'receiver': chatPreviewMessage.receiver,
                 'or_sender': chatPreviewMessage.receiver,
                 'or_receiver': chatPreviewMessage.sender,
             }
-            getMessages(token.token, params)
+            await getMessages(token, params)
                 .then(response => {
-                    console.log(response.data);
                     setMessages(response.data.results);
                 })
                 .catch(error => {
@@ -101,7 +100,7 @@ function Chat() {
                 data.append('message', newMessage);
             if (attachment)
                 data.append('attachment', SerializeImage(attachment, `chat-photo-${chatPreviewMessage.receiver}-${chatPreviewMessage.sender}`));
-            postMessage(token.token, data)
+            await postMessage(token.token, data)
                 .then(response => {
                     console.log(response.data);
 
