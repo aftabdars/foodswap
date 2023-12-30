@@ -1,27 +1,31 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import { Icon } from "react-native-elements";
 
 function Editbutton(props) {
+  const colors = props.colors;
+  const styles = createStyles(colors);
+
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-      <Icon name="ios-settings" style={styles.icon}></Icon>
+      <Icon name="settings" color={colors.foreground} style={styles.icon}></Icon>
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    borderRadius: 5
-  },
-  icon: {
-    color: "rgba(255,255,255,1)",
-    fontSize: 24
-  }
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    container: {
+      backgroundColor: "transparent",
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
+      borderRadius: 5
+    },
+    icon: {
+      fontSize: 24
+    }
+  });
+}
 
 export default Editbutton;

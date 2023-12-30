@@ -31,3 +31,9 @@ export async function getFoodFeedbacks(token, params) {
     const url = `/social/feedbacks/`;
     return await makeGetRequest(url, token, params);
 }
+
+// Posts a feedback
+export async function postFeedback(token, body) {
+    const url = `/social/feedbacks/`;
+    return await makePostRequest(url, token, body);
+}

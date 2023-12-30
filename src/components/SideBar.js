@@ -126,7 +126,7 @@ const SideBar = (props) => {
         <SidebarButton
           title="Active FoodSwaps"
           onPress={() => navigation.navigate('ActiveFoodSwaps')}
-          icon="home"
+          icon="check"
         />
         <SidebarButton
           title="Leaderboard"
@@ -136,7 +136,8 @@ const SideBar = (props) => {
         <SidebarButton
           title="Achievements"
           onPress={() => navigation.navigate('Achievements')}
-          icon="badge"
+          icon="trophy"
+          iconType="entypo"
         />
         <SidebarButton
           title="Transactions History"

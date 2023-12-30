@@ -5,10 +5,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { getColors, ThemeContext } from '../assets/Theme';
 import { formatDateTimeString, formatTimeDifferencePast } from '../utils/Format';
 import { stringCapitalize } from '../utils/Utils';
-import { getFoodFeedbacks } from '../api/backend/Social';
+import { getFoodFeedbacks, postFeedback } from '../api/backend/Social';
 import { getUserToken } from '../storage/UserToken';
 import { getProfile } from '../storage/User';
 import { getFood } from '../api/backend/Food';
+import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
 
 
 const FoodInfo = () => {
@@ -57,7 +58,7 @@ const FoodInfo = () => {
     const getMeFoodFeedbacks = async () => {
       if (foodItem) {
         const token = await getUserToken();
-        getFoodFeedbacks(token.token, { 'food': foodItem.id })
+        await getFoodFeedbacks(token.token, { 'food': foodItem.id, 'ordering': '-timestamp' })
           .then(response => {
             console.log(response.data);
             setFeedbacks(response.data.results);
@@ -79,23 +80,24 @@ const FoodInfo = () => {
     console.log(`Clicked on owner: ${foodItem.owner_username}`);
   };
 
-  const handleSendFeedback = () => {
-    // replace actual timestamp logic here 
-    const timestamp = new Date();
-    // Create a new feedback object with timestamp
-    const newFeedback = {
-      "message": feedback,
-      "timestamp": timestamp,
-      "food": 1,
-      "user": 1,
-      "user_username": "admin"
-    };
-
-    // Adding newlyyy feedbacks to the userFeedback like an arry
-    setFeedbacks((prevFeedback) => [newFeedback, ...prevFeedback]);
-
-    // Cleared the feedback inputs here 
-    setFeedback('');
+  const handleSendFeedback = async () => {
+    if (feedback && feedback.length > 0 && foodItem && userID) {
+      const token = (await getUserToken()).token;
+      const body = {
+        'food': foodItem.id,
+        'user': userID,
+        'message': feedback,
+      }
+      await postFeedback(token, body)
+        .then(response => {
+          console.log(response.data);
+          setFeedbacks((prevFeedback) => [response.data, ...prevFeedback]);
+          setFeedback('');
+        })
+        .catch(error => {
+          console.log(error.response.data);
+        })
+    }
   };
 
   const FeedbackItem = ({ feedbackData }) => (
@@ -179,7 +181,7 @@ const FoodInfo = () => {
           })}
         </Text>
         <Text style={styles.owner} onPress={handleOwnerClick}>
-          Owner: {foodItem && foodItem.owner_username}
+          By: {foodItem && foodItem.owner_username}
         </Text>
         <Text style={styles.upFor}>Up for: {foodItem && foodItem.up_for}</Text>
         <Text style={styles.status}>Status: {foodItem && (foodItem.status == 'up' ? 'Available' : stringCapitalize(foodItem.status))}</Text>
@@ -208,12 +210,12 @@ const FoodInfo = () => {
           value={feedback}
           onChangeText={(text) => setFeedback(text)}
         />
-        <TouchableOpacity
+        <MaterialButtonSuccess
           style={styles.sendFeedbackButton}
           onPress={handleSendFeedback}
         >
           <Text style={styles.sendFeedbackButtonText}>Send Feedback</Text>
-        </TouchableOpacity>
+        </MaterialButtonSuccess>
       </View>
     </ScrollView>
   );
@@ -280,7 +282,7 @@ function createStyles(colors) {
       fontSize: 18,
       color: colors.foreground,
       marginBottom: 6,
-      textDecorationLine: 'underline',
+      //textDecorationLine: 'underline',
     },
     upFor: {
       fontSize: 18,
@@ -367,7 +369,7 @@ function createStyles(colors) {
     },
     sendFeedbackButton: {
       backgroundColor: colors.highlight2,
-      padding: 14,
+      padding: 10,
       borderRadius: 10,
       alignItems: 'center',
     },

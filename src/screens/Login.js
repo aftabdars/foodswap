@@ -42,8 +42,10 @@ function Login({ navigation }) {
             console.log(tokenValidationResponse.data);
           }
           catch (error) {
-            console.log(error.response.data);
-            removeUserToken(); // For better remove the invalid(expired) token from user's cache and storage
+            if (error.response) {
+              console.log(error.response.data);
+              removeUserToken(); // For better remove the invalid(expired) token from user's cache and storage
+            }
           }
 
           // Navigate to home if token is valid

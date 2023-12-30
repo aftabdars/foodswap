@@ -111,7 +111,7 @@ function EditProfile() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.profilePictureContainer}>
-        <Editbutton style={styles.editProfilePicture} onPress={handleEditProfilePicture}></Editbutton>
+        <Editbutton style={styles.editProfilePicture} onPress={handleEditProfilePicture} colors={colors}></Editbutton>
         <TouchableOpacity onPress={handleEditProfilePicture}>
           <View style={styles.imageStack}>
             <Image

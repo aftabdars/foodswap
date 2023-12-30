@@ -21,7 +21,7 @@ export function formatTimeDifferencePast(timestamp) {
   const pastTime = new Date(timestamp);
 
   const timeDifferenceInMilliseconds = currentTime - pastTime;
-  const timeDifferenceInMinutes = Math.floor(timeDifferenceInMilliseconds / (1000 * 60));
+  const timeDifferenceInMinutes = Math.floor((timeDifferenceInMilliseconds < 0 ? 0 : timeDifferenceInMilliseconds) / (1000 * 60));
 
   return formatTimeDifference(timeDifferenceInMinutes);
 };

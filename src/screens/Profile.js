@@ -129,7 +129,7 @@ function Profile(props) {
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <Editbutton style={styles.editProfilePicture} onPress={handleEditProfile}></Editbutton>
+          <Editbutton style={styles.editProfilePicture} onPress={handleEditProfile} colors={colors}></Editbutton>
         </View>
         <Text style={styles.profileName}>{userData.first_name} {userData.last_name}</Text>
         <Text style={styles.profileName}>{userData.username}</Text>

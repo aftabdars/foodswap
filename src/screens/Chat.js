@@ -1,10 +1,11 @@
 import React, { useContext, useRef } from 'react';
 import { useState, useEffect } from 'react';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
 //import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
+import EntypoIcon from "react-native-vector-icons/Entypo";
 
 import { getUserToken } from '../storage/UserToken';
 import { getMessages, postMessage } from '../api/backend/Social';
@@ -12,6 +13,8 @@ import { SerializeImage } from '../api/backend/utils/Serialize';
 import { ThemeContext, getColors } from '../assets/Theme';
 import { WSChat } from '../api/backend/WebSocket';
 import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
+import CustomModal from '../components/CustomModal';
+import CustomModalButton from '../components/CustomModalButton';
 
 
 function Chat() {
@@ -20,6 +23,7 @@ function Chat() {
     const colors = getColors(theme);
     const styles = createStyles(colors);
 
+    const navigation = useNavigation();
     const route = useRoute(); // Use useRoute to access route parameters
     const messagesScrollRef = useRef();
 
@@ -28,6 +32,7 @@ function Chat() {
     const [attachment, setAttachment] = useState();
     const [messages, setMessages] = useState();
     const [initialScrollDone, setInitialScrollDone] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
     // WebSocket
     const [socket, setSocket] = useState(null);
 
@@ -159,19 +164,48 @@ function Chat() {
         messagesScrollRef.current.scrollToEnd({ animated: true });
     };
 
+    const backPressed = () => {
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }
+
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.headerExtraSpaceTop} />
             <View style={styles.header}>
-                <TouchableOpacity></TouchableOpacity>
-                <Image source={chatPreviewMessage.sender_profile_picture ? { uri: chatPreviewMessage.sender_profile_picture } : require("../assets/images/default_profile.jpg")} style={styles.profilePic} />
-                <Text style={styles.senderName}>
-                    {
-                        chatPreviewMessage.sender_first_name ? (chatPreviewMessage.sender_last_name ? chatPreviewMessage.sender_first_name + chatPreviewMessage.sender_last_name : chatPreviewMessage.sender_username)
-                            :
-                            chatPreviewMessage.sender_username
-                    }
-                </Text>
+                <View style={styles.headerBackAndProfile}>
+                    <TouchableOpacity onPress={backPressed}>
+                        <EntypoIcon name="chevron-thin-left" style={styles.icon}></EntypoIcon>
+                    </TouchableOpacity>
+                    <Image source={chatPreviewMessage.sender_profile_picture ? { uri: chatPreviewMessage.sender_profile_picture } : require("../assets/images/default_profile.jpg")} style={styles.profilePic} />
+                    <Text style={styles.senderName}>
+                        {
+                            chatPreviewMessage.sender_first_name ? (chatPreviewMessage.sender_last_name ? chatPreviewMessage.sender_first_name + chatPreviewMessage.sender_last_name : chatPreviewMessage.sender_username)
+                                :
+                                chatPreviewMessage.sender_username
+                        }
+                    </Text>
+                </View>
+                <TouchableOpacity onPress={toggleModal}>
+                    <EntypoIcon name="dots-three-vertical" style={styles.icon} />
+                </TouchableOpacity>
+                <CustomModal
+                    visible={isModalVisible}
+                    onRequestClose={toggleModal}
+                    colors={colors}
+                >
+                    <CustomModalButton colors={colors} onPress={() => {console.log('ViewProfile pressed')}}>
+                        View Profile
+                    </CustomModalButton>
+                    <CustomModalButton colors={colors}  onPress={() => {console.log('Block pressed')}}>
+                        Block
+                    </CustomModalButton>
+                </CustomModal>
             </View>
             <ScrollView
                 style={styles.messagesContainer}
@@ -233,12 +267,20 @@ function createStyles(colors) {
         header: {
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'left',
+            justifyContent: 'space-between',
             backgroundColor: colors.highlight1,
             top: 0,
             left: 0,
             right: 0,
             zIndex: 1,
+        },
+        headerBackAndProfile: {
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        icon: {
+            color: '#fff',
+            fontSize: 25,
         },
         profilePic: {
             width: 40,
@@ -331,4 +373,4 @@ function createStyles(colors) {
     })
 }
 
-export default Chat;    
+export default Chat;
