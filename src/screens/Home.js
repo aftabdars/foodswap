@@ -205,7 +205,7 @@ function createStyles(colors) {
       height: 44,
       width: 323,
       backgroundColor: colors.background,
-      borderRadius: 9,
+      borderRadius: 18,
       marginTop: 9,
       marginLeft: 29
     },
@@ -225,9 +225,10 @@ function createStyles(colors) {
     },
     categorybutton: {
       height: 61,
-      width: 63,
+      width: 68,
       marginRight: 25,
-      color: colors.foreground
+      color: colors.foreground,
+      backgroundColor: colors.background
     },
     heading: {
       fontFamily: "roboto-700",

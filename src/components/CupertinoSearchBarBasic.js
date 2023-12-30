@@ -38,12 +38,13 @@ function createStyles (colors) {
       container: {
         flexDirection: "row",
         alignItems: "center",
-        padding: 8
+        padding: 8,
+        borderRadius: 18
       },
       inputBox: {
         flex: 1,
         flexDirection: "row",
-        borderRadius: 5,
+        borderRadius: 18,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: colors.background2,
