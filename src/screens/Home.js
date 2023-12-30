@@ -4,6 +4,7 @@ import MaterialButtonProfile from "../components/MaterialButtonProfile";
 import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
 import Categorybutton from "../components/Categorybutton";
 import { SafeAreaView } from "react-native-safe-area-context";
+import SideMenu from 'react-native-side-menu-updated';
 
 import { getProfile } from "../storage/User.js";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
@@ -104,11 +105,11 @@ function Home(props) {
     navigation.navigate('Notifications');
   }
 
-  function HomePage({ navigation }) {
+  function HomePage(props, { navigation }) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <MaterialButtonProfile style={styles.profileIcon} userData={userData} onPress={() => { navigation.toggleDrawer() }} />
+          <MaterialButtonProfile style={styles.profileIcon} userData={userData} onPress={() => { props.bar.setIsOpenState(true) }} />
           <MaterialNotificationIcon style={styles.notificationIcon} onPress={notificationButtonPressed}></MaterialNotificationIcon>
         </View>
 
@@ -152,13 +153,26 @@ function Home(props) {
     )
   }
 
-  //MAIN RETURN/////////
-  const Drawer = createDrawerNavigator();
+const SideMenuWithState = (props) => {
+  // Create a state variable isOpenState with an initial value from the prop
+  const [isOpenState, setIsOpenState] = useState(props.isOpen);
+
+  function onchange(opened) {
+    setIsOpenState(opened)
+  }
+  // Render the original SideMenu component with the modified prop
   return (
-    <Drawer.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomePage" drawerContent={(props) => <SideBar {...props} colors={colors} />}>
-      <Drawer.Screen name="HomePage" component={HomePage} />
-    </Drawer.Navigator>
-  );
+    <SideMenu isOpen={isOpenState} menu={props.menu} onChange={onchange}>
+      <HomePage bar={{setIsOpenState}} />
+    </SideMenu>
+  )
+};
+
+  const menu = <SideBar colors={colors}/>
+  //MAIN HOME FUNCTION RETURN
+  return (
+        <SideMenuWithState menu={menu} isOpen={false} />
+  )
 }
 
 function createStyles(colors) {
