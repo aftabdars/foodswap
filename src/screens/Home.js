@@ -211,10 +211,11 @@ function Home(props) {
           }
         >
           <CupertinoSearchBarBasic
+            editable={false}
             inputStyle="Search for food"
             inputBox="rgba(255,255,255,1)"
             style={styles.foodsearch}
-            onPressIn={(e) => navigation.navigate('Search')}
+            onPressFirst={() =>  {navigation.navigate('Search')}}
           ></CupertinoSearchBarBasic>
 
           <Text style={styles.categoriesHeading}>Categories</Text>
