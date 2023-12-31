@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, View, TextInput } from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ThemeContext, getColors } from '../assets/Theme';
 
@@ -11,6 +11,7 @@ function CupertinoSearchBarBasic(props) {
     const styles = createStyles(colors);
 
   return (
+    <TouchableOpacity onPress={props.onPressFirst}>
     <View style={[styles.container, props.style]}>
       <View
         style={[
@@ -20,6 +21,7 @@ function CupertinoSearchBarBasic(props) {
           }
         ]}
       >
+        
         <Icon name="magnify" style={styles.inputLeftIcon}></Icon>
         <TextInput
           placeholder={props.inputStyle || "Search"}
@@ -27,9 +29,13 @@ function CupertinoSearchBarBasic(props) {
           style={styles.inputStyle}
           onPressIn={props.onPressIn}
           onChangeText={props.onChangeText}
+          editable={props.editable} 
+          selectTextOnFocus={props.editable}
         ></TextInput>
+        
       </View>
     </View>
+    </TouchableOpacity>
   );
 }
 

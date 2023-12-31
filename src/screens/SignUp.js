@@ -77,7 +77,7 @@ function SignUp({navigation}) {
     }
 
     return (
-      <ScrollView>
+      <ScrollView style={styles.container}>
       <View style={styles.container}>
         <Text style={styles.text}>SIGN UP</Text>
         <View style={styles.group}>
