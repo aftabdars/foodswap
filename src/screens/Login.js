@@ -7,6 +7,7 @@ import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonWithVioletText from "../components/MaterialButtonWithVioletText";
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getTokenValidation, postLogin } from "../api/backend/Auth";
 import { getUserToken, removeUserToken, setUserToken } from "../storage/UserToken";
 import { ThemeContext, getColors } from '../assets/Theme';
@@ -132,6 +133,11 @@ function Login({ navigation }) {
   }
 
   return (
+    <KeyboardAwareScrollView
+    style={styles.container}
+    contentContainerStyle={styles.scrollContainer}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
     <View style={styles.container}>
       <View>
         <Image
@@ -173,6 +179,7 @@ function Login({ navigation }) {
         ></MaterialButtonWithOrangeText>
       </View>
     </View>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -181,7 +188,6 @@ function createStyles(colors) {
     container: {
       flex: 1,
       flexDirection: 'column',
-      justifyContent: 'space-between',
       backgroundColor: colors.background
     },
     foodswaplogo: {
@@ -234,7 +240,8 @@ function createStyles(colors) {
       alignSelf: 'center',
       height: 36,
       flexDirection: "row",
-      margin: 5
+      margin: 5,
+      marginLeft:14,
     },
     errormsg: {
       fontFamily: "roboto-regular",

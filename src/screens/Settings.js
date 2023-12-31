@@ -115,7 +115,7 @@ function createStyles(colors) {
     },
     childText3: {
       position: 'absolute',
-      marginLeft: 310,
+      marginLeft: 300,
       marginTop: 0,
     },
     themePicker: {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text,ScrollView } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
@@ -77,6 +77,7 @@ function SignUp({navigation}) {
     }
 
     return (
+      <ScrollView>
       <View style={styles.container}>
         <Text style={styles.text}>SIGN UP</Text>
         <View style={styles.group}>
@@ -121,6 +122,7 @@ function SignUp({navigation}) {
           <Text style={styles.notAUser1}>Already have an account?</Text>
         </View>
       </View>
+      </ScrollView>
     );
 }
 

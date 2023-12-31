@@ -109,7 +109,7 @@ function EditProfile() {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView>
       <View style={styles.profilePictureContainer}>
         <Editbutton style={styles.editProfilePicture} onPress={handleEditProfilePicture} colors={colors}></Editbutton>
         <TouchableOpacity onPress={handleEditProfilePicture}>
@@ -196,6 +196,8 @@ function createStyles(colors) {
     label: {
       fontSize: 16,
       fontWeight: 'bold',
+      marginRight:10,
+      marginLeft:10,
       marginTop: 20,
       color: colors.foreground,
     },
@@ -204,6 +206,8 @@ function createStyles(colors) {
       borderColor: colors.background2,
       borderRadius: 8,
       padding: 8,
+      marginRight:10,
+      marginLeft:10,
       marginTop: 10,
       color: colors.foreground,
       backgroundColor: colors.background2
@@ -211,6 +215,8 @@ function createStyles(colors) {
     saveButton: {
       padding: 12,
       borderRadius: 8,
+      marginRight:10,
+      marginLeft:10,
       marginTop: 20,
       alignItems: 'center',
     },
