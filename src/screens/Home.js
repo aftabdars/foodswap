@@ -30,7 +30,7 @@ function Home(props) {
   const colors = getColors(theme);
   const styles = createStyles(colors);
   // Loading
-  const { isLoading, howLoading, hideLoading } = useLoading();
+  const { showLoading, hideLoading } = useLoading();
 
   // States
   const [refresh, setRefresh] = useState(false);
