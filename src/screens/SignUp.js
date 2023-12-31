@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Text,ScrollView } from "react-native";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
@@ -11,37 +11,37 @@ import { ThemeContext, getColors } from '../assets/Theme';
 import { extractErrorMessage } from "../api/backend/utils/Utils";
 
 
-function SignUp({navigation}) {
-    // Theme
-    const theme = useContext(ThemeContext).theme;
-    const colors = getColors(theme);
-    const styles = createStyles(colors);
+function SignUp({ navigation }) {
+  // Theme
+  const theme = useContext(ThemeContext).theme;
+  const colors = getColors(theme);
+  const styles = createStyles(colors);
 
-    // States
-    const [username, setUsername] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [rePassword, setRePassword] = useState();
-    const [showError, setShowError] = useState(false);
+  // States
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [rePassword, setRePassword] = useState();
+  const [showError, setShowError] = useState(false);
 
-    const onPressSignup = async () => {
-      // Check if all of the fields are not empty
-      if (!username || !email || !password) {
-        setShowError("Please fill out all the fields");
+  const onPressSignup = async () => {
+    // Check if all of the fields are not empty
+    if (!username || !email || !password) {
+      setShowError("Please fill out all the fields");
+    }
+    // Check if re-typed password matches password
+    else if (password != rePassword) {
+      setShowError('Re-typed password does not match');
+    }
+    else {
+      body = {
+        'username': username,
+        'email': email,
+        'password': password
       }
-      // Check if re-typed password matches password
-      else if (password != rePassword) {
-        setShowError('Re-typed password does not match');
-      }
-      else {
-        body = {
-          'username': username,
-          'email': email,
-          'password': password
-        }
-        
-        // Register the user and navigate to verification screen for confirmation
-        postSignup(body)
+
+      // Register the user and navigate to verification screen for confirmation
+      postSignup(body)
         .then(response => {
           console.log(response.status);
           console.log(response.data);
@@ -64,72 +64,70 @@ function SignUp({navigation}) {
           }
         })
 
-      }
     }
+  }
 
-    const [loaded] = useFonts({
-      'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
-      'roboto-700': require('../assets/fonts/roboto-700.ttf'),
-    });
+  const [loaded] = useFonts({
+    'roboto-regular': require('../assets/fonts/roboto-regular.ttf'),
+    'roboto-700': require('../assets/fonts/roboto-700.ttf'),
+  });
 
-    if (!loaded) {
-      return null;
-    }
+  if (!loaded) {
+    return null;
+  }
 
-    return (
-      <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.text}>SIGN UP</Text>
-        <View style={styles.group}>
-          <MaterialFixedLabelTextbox
-            placeholder="Username"
-            style={styles.input}
-            onChangeText={(text) => setUsername(text)}
-          ></MaterialFixedLabelTextbox>
-          <MaterialFixedLabelTextbox
-            placeholder="abc@xyz.com"
-            style={styles.input}
-            onChangeText={(text) => setEmail(text)}
-          ></MaterialFixedLabelTextbox>
-          <MaterialRightIconTextbox
-            placeholder="Password"
-            style={styles.input}
-            onChangeText={(text) => setPassword(text)}
-          ></MaterialRightIconTextbox>
-          <MaterialRightIconTextbox
-            placeholder="Retype Password"
-            style={styles.input}
-            onChangeText={(text) => setRePassword(text)}
-          ></MaterialRightIconTextbox>
-        </View>
-        <MaterialButtonSuccess
-          style={styles.materialButtonSuccess1}
-          onPress={ onPressSignup }
-        >Sign Up</MaterialButtonSuccess>
-
-        {showError && (
-          <Text style={styles.errormsg}>
-            { showError }
-          </Text>
-        )}
-
-        <View style={styles.alreadyContainer}>
-          <MaterialButtonWithOrangeText
-            caption="Sign In"
-            style={styles.materialButtonWithVioletText1}
-            onPress={() => {navigation.navigate('Login')}}
-          ></MaterialButtonWithOrangeText>
-          <Text style={styles.notAUser1}>Already have an account?</Text>
-        </View>
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.text}>SIGN UP</Text>
+      <View style={styles.group}>
+        <MaterialFixedLabelTextbox
+          placeholder="Username"
+          style={styles.input}
+          onChangeText={(text) => setUsername(text)}
+        ></MaterialFixedLabelTextbox>
+        <MaterialFixedLabelTextbox
+          placeholder="abc@xyz.com"
+          style={styles.input}
+          onChangeText={(text) => setEmail(text)}
+        ></MaterialFixedLabelTextbox>
+        <MaterialRightIconTextbox
+          placeholder="Password"
+          style={styles.input}
+          onChangeText={(text) => setPassword(text)}
+        ></MaterialRightIconTextbox>
+        <MaterialRightIconTextbox
+          placeholder="Retype Password"
+          style={styles.input}
+          onChangeText={(text) => setRePassword(text)}
+        ></MaterialRightIconTextbox>
       </View>
-      </ScrollView>
-    );
+      <MaterialButtonSuccess
+        style={styles.materialButtonSuccess1}
+        onPress={onPressSignup}
+      >Sign Up</MaterialButtonSuccess>
+
+      {showError && (
+        <Text style={styles.errormsg}>
+          {showError}
+        </Text>
+      )}
+
+      <View style={styles.alreadyContainer}>
+        <MaterialButtonWithOrangeText
+          caption="Sign In"
+          style={styles.materialButtonWithVioletText1}
+          onPress={() => { navigation.navigate('Login') }}
+        ></MaterialButtonWithOrangeText>
+        <Text style={styles.notAUser1}>Already have an account?</Text>
+      </View>
+    </ScrollView>
+  );
 }
 
 function createStyles(colors) {
   return StyleSheet.create({
     container: {
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: colors.background
     },
     text: {

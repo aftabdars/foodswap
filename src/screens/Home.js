@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Text, ScrollView, Image, RefreshControl } from "react-native";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { StyleSheet, View, Text, ScrollView, Image, RefreshControl, Dimensions } from "react-native";
 import MaterialButtonProfile from "../components/MaterialButtonProfile";
 import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
 import Categorybutton from "../components/Categorybutton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SideMenu from 'react-native-side-menu-updated';
+import * as Location from 'expo-location';
 
 import { getProfile, getStats } from "../storage/User.js";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
@@ -12,11 +13,15 @@ import FoodCarousel from "../components/FoodCarousel.js";
 import { ThemeContext, getColors } from '../assets/Theme';
 import MaterialNotificationIcon from "../components/MaterialNotificationIcon.js";
 import { useNavigation } from "@react-navigation/native";
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import SideBar from "../components/SideBar";
 import { getUserToken } from "../storage/UserToken.js";
 import { useLoading } from "../assets/LoadingContext.js";
 import { getLevels } from "../api/backend/Gamification.js";
+import { Marker } from "react-native-maps";
+import { animateToNewCoordinates } from "../utils/Map.js";
+import CustomMap from "../components/CustomMap.js";
+import CircularMarker from "../components/CircularMarker.js";
+import { CheckBox } from "react-native-elements";
 
 
 function Home(props) {
@@ -25,7 +30,7 @@ function Home(props) {
   const colors = getColors(theme);
   const styles = createStyles(colors);
   // Loading
-  const { showLoading, hideLoading } = useLoading();
+  const { isLoading, howLoading, hideLoading } = useLoading();
 
   // States
   const [refresh, setRefresh] = useState(false);
@@ -35,13 +40,16 @@ function Home(props) {
   const [levelData, setLevelData] = useState();
   const [foodItems, setFoodItems] = useState();
   const [foodCategories, setFoodCategories] = useState();
+  const [location, setLocation] = useState();
+  const [showMap, setShowMap] = useState(false);
 
   const navigation = useNavigation();
+  const mapRef = useRef(null);
 
   // Fetches data
   useEffect(() => {
     let completedCount = 0;
-    const MAX_COUNT = 4;
+    const MAX_COUNT = 5;
 
     const checkAllDataFetched = () => {
       if (completedCount === MAX_COUNT) {
@@ -72,6 +80,8 @@ function Home(props) {
           setUserStats(stats);
           completedCount++;
           checkAllDataFetched();
+
+          getLevelData(); // Get level data now
         }
       }
       catch (error) {
@@ -79,11 +89,30 @@ function Home(props) {
       }
     }
 
+    // Gets user level and level's data from user's current XP
+    const getLevelData = async () => {
+      const params = { // Retrieves level row having xp_start >= user_xp <= xp_end
+        'xp_start__lte': userStats ? userStats.xp : 0,
+        'xp_end__gte': userStats ? userStats.xp : 199
+      }
+      await getLevels(params)
+        .then(response => {
+          if (response.status == 200) {
+            setLevelData(response.data.results[0]);
+            completedCount++;
+            checkAllDataFetched();
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
     // Get food items
     const getFoodItems = async () => {
       const token = await getUserToken();
       if (token && token !== null) {
-        await getFoods(token.token)
+        await getFoods(token.token) // Some params will be added here in future
           .then(response => {
             setFoodItems(response.data.results);
             completedCount++;
@@ -115,25 +144,30 @@ function Home(props) {
 
   }, [refreshCount]);
 
-  // Gets user level and level's data from user's current XP
+
+  // Initial location permissions and user's location
   useEffect(() => {
-    if (userStats) {
-      const getLevelData = async () => {
-        const params = { // Retrieves level row having xp_start >= user_xp <= xp_end
-          'xp_start__lte': userStats ? userStats.xp : 0,
-          'xp_end__gte': userStats ? userStats.xp : 199
-        }
-        await getLevels(params)
-          .then(response => {
-            if (response.status == 200) setLevelData(response.data.results[0]);
-          })
-          .catch(error => {
-            console.log(error);
-          })
-      }
-      getLevelData();
+    getMeLocationAndAnimate();
+  }, []);
+
+  // Location permissions and map's initial location set to user's current location if permissions provided
+  const getMeLocationAndAnimate = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.log('Location permissions denied');
+      hideLoading();
+      return;
     }
-  }, [userStats]);
+    // Gets user's current location
+    let location = await Location.getCurrentPositionAsync({});
+    // Update state and animate the mapview to that location
+    location = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude
+    }
+    setLocation(location);
+    animateToNewCoordinates(mapRef, location.latitude, location.longitude, true);
+  };
 
   const onRefresh = () => {
     setRefreshCount(refreshCount + 1);
@@ -142,6 +176,20 @@ function Home(props) {
 
   const notificationButtonPressed = () => {
     navigation.navigate('Notifications');
+  }
+
+  const findMePressed = (location) => {
+    console.log(location)
+    setLocation(location);
+  }
+
+  const handleMapFoodCalloutPress = (foodID) => {
+    navigation.navigate('FoodInfo', { foodID: foodID })
+  }
+
+  const showMapPressed = () => {
+    if (!showMap) getMeLocationAndAnimate();
+    setShowMap(!showMap);
   }
 
   function HomePage(props) {
@@ -179,14 +227,54 @@ function Home(props) {
           <Text style={styles.heading}>Near You</Text>
           <FoodCarousel foodItems={foodItems} />
 
-          <Text style={styles.heading}>Find in map</Text>
-          <View style={{ width: 340, height: 250, marginBottom: 20, alignSelf: 'center', borderWidth: 1, borderColor: '#fff' }}>
-            <Image
-              source={require("../assets/images/map_preview.png")}
-              //resizeMode="contain"
-              style={{ width: '100%', height: '100%' }}
-            ></Image>
+          <View style={styles.findInMapHeadingContainer}>
+            <Text style={styles.heading}>Find in map</Text>
+            <CheckBox
+              checked={showMap}
+              onPress={showMapPressed}
+              checkedColor={colors.highlight2}
+            />
           </View>
+          {showMap &&
+            <CustomMap
+              ref={mapRef}
+              colors={colors}
+            /*onFindMePress={findMePressed}*/
+            >
+              {location && (
+                <CircularMarker
+                  coordinate={location}
+                  image={userData && userData.profile_picture ? { uri: userData.profile_picture } : require("../assets/images/default_profile.jpg")}
+                  color="green"
+                  title="Your Location"
+                  description="Your current location"
+                  colors={colors}
+                />
+              )}
+              {foodItems && foodItems.map(foodItem => (
+                foodItem.show_on_map && foodItem.location_latitude && foodItem.location_longitude &&
+                <CircularMarker
+                  key={foodItem.id}
+                  isFoodItem={true}
+                  foodID={foodItem.id}
+                  coordinate={{
+                    latitude: parseFloat(foodItem.location_latitude),
+                    longitude: parseFloat(foodItem.location_longitude)
+                  }}
+                  image={foodItem.image ? { uri: foodItem.image } : require("../assets/images/default_food.png")}
+                  color="red"
+                  title={foodItem.name}
+                  description={foodItem.description}
+                  colors={colors}
+                  onCalloutPress={handleMapFoodCalloutPress}
+                />
+              ))}
+            </CustomMap>
+            ||
+            <View style={styles.alternativeMapContainer}>
+              <Text style={styles.alternativeMapText}>Check the box above to view map</Text>
+            </View>
+          }
         </ScrollView>
       </SafeAreaView>
     )
@@ -214,12 +302,15 @@ function Home(props) {
   )
 }
 
+const screenHeight = Dimensions.get('window').height;
+const containerHeight = screenHeight * 0.5;
+
 function createStyles(colors) {
   return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingTop: 20,
+      paddingVertical: 20,
       //paddingBottom: 50 + 5, // This is the height of Footer + 5
     },
     profileIcon: {
@@ -277,8 +368,24 @@ function createStyles(colors) {
       marginBottom: 10,
       marginLeft: 29
     },
-  }
-  )
+    findInMapHeadingContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+    },
+    alternativeMapContainer: {
+      width: '90%',
+      height: 300,
+      borderWidth: 1,
+      borderColor: colors.foreground,
+      alignSelf: 'center',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    alternativeMapText: {
+      color: colors.foreground
+    },
+  });
 }
 
 export default Home;

@@ -42,11 +42,11 @@ const FoodiezTransaction = ({item, userData, styles, colors}) => {
     let message = undefined;
     let color = colors.highlight2;
     if (item.type == 'account_transfer') {
-        if (item.user == userData.id) {
+        if (userData && userData.id == item.user) {
             message = `Received foodiez from ${item.user_from_username}`;
             color = colors.highlight2;
         }
-        else if (item.user_from == userData.id) {
+        else if (userData && userData.id == item.user_from) {
             message = `Sent foodiez to ${item.user_username}`;
             color = colors.error;
         }
@@ -131,7 +131,7 @@ const FirstRoute = () => {
                 const params = {
                     user: userData.id
                 }
-                getFoodiezTransactions(token.token, params)
+                await getFoodiezTransactions(token.token, params)
                 .then(response => {
                     setTransactions(response.data.results);
                 })
@@ -240,7 +240,7 @@ const ThirdRoute = () => {
                 const params = {
                     user: userData.id
                 }
-                getXPTransactions(token.token, params)
+                await getXPTransactions(token.token, params)
                 .then(response => {
                     setTransactions(response.data.results);
                 })

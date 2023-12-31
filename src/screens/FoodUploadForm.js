@@ -3,6 +3,8 @@ import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, StyleSheet } f
 import { Picker } from '@react-native-picker/picker';
 import { CommonActions, useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+import * as Location from 'expo-location';
+
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
 import { getFoodCategories, postFood } from '../api/backend/Food';
@@ -11,6 +13,7 @@ import { SerializeImage } from '../api/backend/utils/Serialize';
 import { ThemeContext, getColors } from '../assets/Theme';
 import { useLoading } from '../assets/LoadingContext';
 import { extractErrorMessage } from '../api/backend/utils/Utils';
+import { CheckBox } from 'react-native-elements';
 
 
 function FoodUploadForm() {
@@ -33,24 +36,27 @@ function FoodUploadForm() {
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState(-1);
     const [foodFor, setFoodFor] = useState("swap");
+    const [showOnMap, setShowOnMap] = useState(false);
     const [foodCategories, setFoodCategories] = useState();
     const [filteredCategories, setFilteredCategories] = React.useState();
     const [searchText, setSearchText] = React.useState('');
 
     // Get food categories
     useEffect(() => {
-        const getMeFoodCategories = async () => {
-            await getFoodCategories()
-                .then(response => {
-                    console.log(response.data);
-                    setFoodCategories(response.data.results);
-                    setFilteredCategories(response.data.results);
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-        };
-        getMeFoodCategories();
+        if (!foodCategories) {
+            const getMeFoodCategories = async () => {
+                await getFoodCategories()
+                    .then(response => {
+                        console.log(response.data);
+                        setFoodCategories(response.data.results);
+                        setFilteredCategories(response.data.results);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            };
+            getMeFoodCategories();
+        }
     }, []);
 
     const handleSearch = (text) => {
@@ -75,8 +81,6 @@ function FoodUploadForm() {
         }
     }
     const handleConfirm = async () => {
-        console.log('Food Upload confirmed');
-
         if (category == -1) {
             setShowError("Please select category");
         }
@@ -84,15 +88,32 @@ function FoodUploadForm() {
             setShowError("Title cannot be empty");
         }
         else {
+            // Location permissions
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Location permissions denied');
+                return;
+            }
+
             showLoading();
+
+            // Gets user's current location
+            let location = await Location.getCurrentPositionAsync({});
+            location = {
+                latitude: parseFloat(location.coords.latitude.toFixed(6)),
+                longitude: parseFloat(location.coords.longitude.toFixed(6))
+            }
             const token = await getUserToken();
             if (token) {
                 const data = new FormData();
                 data.append('name', title);
-                data.append('description', description);
                 data.append('image', SerializeImage(image, title));
                 data.append('category', category);
                 data.append('up_for', foodFor);
+                if (description) data.append('description', description);
+                if (location.latitude) data.append('location_latitude', location.latitude);
+                if (location.longitude) data.append('location_longitude', location.longitude);
+                if (showOnMap) data.append('show_on_map', showOnMap);
 
                 await postFood(token.token, data)
                     .then(response => {
@@ -168,7 +189,7 @@ function FoodUploadForm() {
                                 />
                             ))}
                     </Picker>
-                    <Text styles={styles.foodForText}>
+                    <Text style={styles.foodForText}>
                         Food For:
                     </Text>
                     <Picker
@@ -181,12 +202,19 @@ function FoodUploadForm() {
                         <Picker.Item label="Swap" value="swap" style={styles.pickerItem} />
                         <Picker.Item label="Share" value="share" style={styles.pickerItem} />
                     </Picker>
+                    <View style={styles.checkboxContainer}>
+                        <Text style={styles.label}>Show this food to other users on map?</Text>
+                        <CheckBox
+                            checked={showOnMap}
+                            onPress={() => setShowOnMap(!showOnMap)}
+                            checkedColor={colors.highlight2}
+                        />
+                    </View>
                     {showError && (
                         <Text style={styles.errormsg}>
                             {showError}
                         </Text>
                     )}
-
                 </View>
                 <View style={styles.buttonContainer}>
                     <MaterialButtonDanger style={styles.button} onPress={handleDiscard}>
@@ -210,8 +238,9 @@ function createStyles(colors) {
         },
         scrollContainer: {
             flexGrow: 1,
-            alignItems: 'center',
+            flexDirection: 'column',
             justifyContent: 'space-between',
+            alignItems: 'center',
             paddingBottom: 20,
         },
         buttonContainer: {
@@ -267,7 +296,7 @@ function createStyles(colors) {
             marginBottom: 20,
         },
         foodForText: {
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: 'bold',
             color: colors.foreground,
             marginBottom: 10,
@@ -275,12 +304,23 @@ function createStyles(colors) {
         foodForPicker: {
             width: '100%',
             backgroundColor: colors.background2,
-            marginBottom: 30,
+            marginBottom: 20,
             color: colors.foreground
         },
         pickerItem: {
             backgroundColor: colors.background2,
             color: colors.foreground
+        },
+        checkboxContainer: {
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            marginBottom: 10
+        },
+        label: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: colors.foreground,
         },
         errormsg: {
             fontFamily: "roboto-regular",

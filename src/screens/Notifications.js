@@ -48,7 +48,6 @@ function Notifications() {
             const token = await getUserToken();
             await getClientNotifications(token.token)
                 .then(response => {
-                    console.log(response.data);
                     setNotifications(response.data.results);
                     completedCount++;
                     checkAllDataFetched();

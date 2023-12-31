@@ -4,7 +4,7 @@ const KOYEB_HOST = 'https://backend-foodswap.koyeb.app';
 
 const ASFAND_WS_HOST = 'ws://192.168.18.7:8000';
 
-export const BACKEND_API_ENDPOINT = `${KOYEB_HOST}/api`;
+export const BACKEND_API_ENDPOINT = `${ASFAND_HOST}/api`;
 export const BACKEND_WS_ENDPOINT = `${ASFAND_WS_HOST}/ws`;
 
 export const TOKEN_KEYWORD = 'Token';

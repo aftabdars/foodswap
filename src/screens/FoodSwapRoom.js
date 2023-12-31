@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigation, useRoute, CommonActions } from "@react-navigation/native";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import { getProfile } from "../storage/User";
@@ -16,6 +16,7 @@ import { WSFoodSwap } from '../api/backend/WebSocket';
 import { getFoodSwap, updateFoodSwap } from '../api/backend/Food';
 import { getUserToken } from '../storage/UserToken';
 import { extractErrorMessage } from '../api/backend/utils/Utils';
+import CustomMap from '../components/CustomMap';
 
 
 function FoodSwapRoom() {
@@ -39,6 +40,7 @@ function FoodSwapRoom() {
     const [otherUserUsername, setOtherUserUsername] = useState();
     const [otherUserProfilePic, setOtherUserProfilePic] = useState();
     const [showError, setShowError] = useState();
+    const [showErrorConnect, setShowErrorConnect] = useState();
     const [data, setData] = useState(route.params?.data);
     const [formatSwapEndTime, setFormatSwapEndTime] = useState();
     // Connection and WebSocket
@@ -189,6 +191,7 @@ function FoodSwapRoom() {
         if (socket && socket.readyState === WebSocket.OPEN) return;
 
         // Initiate a websocket connection
+        setShowErrorConnect('');
         let swapRoom = data.id;
         const ws = WSFoodSwap(swapRoom);
 
@@ -235,6 +238,7 @@ function FoodSwapRoom() {
         };
 
         ws.onclose = () => {
+            if(!socket || socket === null) setShowErrorConnect('Could not connect');
             console.log(`WebSocket disconnected, swaproom: ${swapRoom}`);
             setSocket(null);
             // Stop the timer when socket is disconnected
@@ -302,47 +306,40 @@ function FoodSwapRoom() {
                 </TouchableOpacity>
             </View>
             <Text style={styles.headingText}>Map</Text>
-            <View style={styles.mapContainer}>
-                <MapView
-                    style={styles.map}
-                    ref={mapRef}
-                    provider={PROVIDER_GOOGLE}
-                    initialRegion={{
-                        latitude: 0.0,
-                        longitude: 0.0,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
-                >
-                    {swapLocation && (
-                        <Marker
-                            coordinate={{ latitude: swapLocation.latitude, longitude: swapLocation.longitude }}
-                            title="Swap Location"
-                            description="Location for foodswap"
-                        />
-                    )}
-                    {userLocation && (
-                        <CircularMarker
-                            coordinate={userLocation}
-                            image={userProfilePic ? { uri: userProfilePic } : require("../assets/images/default_profile.jpg")}
-                            color="green"
-                            title="Your Location"
-                            description="Your current location"
-                        />
-                    )}
-                    {otherUserLocation && (
-                        <CircularMarker
-                            coordinate={otherUserLocation}
-                            image={otherUserProfilePic ? { uri: otherUserProfilePic } : require("../assets/images/default_profile.jpg")}
-                            color="blue"
-                            title={otherUserUsername + "'s Location"}
-                            description={otherUserUsername + "'s current location"}
-                        />
-                    )}
-                    {swapLocation && userLocation && renderPolyline(swapLocation, userLocation, "green")}
-                    {swapLocation && otherUserLocation && renderPolyline(swapLocation, otherUserLocation)}
-                </MapView>
-            </View>
+            <CustomMap
+                ref={mapRef}
+                colors={colors}
+            >
+                {swapLocation && (
+                    <Marker
+                        coordinate={{ latitude: swapLocation.latitude, longitude: swapLocation.longitude }}
+                        title="Swap Location"
+                        description="Location for foodswap"
+                    />
+                )}
+                {userLocation && (
+                    <CircularMarker
+                        coordinate={userLocation}
+                        image={userProfilePic ? { uri: userProfilePic } : require("../assets/images/default_profile.jpg")}
+                        color="green"
+                        title="Your Location"
+                        description="Your current location"
+                        colors={colors}
+                    />
+                )}
+                {otherUserLocation && (
+                    <CircularMarker
+                        coordinate={otherUserLocation}
+                        image={otherUserProfilePic ? { uri: otherUserProfilePic } : require("../assets/images/default_profile.jpg")}
+                        color="blue"
+                        title={otherUserUsername + "'s Location"}
+                        description={otherUserUsername + "'s current location"}
+                        colors={colors}
+                    />
+                )}
+                {swapLocation && userLocation && renderPolyline(swapLocation, userLocation, "green")}
+                {swapLocation && otherUserLocation && renderPolyline(swapLocation, otherUserLocation)}
+            </CustomMap>
             <View style={styles.infoContainer}>
                 <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Connect real-time:</Text>
@@ -356,6 +353,11 @@ function FoodSwapRoom() {
                         </MaterialButtonSuccess>
                     }
                 </View>
+                {showErrorConnect && (
+                        <Text style={styles.errormsg}>
+                            {showErrorConnect}
+                        </Text>
+                    )}
                 {socket && socket.readyState === WebSocket.OPEN &&
                     <View style={styles.infoRealTimeContainerContainer}>
                         <View style={styles.infoRealTimeContainer}>
@@ -393,8 +395,6 @@ function FoodSwapRoom() {
     );
 }
 
-const screenHeight = Dimensions.get('window').height;
-const containerHeight = screenHeight * 0.5;
 
 function createStyles(colors) {
     return StyleSheet.create({
@@ -493,15 +493,6 @@ function createStyles(colors) {
             fontSize: 30,
             color: colors.highlight2,
             marginHorizontal: 5
-        },
-        mapContainer: {
-            height: containerHeight,
-            elevation: 3,
-            marginBottom: 15,
-        },
-        map: {
-            width: '100%',
-            height: '100%',
         },
         errormsg: {
             fontFamily: "roboto-regular",

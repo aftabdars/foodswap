@@ -75,7 +75,7 @@ function createStyles(colors) {
             top: 0,
             left: 0,
             right: 0,
-            height: screenHeight
+            height: screenHeight + 30
         },
         graphic: {
             width: '50%',
