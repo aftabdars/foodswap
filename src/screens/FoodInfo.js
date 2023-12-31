@@ -52,7 +52,7 @@ const FoodInfo = () => {
       getMeFoodItem();
     }
   }, []);
-  console.log(foodItem.end_time)
+  
   // Get food item's feedbacks
   useEffect(() => {
     if (foodItem) {

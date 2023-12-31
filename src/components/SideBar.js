@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation, CommonActions } from "@react-navigation/native";
+import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 import { Avatar } from "react-native-elements";
 
 import ProgressBar from './ProgressBar';
 import SidebarButton from "./SidebarButton";
-import { getProfile, getStats, removeProfile, removeStats } from "../storage/User";
-import { getLevels } from "../api/backend/Gamification";
+import { removeProfile, removeStats } from "../storage/User";
 import { getUserToken, removeUserToken } from "../storage/UserToken";
 import { postLogout } from "../api/backend/Auth";
 import { useLoading } from "../assets/LoadingContext";
@@ -16,63 +15,20 @@ const SideBar = (props) => {
   const colors = props.colors;
   const styles = createStyles(colors);
   // Loading
-  //const { showLoading, hideLoading } = useLoading();
+  const { showLoading, hideLoading } = useLoading();
 
   // States
-  const [userData, setUserData] = useState();
-  const [userStats, setUserStats] = useState();
-  const [levelData, setLevelData] = useState();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    // Gets client user profile
-    const getUserProfile = async () => {
-      try {
-        const profile = await getProfile();
-        if (profile && profile !== null) setUserData(profile);
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    // Gets client user stats
-    const getMeUserStats = async () => {
-      try {
-        const stats = await getStats();
-        if (stats && stats !== null) setUserStats(stats);
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    getUserProfile();
-    getMeUserStats();
-  }, []);
-
-  // Gets user level and level's data from user's current XP
-  useEffect(() => {
-    if (userStats) {
-      const getLevelData = async () => {
-        const params = { // Retrieves level row having xp_start >= user_xp <= xp_end
-          'xp_start__lte': userStats ? userStats.xp : 0,
-          'xp_end__gte': userStats ? userStats.xp : 199
-        }
-        await getLevels(params)
-          .then(response => {
-            if (response.status == 200) setLevelData(response.data.results[0]);
-          })
-          .catch(error => {
-            console.log(error);
-          })
-      }
-      getLevelData();
-    }
-  }, [userStats]);
+  // Data
+  const userData = props.userData;
+  const userStats = props.userStats;
+  const levelData = props.levelData;
 
   const handleLogout = async () => {
-    //showLoading();
+    showLoading();
     const token = (await getUserToken()).token;
     await postLogout(token)
       .then(response => { // Response status 204 if deleted
@@ -90,7 +46,7 @@ const SideBar = (props) => {
       })
       .catch(error => {
         console.log(error);
-        //hideLoading();
+        hideLoading();
       })
   }
 
@@ -104,7 +60,7 @@ const SideBar = (props) => {
       else {
         navigation.navigate(name, routeParams);
       }
-      
+
       // Lock will release after 2 seconds
       setTimeout(() => {
         setIsButtonDisabled(false);
@@ -117,7 +73,7 @@ const SideBar = (props) => {
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Text style={styles.username}>{userData && userData.username}</Text>
-          <Text style={styles.level}>{`Level ${levelData && levelData.level? levelData.level : 0}`}</Text>
+          <Text style={styles.level}>{`Level ${levelData && levelData.level ? levelData.level : 0}`}</Text>
           <ProgressBar xp={[userStats ? userStats.xp : 0, levelData ? levelData.xp_end : 1]} height={8} />
         </View>
         <Avatar

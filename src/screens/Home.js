@@ -6,7 +6,7 @@ import Categorybutton from "../components/Categorybutton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SideMenu from 'react-native-side-menu-updated';
 
-import { getProfile } from "../storage/User.js";
+import { getProfile, getStats } from "../storage/User.js";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
 import FoodCarousel from "../components/FoodCarousel.js";
 import { ThemeContext, getColors } from '../assets/Theme';
@@ -16,6 +16,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import SideBar from "../components/SideBar";
 import { getUserToken } from "../storage/UserToken.js";
 import { useLoading } from "../assets/LoadingContext.js";
+import { getLevels } from "../api/backend/Gamification.js";
 
 
 function Home(props) {
@@ -30,6 +31,8 @@ function Home(props) {
   const [refresh, setRefresh] = useState(false);
   const [refreshCount, setRefreshCount] = useState(0);
   const [userData, setUserData] = useState({ username: 'Anonymous' });
+  const [userStats, setUserStats] = useState();
+  const [levelData, setLevelData] = useState();
   const [foodItems, setFoodItems] = useState();
   const [foodCategories, setFoodCategories] = useState();
 
@@ -38,7 +41,7 @@ function Home(props) {
   // Fetches data
   useEffect(() => {
     let completedCount = 0;
-    const MAX_COUNT = 3;
+    const MAX_COUNT = 4;
 
     const checkAllDataFetched = () => {
       if (completedCount === MAX_COUNT) {
@@ -60,6 +63,21 @@ function Home(props) {
         console.log(error);
       }
     };
+
+    // Gets client user stats
+    const getMeUserStats = async () => {
+      try {
+        const stats = await getStats();
+        if (stats && stats !== null) {
+          setUserStats(stats);
+          completedCount++;
+          checkAllDataFetched();
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
 
     // Get food items
     const getFoodItems = async () => {
@@ -91,10 +109,31 @@ function Home(props) {
     };
 
     getUserProfile();
+    getMeUserStats();
     getFoodItems();
     getMeFoodCategories();
 
   }, [refreshCount]);
+
+  // Gets user level and level's data from user's current XP
+  useEffect(() => {
+    if (userStats) {
+      const getLevelData = async () => {
+        const params = { // Retrieves level row having xp_start >= user_xp <= xp_end
+          'xp_start__lte': userStats ? userStats.xp : 0,
+          'xp_end__gte': userStats ? userStats.xp : 199
+        }
+        await getLevels(params)
+          .then(response => {
+            if (response.status == 200) setLevelData(response.data.results[0]);
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+      getLevelData();
+    }
+  }, [userStats]);
 
   const onRefresh = () => {
     setRefreshCount(refreshCount + 1);
@@ -168,7 +207,7 @@ function Home(props) {
     )
   };
 
-  const menu = <SideBar colors={colors} />
+  const menu = <SideBar colors={colors} userData={userData} userStats={userStats} levelData={levelData} />
   //MAIN HOME FUNCTION RETURN
   return (
     <SideMenuWithState menu={menu} isOpen={false} />

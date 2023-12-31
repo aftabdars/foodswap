@@ -33,7 +33,7 @@ function Inbox() {
 
     return (
         <View style={styles.container}>
-            {inboxData ?
+            {inboxData && inboxData.length > 0 ?
                 inboxData.map((data, index) => (
                     <ChatPreview key={data.id} data={data} index={index} dataLength={inboxData.length} styles={styles} />
                 ))
