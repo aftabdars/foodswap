@@ -8,7 +8,7 @@ export const getCachedData = async (key) => {
     console.log('Getting ' + key);
     removeExpiredCachedData();
   if (cache.has(key)) {
-    console.log('Here it is from cache ' + key + ': ' + cache.get(key).data);
+    //console.log('Here it is from cache ' + key + ': ' + cache.get(key).data);
     return cache.get(key).data;
   } else {
     const data = await AsyncStorage.getItem(key);
@@ -17,7 +17,7 @@ export const getCachedData = async (key) => {
     if (cache.size > MAX_CACHE_SIZE) {
       cache.delete(cache.keys().next().value);
     }
-    console.log('Here it is from storage ' + key + ': ' + data);
+    //console.log('Here it is from storage ' + key + ': ' + data);
     return data;
   }
 };

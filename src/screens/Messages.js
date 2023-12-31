@@ -22,7 +22,6 @@ function Inbox() {
             const token = await getUserToken();
             await getUserInbox(token.token)
                 .then(response => {
-                    console.log(response.data);
                     setInboxData(response.data);
                 })
                 .catch(error => {

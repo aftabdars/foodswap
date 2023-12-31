@@ -16,8 +16,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     minWidth: 88,
-    paddingLeft: 16,
-    paddingRight: 16
   },
   button: {
     color: "rgba(243,114,76,1)",

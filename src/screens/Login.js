@@ -132,36 +132,38 @@ function Login({ navigation }) {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Image
-        source={require("../assets/images/logo.png")}
-        resizeMode="contain"
-        style={styles.foodswaplogo}
-      ></Image>
-      <MaterialFixedLabelTextbox
-        placeholder="Username"
-        style={styles.usernameinput}
-        onChangeText={(text) => setUsername(text)}
-      ></MaterialFixedLabelTextbox>
-      <MaterialButtonSuccess
-        style={styles.loginbtn}
-        onPress={handleLogin}
-      >Login</MaterialButtonSuccess>
-      <MaterialRightIconTextbox
-        placeholder="Password"
-        style={styles.passwordinput}
-        onChangeText={(text) => setPassword(text)}
-      ></MaterialRightIconTextbox>
-      <MaterialButtonWithVioletText
-        caption="Forgot Password?"
-        style={styles.forgotpasswordbtn}
-        onPress={() => { navigation.navigate('Forgot') }}
-      ></MaterialButtonWithVioletText>
-      {showError && (
-        <Text style={styles.errormsg}>
-          {showError}
-        </Text>
-      )}
+    <View style={styles.container}>
+      <View>
+        <Image
+          source={require("../assets/images/logo.png")}
+          resizeMode="contain"
+          style={styles.foodswaplogo}
+        ></Image>
+        <MaterialFixedLabelTextbox
+          placeholder="Username"
+          style={styles.usernameinput}
+          onChangeText={(text) => setUsername(text)}
+        ></MaterialFixedLabelTextbox>
+        <MaterialButtonSuccess
+          style={styles.loginbtn}
+          onPress={handleLogin}
+        >Login</MaterialButtonSuccess>
+        <MaterialRightIconTextbox
+          placeholder="Password"
+          style={styles.passwordinput}
+          onChangeText={(text) => setPassword(text)}
+        ></MaterialRightIconTextbox>
+        <MaterialButtonWithVioletText
+          caption="Forgot Password?"
+          style={styles.forgotpasswordbtn}
+          onPress={() => { navigation.navigate('Forgot') }}
+        ></MaterialButtonWithVioletText>
+        {showError && (
+          <Text style={styles.errormsg}>
+            {showError}
+          </Text>
+        )}
+      </View>
       <View style={styles.notAUserRow}>
         <Text style={styles.notAUser}>Not a user ?</Text>
         <MaterialButtonWithOrangeText
@@ -170,7 +172,7 @@ function Login({ navigation }) {
           onPress={() => { navigation.navigate('SignUp') }}
         ></MaterialButtonWithOrangeText>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -178,6 +180,8 @@ function createStyles(colors) {
   return StyleSheet.create({
     container: {
       flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
       backgroundColor: colors.background
     },
     foodswaplogo: {
@@ -227,11 +231,10 @@ function createStyles(colors) {
       width: 100
     },
     notAUserRow: {
+      alignSelf: 'center',
       height: 36,
       flexDirection: "row",
-      marginTop: 60,
-      marginLeft: 114,
-      marginRight: 87
+      margin: 5
     },
     errormsg: {
       fontFamily: "roboto-regular",

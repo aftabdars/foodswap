@@ -28,8 +28,9 @@ export const getProfile = async () => {
                 console.log(error);
                 throw new Error('Error getting client profile from server');
             })
+        return JSON.parse(profile.profile);
     }
-    return JSON.parse(profile.profile);
+    return JSON.parse(profile);
 };
 
 // Sets or updates user profile
@@ -69,8 +70,9 @@ export const getStats = async () => {
                 console.log(error);
                 throw new Error('Error getting client stats from server');
             })
+        return JSON.parse(stats.stats);
     }
-    return JSON.parse(stats.stats);
+    return JSON.parse(stats);
 };
 
 // Sets or updates user stats

@@ -204,14 +204,14 @@ const SwapRequestNotification = ({ colors, styles, data, userID, navigation, swa
                     <View style={styles.foodImagesContainer}>
                         <TouchableOpacity onPress={foodBImagePressed}>
                             <Image
-                                source={data.content_object.food_b_image ? { uri: data.content_object.food_b_image } : require("../assets/images/image_2023-10-27_183534741.png")}
+                                source={data.content_object.food_b_image ? { uri: data.content_object.food_b_image } : require("../assets/images/default_food.png")}
                                 style={styles.foodImage}
                             />
                         </TouchableOpacity>
                         <Icon name="exchange" size={24} color={colors.highlight2} style={styles.swapIcon} />
                         <TouchableOpacity onPress={foodAImagePressed}>
                             <Image
-                                source={data.content_object.food_a_image ? { uri: data.content_object.food_a_image } : require("../assets/images/image_2023-10-27_183534741.png")}
+                                source={data.content_object.food_a_image ? { uri: data.content_object.food_a_image } : require("../assets/images/default_food.png")}
                                 style={styles.foodImage}
                             />
                         </TouchableOpacity>

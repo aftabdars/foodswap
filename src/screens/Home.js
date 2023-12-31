@@ -64,16 +64,16 @@ function Home(props) {
     // Get food items
     const getFoodItems = async () => {
       const token = await getUserToken();
-      if(token && token !== null){
+      if (token && token !== null) {
         await getFoods(token.token)
-        .then(response => {
-          setFoodItems(response.data.results);
-          completedCount++;
-          checkAllDataFetched();
-        })
-        .catch(error => {
-          console.log(error);
-        });
+          .then(response => {
+            setFoodItems(response.data.results);
+            completedCount++;
+            checkAllDataFetched();
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
     };
 
@@ -105,7 +105,7 @@ function Home(props) {
     navigation.navigate('Notifications');
   }
 
-  function HomePage(props, { navigation }) {
+  function HomePage(props) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
@@ -153,25 +153,25 @@ function Home(props) {
     )
   }
 
-const SideMenuWithState = (props) => {
-  // Create a state variable isOpenState with an initial value from the prop
-  const [isOpenState, setIsOpenState] = useState(props.isOpen);
+  const SideMenuWithState = (props) => {
+    // Create a state variable isOpenState with an initial value from the prop
+    const [isOpenState, setIsOpenState] = useState(props.isOpen);
 
-  function onchange(opened) {
-    setIsOpenState(opened)
-  }
-  // Render the original SideMenu component with the modified prop
-  return (
-    <SideMenu isOpen={isOpenState} menu={props.menu} onChange={onchange}>
-      <HomePage bar={{setIsOpenState}} />
-    </SideMenu>
-  )
-};
+    function onchange(opened) {
+      setIsOpenState(opened)
+    }
+    // Render the original SideMenu component with the modified prop
+    return (
+      <SideMenu isOpen={isOpenState} menu={props.menu} onChange={onchange}>
+        <HomePage bar={{ setIsOpenState }} />
+      </SideMenu>
+    )
+  };
 
-  const menu = <SideBar colors={colors}/>
+  const menu = <SideBar colors={colors} />
   //MAIN HOME FUNCTION RETURN
   return (
-        <SideMenuWithState menu={menu} isOpen={false} />
+    <SideMenuWithState menu={menu} isOpen={false} />
   )
 }
 

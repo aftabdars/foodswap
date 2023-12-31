@@ -16,17 +16,18 @@ const SideBar = (props) => {
   const colors = props.colors;
   const styles = createStyles(colors);
   // Loading
-  const { showLoading, hideLoading } = useLoading();
+  //const { showLoading, hideLoading } = useLoading();
 
   // States
-  const [userData, setUserData] = useState({ username: "Asfana" });
-  const [userStats, setUserStats] = useState({ xp: 99 });
-  const [levelData, setLevelData] = useState({ level: 0, xp_end: 199 });
+  const [userData, setUserData] = useState();
+  const [userStats, setUserStats] = useState();
+  const [levelData, setLevelData] = useState();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const navigation = useNavigation();
 
-  // Gets client user profile
   useEffect(() => {
+    // Gets client user profile
     const getUserProfile = async () => {
       try {
         const profile = await getProfile();
@@ -36,23 +37,19 @@ const SideBar = (props) => {
         console.log(error);
       }
     }
-    getUserProfile();
-  }, []);
-
-  // Gets client user stats
-  useEffect(() => {
+    // Gets client user stats
     const getMeUserStats = async () => {
       try {
         const stats = await getStats();
-        console.log(stats, typeof stats)
         if (stats && stats !== null) setUserStats(stats);
       }
       catch (error) {
         console.log(error);
       }
     }
+    getUserProfile();
     getMeUserStats();
-  }, [userData]);
+  }, []);
 
   // Gets user level and level's data from user's current XP
   useEffect(() => {
@@ -75,7 +72,7 @@ const SideBar = (props) => {
   }, [userStats]);
 
   const handleLogout = async () => {
-    showLoading();
+    //showLoading();
     const token = (await getUserToken()).token;
     await postLogout(token)
       .then(response => { // Response status 204 if deleted
@@ -88,70 +85,83 @@ const SideBar = (props) => {
         removeUserToken();
         //removeUserTheme();
 
-        // Navigate to initial page like Login (forgetting current screens)
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-          })
-        );
+        // Navigate to initial page like Login
+        navigation.navigate('Login');
       })
       .catch(error => {
         console.log(error);
-        hideLoading();
+        //hideLoading();
       })
+  }
+
+  const buttonPressed = (name, routeParams = {}) => {
+    if (!isButtonDisabled) {
+      setIsButtonDisabled(true);
+
+      if (name.toLowerCase() === 'logout') {
+        handleLogout();
+      }
+      else {
+        navigation.navigate(name, routeParams);
+      }
+      
+      // Lock will release after 2 seconds
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 2000);
+    }
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.userInfo}>
-          <Text style={styles.username}>{userData.username}</Text>
-          <Text style={styles.level}>{`Level ${levelData.level}`}</Text>
+          <Text style={styles.username}>{userData && userData.username}</Text>
+          <Text style={styles.level}>{`Level ${levelData && levelData.level? levelData.level : 0}`}</Text>
           <ProgressBar xp={[userStats ? userStats.xp : 0, levelData ? levelData.xp_end : 1]} height={8} />
         </View>
         <Avatar
           rounded
           style={styles.avatar}
           size="large"
-          source={userData.profile_picture ? { uri: userData.profile_picture } : require("../assets/images/default_profile.jpg")}
+          source={userData && userData.profile_picture ? { uri: userData.profile_picture } : require("../assets/images/default_profile.jpg")}
         />
       </View>
       <View style={styles.buttonContainer}>
         <SidebarButton
           title="Find Users"
-          onPress={() => navigation.navigate('Search', { userSearch: true })}
+          onPress={() => buttonPressed('Search', { userSearch: true })}
           icon="search"
         />
         <SidebarButton
           title="Active FoodSwaps"
-          onPress={() => navigation.navigate('ActiveFoodSwaps')}
+          onPress={() => buttonPressed('ActiveFoodSwaps')}
           icon="check"
         />
         <SidebarButton
           title="Leaderboard"
-          onPress={() => navigation.navigate('Leaderboard')}
+          onPress={() => buttonPressed('Leaderboard')}
           icon="star"
         />
         <SidebarButton
           title="Achievements"
-          onPress={() => navigation.navigate('Achievements')}
+          onPress={() => buttonPressed('Achievements')}
           icon="trophy"
           iconType="entypo"
         />
         <SidebarButton
           title="Transactions History"
-          onPress={() => navigation.navigate('TransactionsHistory')}
+          onPress={() => buttonPressed('TransactionsHistory')}
           icon="timeline"
         />
         <SidebarButton
           title="Send Foodiez"
-          onPress={() => navigation.navigate('TransferFoodiez')}
+          onPress={() => buttonPressed('TransferFoodiez')}
           icon="credit-card"
         />
         <SidebarButton
           title="Logout"
-          onPress={handleLogout}
+          onPress={() => buttonPressed('Logout')}
           icon="sign-out"
           iconType="font-awesome"
         />

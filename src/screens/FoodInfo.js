@@ -52,24 +52,25 @@ const FoodInfo = () => {
       getMeFoodItem();
     }
   }, []);
-
+  console.log(foodItem.end_time)
   // Get food item's feedbacks
   useEffect(() => {
-    const getMeFoodFeedbacks = async () => {
-      if (foodItem) {
-        const token = await getUserToken();
-        await getFoodFeedbacks(token.token, { 'food': foodItem.id, 'ordering': '-timestamp' })
-          .then(response => {
-            console.log(response.data);
-            setFeedbacks(response.data.results);
-          })
-          .catch(error => {
-            console.log(error.response.data);
-          })
-      }
+    if (foodItem) {
       getMeFoodFeedbacks();
     }
   }, [foodItem]);
+
+  const getMeFoodFeedbacks = async () => {
+    const token = await getUserToken();
+    await getFoodFeedbacks(token.token, { 'food': foodItem.id, 'ordering': '-timestamp' })
+      .then(response => {
+        console.log(response.data);
+        setFeedbacks(response.data.results);
+      })
+      .catch(error => {
+        console.log(error.response.data);
+      })
+  }
 
   const handleRequest = () => {
     console.log('Sending swap request...');
@@ -153,7 +154,7 @@ const FoodInfo = () => {
   return (
     <ScrollView style={styles.container}>
       <Image
-        source={foodItem && foodItem.image ? { uri: foodItem.image } : require("../assets/images/image_2023-10-27_183534741.png")}
+        source={foodItem && foodItem.image ? { uri: foodItem.image } : require("../assets/images/default_food.png")}
         style={styles.foodImage}
       />
       <View style={styles.detailsContainer}>
@@ -170,21 +171,38 @@ const FoodInfo = () => {
             second: 'numeric',
           })}
         </Text>
-        <Text style={styles.expireDate}>Expires:{' '}
-          {foodItem && formatDateTimeString(foodItem.expire_time, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-          })}
-        </Text>
+        {foodItem &&
+          (foodItem.status === 'up' ?
+            (<Text style={styles.expireDate}>Expires:{' '}
+              {formatDateTimeString(foodItem.expire_time, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+              })}
+            </Text>)
+            :
+            (<Text style={styles.expireDate}>{stringCapitalize(foodItem.status)}{': '}
+              {foodItem.end_time ? formatDateTimeString(foodItem.end_time, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+              }) : 'NaN'}
+            </Text>)
+          )
+        }
         <Text style={styles.owner} onPress={handleOwnerClick}>
           By: {foodItem && foodItem.owner_username}
         </Text>
-        <Text style={styles.upFor}>Up for: {foodItem && foodItem.up_for}</Text>
-        <Text style={styles.status}>Status: {foodItem && (foodItem.status == 'up' ? 'Available' : stringCapitalize(foodItem.status))}</Text>
+        {foodItem && foodItem.status == 'up' &&
+          <Text style={styles.upFor}>Up for: {foodItem && foodItem.up_for}</Text>
+        }
+        {/*<Text style={styles.status}>Status: {foodItem && (foodItem.status == 'up' ? 'Available' : stringCapitalize(foodItem.status))}</Text>*/}
 
         {foodItem && userID &&
           <RequestButtonOrAlternativeText />

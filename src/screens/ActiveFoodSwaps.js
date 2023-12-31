@@ -41,12 +41,12 @@ const ActiveFoodSwaps = () => {
                 <View style={styles.previewContainer}>
                     <View style={styles.foodImagesContainer}>
                         <Image
-                            source={item.food_b_image ? { uri: item.food_b_image } : require("../assets/images/image_2023-10-27_183534741.png")}
+                            source={item.food_b_image ? { uri: item.food_b_image } : require("../assets/images/default_food.png")}
                             style={styles.foodImage}
                         />
                         <Icon name="exchange" size={24} color={colors.highlight2} style={styles.swapIcon} />
                         <Image
-                            source={item.food_a_image ? { uri: item.food_a_image } : require("../assets/images/image_2023-10-27_183534741.png")}
+                            source={item.food_a_image ? { uri: item.food_a_image } : require("../assets/images/default_food.png")}
                             style={styles.foodImage}
                         />
                     </View>

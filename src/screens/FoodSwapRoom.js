@@ -288,7 +288,7 @@ function FoodSwapRoom() {
                 <TouchableOpacity onPress={foodBImagePressed}>
                     <Text style={styles.foodImageHeading}>{data && data.food_b_owner_username}'s Food</Text>
                     <Image
-                        source={data && data.food_b_image ? { uri: data.food_b_image } : require("../assets/images/image_2023-10-27_183534741.png")}
+                        source={data && data.food_b_image ? { uri: data.food_b_image } : require("../assets/images/default_food.png")}
                         style={styles.foodImage}
                     />
                 </TouchableOpacity>
@@ -296,7 +296,7 @@ function FoodSwapRoom() {
                 <TouchableOpacity onPress={foodAImagePressed}>
                     <Text style={styles.foodImageHeading}>{data && data.food_a_owner_username}'s Food</Text>
                     <Image
-                        source={data && data.food_a_image ? { uri: data.food_a_image } : require("../assets/images/image_2023-10-27_183534741.png")}
+                        source={data && data.food_a_image ? { uri: data.food_a_image } : require("../assets/images/default_food.png")}
                         style={styles.foodImage}
                     />
                 </TouchableOpacity>
