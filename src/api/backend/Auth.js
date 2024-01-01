@@ -1,4 +1,4 @@
-import { makeGetRequest, makePostRequest } from "./Api";
+import { makeGetRequest, makePostRequest, makePutRequest } from "./Api";
 
 // Checks token validation
 export async function getTokenValidation(token) {
@@ -10,6 +10,18 @@ export async function getTokenValidation(token) {
 export async function postVerifyAccount(body) {
     const url = `/accounts/verify/`;
     return await makePostRequest(url, undefined, body);
+}
+
+// Makes forgot password request expects email or code in body
+export async function postForgotPassword(body) {
+    const url = `/accounts/forgot/`;
+    return await makePostRequest(url, undefined, body);
+}
+
+// Resets user's password, expects verification_code in body
+export async function updateResetPassword(id, body) {
+    const url = `/accounts/${id}/reset-password/`;
+    return await makePutRequest(url, undefined, body,);
 }
 
 // Logs user in and returns a user token

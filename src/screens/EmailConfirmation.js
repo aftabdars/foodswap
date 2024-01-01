@@ -1,11 +1,12 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, View, Image, Text, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, View, Image, Text } from "react-native";
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import { useFonts } from 'expo-font';
 import { postVerifyAccount } from "../api/backend/Auth";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { useRoute } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 
 function EmailConfirmation({navigation}) {
@@ -52,7 +53,10 @@ function EmailConfirmation({navigation}) {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAwareScrollView
+    style={styles.container}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
       <Image
         source={require("../assets/images/key.png")}
         resizeMode="contain"
@@ -85,7 +89,7 @@ function EmailConfirmation({navigation}) {
       {showError &&
         <Text style={styles.errormsg}>{ showError }</Text>
       }
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 

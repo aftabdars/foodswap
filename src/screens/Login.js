@@ -246,7 +246,6 @@ function createStyles(colors) {
       fontFamily: "roboto-regular",
       color: colors.error,
       marginTop: 20,
-      marginRight: 15,
       textAlign: "center"
     },
   }

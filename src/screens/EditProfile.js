@@ -109,7 +109,7 @@ function EditProfile() {
   }, []);
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
       <View style={styles.profilePictureContainer}>
         <Editbutton style={styles.editProfilePicture} onPress={handleEditProfilePicture} colors={colors}></Editbutton>
         <TouchableOpacity onPress={handleEditProfilePicture}>
