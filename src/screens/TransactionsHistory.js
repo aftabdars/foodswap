@@ -69,7 +69,7 @@ const FoodiezTransaction = ({item, userData, styles, colors}) => {
                     })}
                 </Text>
             </View>
-            <Text style={{ color: color }}>
+            <Text style={{ alignSelf: 'center', color: color }}>
                 {color == colors.highlight2? '+' : '-'}{item.amount}
             </Text>
         </View>
@@ -94,7 +94,7 @@ const XPTransaction = ({item, userData, styles, colors}) => {
                     })}
                 </Text>
             </View>
-            <Text style={{ color: colors.highlight2}}>{item.amount} XP</Text>
+            <Text style={{ alignSelf: 'center', color: colors.highlight2}}>{item.amount} XP</Text>
       </View>
     )
 }
@@ -285,19 +285,19 @@ function createStyles(colors) {
         },
         tabContainer: {
             flex: 1,
-            padding: 16,
+            paddingVertical: 16,
             backgroundColor: colors.background,
         },
         header: {
+            marginLeft: 16,
             marginBottom: 10,
             color: colors.foreground,
         },
         transactionItem: {
             flexDirection: "row",
             justifyContent: "space-between",
-            marginBottom: 20,
-            paddingVertical: 16,
-            paddingHorizontal: 12,
+            marginBottom: 5,
+            padding: 16,
             backgroundColor: colors.background2,
             borderRadius: 12,
             elevation: 2,
@@ -310,12 +310,15 @@ function createStyles(colors) {
             color: colors.highlight1,
             fontSize: 30,
             marginRight: 12,
+            alignSelf: 'center'
         },
         transactionDetails: {
             flex: 1,
+            marginRight: 3,
         },
         message: {
             fontSize: 16,
+            fontWeight: 'bold',
             color: colors.foreground,
         },
         timestamp: {

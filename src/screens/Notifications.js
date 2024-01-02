@@ -141,24 +141,17 @@ function Notifications() {
 
 function NotificationPreview({ styles, data }) {
 
-    const handleNotificationPress = () => {
-        // Handle the press event for the notification item
-        console.log(`Notification pressed: ${data.title}`);
-    };
-
     return (
-        <TouchableOpacity onPress={handleNotificationPress}>
-            <View style={styles.notificationContainer}>
-                <View style={styles.iconContainer}>
-                    <Text style={styles.notificationIcon}>🔔</Text>
-                </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>{data.title}</Text>
-                    <Text style={styles.message}>{data.message}</Text>
-                    <Text style={styles.timestamp}>{formatTimestamp(data.timestamp)}</Text>
-                </View>
+        <View style={styles.notificationContainer}>
+            <View style={styles.iconContainer}>
+                <Text style={styles.notificationIcon}>🔔</Text>
             </View>
-        </TouchableOpacity>
+            <View style={styles.textContainer}>
+                <Text style={styles.title}>{data.title}</Text>
+                <Text style={styles.message}>{data.message}</Text>
+                <Text style={styles.timestamp}>{formatTimestamp(data.timestamp)}</Text>
+            </View>
+        </View>
     )
 }
 
@@ -258,7 +251,7 @@ function createStyles(colors) {
     return StyleSheet.create({
         container: {
             flex: 1,
-            padding: 10,
+            paddingVertical: 10,
             backgroundColor: colors.background,
         },
         noNotificationsText: {
@@ -268,12 +261,10 @@ function createStyles(colors) {
         notificationContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            borderWidth: 1,
-            borderColor: colors.background2,
             borderRadius: 8,
-            padding: 12,
+            padding: 16,
             marginVertical: 5,
-            elevation: 1,
+            elevation: 2,
             backgroundColor: colors.background2,
         },
         iconContainer: {

@@ -131,11 +131,13 @@ function createStyles(colors) {
   return StyleSheet.create({
     container: {
       flex: 1,
-      padding: 20,
+      padding: 0,
       backgroundColor: colors.background,
     },
     headerContainer: {
-      marginBottom: 10
+      marginBottom: 10,
+      paddingTop: 20,
+      paddingHorizontal: 20,
     },
     searchInput: {
       height: 40,

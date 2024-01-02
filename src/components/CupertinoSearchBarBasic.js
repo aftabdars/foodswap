@@ -31,6 +31,7 @@ function CupertinoSearchBarBasic(props) {
           onChangeText={props.onChangeText}
           editable={props.editable} 
           selectTextOnFocus={props.editable}
+          autoFocus={props.autoFocus}
         ></TextInput>
         
       </View>

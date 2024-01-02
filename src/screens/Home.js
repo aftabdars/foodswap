@@ -17,7 +17,6 @@ import SideBar from "../components/SideBar";
 import { getUserToken } from "../storage/UserToken.js";
 import { useLoading } from "../assets/LoadingContext.js";
 import { getLevels } from "../api/backend/Gamification.js";
-import { Marker } from "react-native-maps";
 import { animateToNewCoordinates } from "../utils/Map.js";
 import CustomMap from "../components/CustomMap.js";
 import CircularMarker from "../components/CircularMarker.js";
@@ -215,7 +214,7 @@ function Home(props) {
             inputStyle="Search for food"
             inputBox="rgba(255,255,255,1)"
             style={styles.foodsearch}
-            onPressFirst={() =>  {navigation.navigate('Search')}}
+            onPressFirst={() => { navigation.navigate('Search') }}
           ></CupertinoSearchBarBasic>
 
           <Text style={styles.categoriesHeading}>Categories</Text>
@@ -296,7 +295,12 @@ function Home(props) {
     )
   };
 
-  const menu = <SideBar colors={colors} userData={userData} userStats={userStats} levelData={levelData} />
+  const menu = <SideBar
+    colors={colors}
+    userData={userData}
+    userStats={userStats}
+    levelData={levelData}
+  />
   //MAIN HOME FUNCTION RETURN
   return (
     <SideMenuWithState menu={menu} isOpen={false} />

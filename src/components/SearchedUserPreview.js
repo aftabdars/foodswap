@@ -35,7 +35,7 @@ function createStyles(colors) {
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 1,
-      padding: 5,
+      padding: 10,
       backgroundColor: colors.background2,
       borderRadius: 1,
       elevation: 3,
