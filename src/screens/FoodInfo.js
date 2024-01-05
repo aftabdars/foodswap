@@ -62,12 +62,9 @@ const FoodInfo = () => {
     const token = await getUserToken();
     await getFoodFeedbacks(token.token, { 'food': foodItem.id, 'ordering': '-timestamp' })
       .then(response => {
-        console.log(response.data);
         setFeedbacks(response.data.results);
       })
-      .catch(error => {
-        
-      })
+      .catch(error => {})
   }
 
   const handleRequest = () => {
@@ -112,7 +109,7 @@ const FoodInfo = () => {
     if (foodItem.owner == userID) {
       return
     }
-    else if (foodItem.has_client_already_made_request) {
+    else if (foodItem.status == 'up' && foodItem.has_client_already_made_request) {
       return (
         <Text style={styles.requestButtonAlternativeText}>
           You have already sent request, waiting for response...

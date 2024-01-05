@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { formatTimeDifferenceFuture } from "../utils/Format";
-import { stringCapitalize } from "../utils/Utils";
+import { navigationPreviousScreenName, stringCapitalize } from "../utils/Utils";
 
 
 function FoodPreview(props) {
@@ -19,7 +19,12 @@ function FoodPreview(props) {
   const TITLE_MAX_LENGTH = 55;
  
   const handlePress = () => {
-    navigation.navigate('FoodInfo', { foodItem: foodData });
+    if (navigationPreviousScreenName(navigation) === 'FoodInfo') {
+      navigation.push('FoodInfo', { foodItem: foodData });
+    }
+    else{
+      navigation.navigate('FoodInfo', { foodItem: foodData });
+    }
   }
 
   return (
@@ -60,7 +65,6 @@ function createStyles(colors) {
       backgroundColor: colors.background2,
       overflow: 'hidden',
       marginBottom: 20,
-      position: 'relative',
     },
     image: {
       width: '100%',

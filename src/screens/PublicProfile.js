@@ -16,6 +16,7 @@ import { deleteFollow, postFollow } from '../api/backend/Social';
 import CustomModal from '../components/CustomModal';
 import CustomModalButton from '../components/CustomModalButton';
 import { formatDateTimeString } from '../utils/Format';
+import UserFoodTabs from '../components/UserFoodTabs';
 
 
 const PublicProfile = ({ navigation }) => {
@@ -149,7 +150,7 @@ const PublicProfile = ({ navigation }) => {
                 });
                 console.log(response.data);
             })
-            .catch(error => {});
+            .catch(error => { });
     }
     const unfollowPressed = async () => {
         const token = (await getUserToken()).token;
@@ -163,7 +164,7 @@ const PublicProfile = ({ navigation }) => {
                 });
                 console.log(response.data);
             })
-            .catch(error => {});
+            .catch(error => { });
     }
 
     const StatsBox = ({ title, value, iconName }) => (
@@ -177,14 +178,16 @@ const PublicProfile = ({ navigation }) => {
     )
 
     const AchievementBox = ({ name, level, image }) => (
-        <View style={styles.achievementBox}>
-            <Image
-                source={require("../assets/images/default_achievement.png")}
-                style={styles.achievementImage}
-                resizeMode='contain'
-            />
-            <Text style={styles.achievementTitle}>{name} {level}</Text>
-        </View>
+        <TouchableOpacity>
+            <View style={styles.achievementBox}>
+                <Image
+                    source={require("../assets/images/default_achievement.png")}
+                    style={styles.achievementImage}
+                    resizeMode='contain'
+                />
+                <Text style={styles.achievementTitle}>{name} {level}</Text>
+            </View>
+        </TouchableOpacity>
     )
 
     return (
@@ -229,7 +232,12 @@ const PublicProfile = ({ navigation }) => {
                         <EntypoIcon name="star" style={styles.levelIcon}></EntypoIcon>
                         <Text style={styles.levelText}>{levelData ? String(levelData.level).padStart(3, '0') : '000'}</Text>
                     </View>
-                    <ProgressBar xp={[userStats ? userStats.xp : 0, levelData ? levelData.xp_end : 199]} width={300} color={colors.background} />
+                    <ProgressBar
+                        xp={[userStats ? userStats.xp : 0, levelData ? levelData.xp_end : 199]}
+                        width={300}
+                        color={colors.background}
+                        xpFront={true}
+                    />
                     {userData && clientUserID && userData.id != clientUserID &&
                         (
                             userData.client_follow_object_id != null ?
@@ -311,7 +319,7 @@ const PublicProfile = ({ navigation }) => {
                         <StatsBox title='Food Swapped' value={userStats.foodswap_count} iconName='swap' />
                         <StatsBox title='Food Shared' value={userStats.foodshare_count} iconName='level-down' />
                         <StatsBox title='Food Taken' value={userStats.food_taken_count} iconName='level-up' />
-                        <StatsBox title='Foodiez Earned' value={userStats.total_foodiez} iconName='bowl' />
+                        <StatsBox title='Total Foodiez Earned' value={userStats.total_foodiez} iconName='bowl' />
                         <StatsBox title='Achievements Completed' value={userStats.achievements_completed} iconName='trophy' />
                     </View>
                 }
@@ -334,6 +342,10 @@ const PublicProfile = ({ navigation }) => {
                         <Text style={styles.noAchievementsText}>User hasn't completed any achievements</Text>
                     }
                 </View>
+                <Text style={styles.headingText}>Food:</Text>
+                {userData &&
+                    <UserFoodTabs style={{ marginTop: 10 }} userID={userData.id} />
+                }
             </ScrollView>
         </View>
     );
@@ -490,6 +502,7 @@ function createStyles(colors) {
             backgroundColor: colors.background,
             borderRadius: 15,
             padding: 10,
+            paddingRight: 35,
             marginVertical: 25,
             //marginHorizontal: 5,
             width: '45%',
@@ -502,7 +515,7 @@ function createStyles(colors) {
             color: colors.highlight1,
         },
         statTextContainer: {
-            marginLeft: 10
+            marginLeft: 10,
         },
         statValue: {
             fontSize: 16,

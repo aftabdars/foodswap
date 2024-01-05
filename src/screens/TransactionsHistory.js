@@ -8,6 +8,7 @@ import { getClientFoodiezTransferTransactions, getFoodiezTransactions, getXPTran
 import { getProfile } from "../storage/User";
 import { formatDateTimeString } from "../utils/Format";
 import { ThemeContext, getColors } from "../assets/Theme";
+import CustomTabView from "../components/CustomTabView";
 
 const TransactionsHistory = () => {
     // Theme
@@ -27,12 +28,10 @@ const TransactionsHistory = () => {
 
 	return (
 		<View style={styles.container}>
-            <TabView
-                style={styles.tabbedContainer}
-                navigationState={{ index, routes }}
+            <CustomTabView 
+                colors={colors}
+                routes={routes}
                 renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={{ width: layout.width }}
             />
 		</View>
 	);
@@ -274,9 +273,6 @@ const renderScene = SceneMap({
 
 function createStyles(colors) {
     return StyleSheet.create({
-        tabbedContainer: {
-            flex: 1
-        },
         container: {
             flex: 1,
             backgroundColor: colors.background,

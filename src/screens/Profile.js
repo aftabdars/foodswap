@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Image, Text, ScrollView, useWindowDimensions } from "react-native";
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 import Editbutton from "../components/Editbutton";
 import EntypoIcon from "react-native-vector-icons/Entypo";
-import OcticonsIcon from "react-native-vector-icons/Octicons";
 import { useFonts } from 'expo-font';
 
 import ProgressBar from '../components/ProgressBar'
@@ -77,18 +75,6 @@ function Profile(props) {
       getLevelData();
     }
   }, [userStats]);
-
-  //TABBED VIEW/////////////////////////////////
-  const layout = useWindowDimensions();
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'first', title: 'Active Foods' },
-    { key: 'second', title: 'Swapped Foods' },
-    { key: 'third', title: 'Shared Foods' },
-  ]);
-  /////////////////////////////////////////////
-
 
   const [loaded] = useFonts({
     'roboto-700': require('../assets/fonts/roboto-700.ttf'),
@@ -181,47 +167,9 @@ function Profile(props) {
           <Text style={styles.detailsfont}>{userStats ? userStats.achievements_completed : 0} Achievements completed</Text>
         </View>
       </View>
-
-      <TabView style={styles.tabbedcontainer}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-      />
-      {/* Acheivments */}
-      <View style={styles.detailscontainer}>
-        <Text style={styles.headings}>Achievements</Text>
-        <View style={styles.detailsgroup}>
-          <EntypoIcon name="star" style={styles.icon}></EntypoIcon>
-          <Text style={{ color: colors.foreground, left: -32, fontFamily: "roboto-700", fontSize: 15, textAlign: "center" }}>001</Text>
-          <ProgressBar xp={[30, 60]} />
-        </View>
-      </View>
     </ScrollView>
   );
 }
-
-//TABBED VIEWS////////////////////////////////////////////////
-
-const FirstRoute = (colors) => (
-  <View style={{ flex: 1, backgroundColor: colors.background }} />
-);
-
-const SecondRoute = (colors) => (
-  <View style={{ flex: 1, backgroundColor: colors.background }} />
-);
-
-const ThirdRoute = (colors) => (
-  <View style={{ flex: 1, backgroundColor: colors.background }} />
-);
-
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second: SecondRoute,
-  third: ThirdRoute
-});
-//////////////////////////////////////////////////////////////
-
 
 function createStyles(colors) {
   return StyleSheet.create({
@@ -281,7 +229,7 @@ function createStyles(colors) {
       width: 265,
       height: 'auto',
       justifyContent: "space-between",
-      marginTop: 33,
+      marginVertical: 33,
       marginLeft: 55
     },
     detailsgroup: {
@@ -302,13 +250,6 @@ function createStyles(colors) {
       fontSize: 15,
       left: 25
     },
-    tabbedcontainer: {
-      width: '100%',
-      height: 360,
-      justifyContent: "space-between",
-      marginTop: 33,
-      marginLeft: 0,
-    }
   }
   )
 }
