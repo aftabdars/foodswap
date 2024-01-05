@@ -4,7 +4,7 @@ import { Bar } from 'react-native-progress';
 import { ThemeContext, getColors } from '../assets/Theme';
 
 
-const ProgressBar = ({ xp, width = 200, height = 15 }) => {
+const ProgressBar = ({ xp, width = 200, height = 15, color }) => {
   // Theme
   const theme = useContext(ThemeContext).theme;
   const colors = getColors(theme);
@@ -13,7 +13,7 @@ const ProgressBar = ({ xp, width = 200, height = 15 }) => {
   return (
     <View>
       <Text style={{color: colors.foreground}}>XP:   {xp[0]} / {xp[1]}</Text>
-      <Bar color={colors.highlight1} progress={progress} width={width} height={height} />
+      <Bar color={color? color : colors.highlight1} progress={progress} width={width} height={height} />
     </View>
   );
 };

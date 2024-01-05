@@ -33,15 +33,15 @@ export async function getClientSettings(token, ifModifiedSince) {
 }
 
 // Gets all users matching params
-export async function getUsers(params) {
+export async function getUsers(token, params) {
     const url = `/accounts/`;
-    return await makeGetRequest(url, undefined, params);
+    return await makeGetRequest(url, token, params);
 }
 
 // Gets a user's data
-export async function getUser(id) {
+export async function getUser(id, token) {
     const url = `/accounts/${id}/`;
-    return await makeGetRequest(url);
+    return await makeGetRequest(url, token);
 }
 
 // Deletes a user
@@ -58,9 +58,9 @@ export async function updateUser(id, token, body) {
 }
 
 // Get user stats
-export async function getUserStats(id) {
+export async function getUserStats(id, token) {
     const url = `/accounts/stats/${id}/`;
-    return await makeGetRequest(url);
+    return await makeGetRequest(url, token);
 }
 
 // Get user settings

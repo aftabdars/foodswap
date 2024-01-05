@@ -54,3 +54,9 @@ export async function getAchievements(token, params) {
     const url = `/gamification/achievements/`;
     return await makeGetRequest(url, token, params);
 }
+
+// Gets all completed achievements matching params (like user=0)
+export async function getUserAchievements(token, params) {
+    const url = `/gamification/userachievements/`;
+    return await makeGetRequest(url, token, params);
+}

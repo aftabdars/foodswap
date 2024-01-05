@@ -78,7 +78,7 @@ const FoodInfo = () => {
   };
 
   const handleOwnerClick = () => {
-    console.log(`Clicked on owner: ${foodItem.owner_username}`);
+    navigation.navigate('PublicProfile', { userID: foodItem.owner });
   };
 
   const handleSendFeedback = async () => {

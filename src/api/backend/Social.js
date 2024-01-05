@@ -37,3 +37,15 @@ export async function postFeedback(token, body) {
     const url = `/social/feedbacks/`;
     return await makePostRequest(url, token, body);
 }
+
+// Follow a user
+export async function postFollow(token, body) {
+    const url = `/social/follows/`;
+    return await makePostRequest(url, token, body);
+}
+
+// Deletes a follow row
+export async function deleteFollow(id, token, body) {
+    const url = `/social/follows/${id}/`;
+    return await makeDeleteRequest(url, token, body);
+}

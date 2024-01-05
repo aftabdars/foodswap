@@ -12,8 +12,7 @@ function SearchedUserPreview(props) {
     const navigation = useNavigation();
 
     const handlePress = () => {
-      // Handle navigation here
-      //navigation.navigate('Profile', {userData: item});
+      navigation.navigate('PublicProfile', {userID: item.id});
     }
 
     return (

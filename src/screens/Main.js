@@ -24,6 +24,8 @@ import FoodSwapRoom from './FoodSwapRoom';
 import ActiveFoodSwaps from './ActiveFoodSwaps';
 import Leaderboard from './Leaderboard';
 import Achievements from './Achievements';
+import PublicProfile from './PublicProfile';
+
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -44,6 +46,7 @@ const Main = () => {
     >
       <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
 
+      <Stack.Screen name="PublicProfile" component={PublicProfile} options={{ headerShown: false }} />
       <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile' }} />
       <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
       <Stack.Screen name="FoodUploadForm" component={FoodUploadForm} options={{ title: 'Food Upload' }} />

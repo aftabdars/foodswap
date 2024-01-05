@@ -25,7 +25,7 @@ function MaterialButtonSuccess(props) {
 
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={handlePress}>
-      <Text style={styles.caption}>{props.children}</Text>
+      <Text style={[styles.caption, props.captionStyle && props.captionStyle]}>{props.children}</Text>
     </TouchableOpacity>
   );
 }

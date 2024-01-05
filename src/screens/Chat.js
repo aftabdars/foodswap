@@ -174,6 +174,10 @@ function Chat() {
         setIsModalVisible(!isModalVisible);
     };
 
+    const viewProfilePressed = () => {
+        navigation.navigate('PublicProfile', { userID: chatPreviewMessage.sender });
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.headerExtraSpaceTop} />
@@ -199,10 +203,10 @@ function Chat() {
                     onRequestClose={toggleModal}
                     colors={colors}
                 >
-                    <CustomModalButton colors={colors} onPress={() => {console.log('ViewProfile pressed')}}>
+                    <CustomModalButton colors={colors} onPress={viewProfilePressed}>
                         View Profile
                     </CustomModalButton>
-                    <CustomModalButton colors={colors}  onPress={() => {console.log('Block pressed')}}>
+                    <CustomModalButton colors={colors} onPress={() => { console.log('Block pressed') }}>
                         Block
                     </CustomModalButton>
                 </CustomModal>

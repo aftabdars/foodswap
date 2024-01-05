@@ -18,7 +18,7 @@ const Leaderboard = () => {
     const [data, setData] = useState();
 
     // Keeping this sample data for now
-    const leaderboardData = [
+    /*const leaderboardData = [
         { id: '111', username: 'JohnDoe', xp: 1200, profilePicture: require('../assets/images/default_profile.jpg') },
         { id: '222', username: 'JaneSmith', xp: 1000, profilePicture: require('../assets/images/default_profile.jpg') },
         { id: '333', username: 'BobJohnson', xp: 800, profilePicture: require('../assets/images/default_profile.jpg') },
@@ -29,7 +29,7 @@ const Leaderboard = () => {
         { id: '88', username: 'GraceWilson', xp: 500 },
         { id: '99', username: 'HarryMoore', xp: 450 },
         { id: '100', username: 'IvyClark', xp: 400 },
-    ];
+    ]; */
 
     // Gets the data
     useEffect(() => {
@@ -51,7 +51,7 @@ const Leaderboard = () => {
 
                     // API request to user for Top 3 users' profile pictures here
 
-                    setData([...leaderboardData, ...response.data.results]);
+                    setData(response.data.results);
 
                     completedCount++;
                     checkAllDataFetched();

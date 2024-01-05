@@ -8,7 +8,7 @@ function Editbutton(props) {
 
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-      <Icon name="settings" color={colors.foreground} style={styles.icon}></Icon>
+      <Icon name="settings" color={colors && colors.foreground} style={styles.icon}></Icon>
     </TouchableOpacity>
   );
 }

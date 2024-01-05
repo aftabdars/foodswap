@@ -43,13 +43,13 @@ const Search = () => {
     if(text.length > 0) {
       // Get search results from API
       let response = undefined;
+      const token = (await getUserToken()).token;
       try {
         if(userSearch) {
-          response = await getUsers({'search': text, 'page': page});
+          response = await getUsers(token, {'search': text, 'page': page});
         }
         else {
-          const token = await getUserToken();
-          response = await getFoods(token.token, {'search': text, 'page': page});
+          response = await getFoods(token, {'search': text, 'page': page});
         }
         setSearchResults((prevResults) => [
           ...prevResults,

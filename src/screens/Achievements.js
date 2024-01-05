@@ -49,7 +49,7 @@ const Achievements = () => {
             <View style={styles.textContainers}>
                 <Text style={styles.achievementName}>{item.name} {item.level}</Text>
                 <Text style={styles.detailText}>{item.description}</Text>
-                <Text style={styles.rewardText}>Rewads: {item.xp && `+${item.xp} XP`} {item.foodiez && `+${item.foodiez} Foodiez`}</Text>
+                <Text style={styles.rewardText}>Rewards: {item.xp && `+${item.xp} XP`} {item.foodiez && `+${item.foodiez} Foodiez`}</Text>
             </View>
             {item.has_client_completed?
                 <EntypoIcon name="check" style={styles.iconCheck}></EntypoIcon>

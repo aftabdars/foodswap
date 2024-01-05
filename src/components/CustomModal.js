@@ -14,7 +14,7 @@ const CustomModal = (props) => {
             onRequestClose={props.onRequestClose}
         >
             <TouchableOpacity
-                style={styles.modalOverlay}
+                style={[styles.modalOverlay, props.style]}
                 activeOpacity={1}
                 onPress={props.onRequestClose}
             >
