@@ -76,9 +76,7 @@ function FoodSwapRoom() {
                         console.log(response.data);
                         setData(response.data);
                     })
-                    .catch(error => {
-                        console.log(error.response.data);
-                    })
+                    .catch(error => {})
             }
             getMeSwapData();
         }
@@ -182,8 +180,7 @@ function FoodSwapRoom() {
                 );
             })
             .catch(error => {
-                console.log(error.response.data);
-                setShowError(extractErrorMessage(error.response.data));
+                setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
             })
     };
 

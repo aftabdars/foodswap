@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { getLeaderboard } from "../api/backend/Gamification";
 import { getUserToken } from "../storage/UserToken";
 import { ThemeContext, getColors } from "../assets/Theme";
+import { useNavigation } from "@react-navigation/native";
 
 const Leaderboard = () => {
     // Theme
@@ -16,6 +17,8 @@ const Leaderboard = () => {
     const [refresh, setRefresh] = useState(false);
     const [refreshCount, setRefreshCount] = useState(0);
     const [data, setData] = useState();
+
+    const navigation = useNavigation();
 
     // Keeping this sample data for now
     /*const leaderboardData = [
@@ -56,9 +59,7 @@ const Leaderboard = () => {
                     completedCount++;
                     checkAllDataFetched();
                 })
-                .catch(error => {
-                    console.log(error.response.data);
-                });
+                .catch(error => { });
         })();
     }, [refreshCount]);
 
@@ -102,7 +103,7 @@ const Leaderboard = () => {
     };
     const handleProfilePress = (item) => {
         // Handle the press event for the profile item
-        console.log(`Profile pressed: ${item.username}`);
+        navigation.navigate('PublicProfile', {userID: item.id});
     };
 
     const onRefresh = () => {

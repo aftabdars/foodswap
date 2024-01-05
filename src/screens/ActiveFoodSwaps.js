@@ -33,7 +33,7 @@ const ActiveFoodSwaps = () => {
     const FoodSwapPreview = ({ item }) => {
 
         const handlePress = () => {
-            navigation.navigate('FoodSwapRoom', {data: item});
+            navigation.navigate('FoodSwapRoom', { data: item });
         }
 
         return (
@@ -89,9 +89,7 @@ const ActiveFoodSwaps = () => {
             setHasNextPage(response_a.data.next !== null || response_b.data.next !== null);
             setPage((response_a.data.next !== null || response_b.data.next !== null) ? page + 1 : 1);
         }
-        catch (error) {
-            console.log(error.response.data);
-        }
+        catch (error) { }
     };
 
     const handleLoadMore = async () => {
@@ -106,7 +104,7 @@ const ActiveFoodSwaps = () => {
 
     return (
         <View style={styles.container}>
-            {userFoodSwaps &&
+            {userFoodSwaps && userFoodSwaps.length > 0 &&
                 <FlatList
                     data={userFoodSwaps}
                     keyExtractor={(item) => item.id}
@@ -115,6 +113,10 @@ const ActiveFoodSwaps = () => {
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.2}
                 />
+                ||
+                <Text style={styles.alternativeText}>
+                    You don't have any active foodswaps at the moment.
+                </Text>
             }
         </View>
     );
@@ -129,6 +131,12 @@ function createStyles(colors) {
         },
         flatList: {
             padding: 0,
+        },
+        alternativeText: {
+            fontSize: 16,
+            color: colors.foreground,
+            margin: 5,
+            textAlign: 'center',
         },
         previewContainer: {
             flexDirection: 'row',

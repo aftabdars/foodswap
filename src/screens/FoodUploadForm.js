@@ -51,9 +51,7 @@ function FoodUploadForm() {
                         setFoodCategories(response.data.results);
                         setFilteredCategories(response.data.results);
                     })
-                    .catch(error => {
-                        console.log(error);
-                    })
+                    .catch(error => {})
             };
             getMeFoodCategories();
         }
@@ -61,12 +59,14 @@ function FoodUploadForm() {
 
     const handleSearch = (text) => {
         setSearchText(text);
-        const filtered = foodCategories.filter((category) =>
-            category.name.toLowerCase().includes(text.toLowerCase())
-        );
-        setFilteredCategories(filtered);
-        if (filtered.length > 0) {
-            setCategory(filtered[0].id);
+        if (foodCategories && foodCategories.length > 0) {
+            const filtered = foodCategories.filter((category) =>
+                category.name.toLowerCase().includes(text.toLowerCase())
+            );
+            setFilteredCategories(filtered);
+            if (filtered.length > 0) {
+                setCategory(filtered[0].id);
+            }
         }
     }
     const handleDiscard = () => {
@@ -133,9 +133,8 @@ function FoodUploadForm() {
                             })
                         );
                     })
-                    .catch(error => {
-                        console.log(error.response.data);
-                        setShowError(extractErrorMessage(error.response.data));
+                    .catch(error => {    
+                        setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
                         hideLoading();
                     })
             }

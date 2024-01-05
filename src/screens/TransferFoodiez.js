@@ -64,9 +64,8 @@ const TransferFoodiez = () => {
 
             navigation.navigate('TransferFoodiezSuccess', {amount: parseFloat(amount)});
           })
-          .catch(error => {
-            console.log(error.response.data);
-            setShowError(extractErrorMessage(error.response.data));
+          .catch(error => {  
+            setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
           })
       }
     }

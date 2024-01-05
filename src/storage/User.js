@@ -24,9 +24,9 @@ export const getProfile = async () => {
                 }
             })
             .catch(error => {
-                console.log(error.response.status);
                 console.log(error);
-                throw new Error('Error getting client profile from server');
+                if(error.response) console.log(error.response.status);
+                //throw new Error('Error getting client profile from server');
             })
         return JSON.parse(profile.profile);
     }
@@ -66,9 +66,9 @@ export const getStats = async () => {
                 }
             })
             .catch(error => {
-                console.log(error.response.status);
                 console.log(error);
-                throw new Error('Error getting client stats from server');
+                if(error.response) console.log(error.response.status);
+                //throw new Error('Error getting client stats from server');
             })
         return JSON.parse(stats.stats);
     }

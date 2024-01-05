@@ -52,9 +52,7 @@ function Notifications() {
                     completedCount++;
                     checkAllDataFetched();
                 })
-                .catch(error => {
-                    console.log(error.response.data);
-                })
+                .catch(error => { })
         }
 
         getMeUserID();
@@ -70,9 +68,7 @@ function Notifications() {
             console.log(response.data);
             // Remove the swap request notification from screen
             setNotifications(notifications.filter((item) => item.id !== notifcationID));
-        } catch (error) {
-            console.log(error.response.data);
-        }
+        } catch (error) { }
     };
 
     const swapAccept = async (notifcationID, foodSwapRequestID, object) => {
@@ -94,12 +90,8 @@ function Notifications() {
                     console.log(response.data);
                     navigation.navigate("FoodSwapRoom", { swapID: response.data.id });
                 })
-                .catch(error => {
-                    console.log(error.response.data);
-                })
-        } catch (error) {
-            console.log(error.response.data);
-        }
+                .catch(error => { })
+        } catch (error) { }
     };
 
     const renderNotificationItem = ({ item }) => {

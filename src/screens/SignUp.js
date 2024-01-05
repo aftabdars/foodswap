@@ -60,7 +60,7 @@ function SignUp({ navigation }) {
             setShowError(error.response.data["email"][0])
           }
           else {
-            setShowError(extractErrorMessage(error.response.data));
+            setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
           }
         })
 

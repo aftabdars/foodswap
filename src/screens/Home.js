@@ -143,7 +143,6 @@ function Home(props) {
 
   }, [refreshCount]);
 
-
   // Initial location permissions and user's location
   useEffect(() => {
     getMeLocationAndAnimate();
@@ -301,6 +300,7 @@ function Home(props) {
     userStats={userStats}
     levelData={levelData}
   />
+
   //MAIN HOME FUNCTION RETURN
   return (
     <SideMenuWithState menu={menu} isOpen={false} />

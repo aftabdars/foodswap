@@ -59,9 +59,7 @@ const Search = () => {
         setHasNextPage(response.data.next !== null);
         setPage(response.data.next !== null? page + 1 : 1);
       }
-      catch(error) {
-        console.log(error.response.data);
-      }
+      catch(error) { }
     }
     else {
       setSearchResults(undefined);

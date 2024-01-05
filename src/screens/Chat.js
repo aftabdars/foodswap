@@ -80,9 +80,7 @@ function Chat() {
                 .then(response => {
                     setMessages(response.data.results);
                 })
-                .catch(error => {
-                    console.log(error);
-                })
+                .catch(error => { })
         };
         getMeMessages();
     }, []);
@@ -126,10 +124,7 @@ function Chat() {
                     }
                     scrollToBottom();
                 })
-                .catch(error => {
-                    console.log(error);
-                    console.log(error.response.data);
-                })
+                .catch(error => { })
 
             // Empty the new message and attachment states
             setNewMessage('');

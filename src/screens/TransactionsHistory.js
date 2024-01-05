@@ -135,8 +135,7 @@ const FirstRoute = () => {
                 .then(response => {
                     setTransactions(response.data.results);
                 })
-                .catch(error => {
-                    console.log(error);
+                .catch(error => {console.log(error);
                 })
             }
             getTransactionsData();
@@ -244,8 +243,7 @@ const ThirdRoute = () => {
                 .then(response => {
                     setTransactions(response.data.results);
                 })
-                .catch(error => {
-                    console.log(error);
+                .catch(error => {console.log(error);
                 })
             }
             getTransactionsData();

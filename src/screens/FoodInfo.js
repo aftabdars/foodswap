@@ -45,14 +45,12 @@ const FoodInfo = () => {
             console.log(response.data);
             setFoodItem(response.data);
           })
-          .catch(error => {
-            console.log(error.response.data);
-          })
+          .catch(error => { })
       }
       getMeFoodItem();
     }
   }, []);
-  
+
   // Get food item's feedbacks
   useEffect(() => {
     if (foodItem) {
@@ -68,7 +66,7 @@ const FoodInfo = () => {
         setFeedbacks(response.data.results);
       })
       .catch(error => {
-        console.log(error.response.data);
+        
       })
   }
 
@@ -95,9 +93,7 @@ const FoodInfo = () => {
           setFeedbacks((prevFeedback) => [response.data, ...prevFeedback]);
           setFeedback('');
         })
-        .catch(error => {
-          console.log(error.response.data);
-        })
+        .catch(error => { })
     }
   };
 

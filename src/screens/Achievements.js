@@ -27,9 +27,7 @@ const Achievements = () => {
                     setTotalAchievements(response.data.count);
                     setAchievements(response.data.results);
                 })
-                .catch(error => {
-                    console.log(error.response.data);
-                });
+                .catch(error => { });
         })();
     }, []);
 

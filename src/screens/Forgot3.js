@@ -42,8 +42,7 @@ function Forgot3({ navigation }) {
           navigation.navigate('Login');
         })
         .catch(error => {
-          console.log(error.response.data);
-          setShowError(extractErrorMessage(error.response.data));
+          setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
         })
     }
     else {

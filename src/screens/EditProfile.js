@@ -57,7 +57,7 @@ function EditProfile() {
         })
         .catch(error => {
           console.log(error);
-          setShowError(extractErrorMessage(error.response.data));
+          setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
         })
     }
     else {
@@ -102,7 +102,7 @@ function EditProfile() {
         console.log(error);
         setShowError('Error getting profile');
         //const errorMessages = error.response.data;
-        //setShowError(extractErrorMessage(error.response.data));
+        //setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
       }
     }
     getUserProfile();

@@ -33,8 +33,7 @@ function Forgot2({ navigation }) {
         });
       })
       .catch(error => {
-        console.log(error.response.data);
-        setShowError(extractErrorMessage(error.response.data));
+        setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
       })
   }
 

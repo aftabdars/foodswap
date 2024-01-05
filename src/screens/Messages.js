@@ -24,9 +24,7 @@ function Inbox() {
                 .then(response => {
                     setInboxData(response.data);
                 })
-                .catch(error => {
-                    console.log(error);
-                })
+                .catch(error => { })
         };
         getMeUserInbox();
     }, []);

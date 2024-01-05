@@ -78,7 +78,6 @@ function LocationSelection() {
                     navigation.navigate('Home');
                 })
                 .catch(error => {
-                    console.log(error.response.data);
                     setShowError('Error sending request');
                 })
         }
@@ -95,7 +94,6 @@ function LocationSelection() {
                     navigation.navigate('Home');
                 })
                 .catch(error => {
-                    console.log(error.response.data);
                     setShowError('Error making swap request');
                 })
         }

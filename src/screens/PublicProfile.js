@@ -58,9 +58,7 @@ const PublicProfile = ({ navigation }) => {
                     .then(response => {
                         setUserData(response.data);
                     })
-                    .catch(error => {
-                        console.log(error.response.data);
-                    })
+                    .catch(error => { })
             }
             getMeUserData();
         }
@@ -75,9 +73,7 @@ const PublicProfile = ({ navigation }) => {
                     .then(response => {
                         setUserStats(response.data);
                     })
-                    .catch(error => {
-                        console.log(error.response.data);
-                    })
+                    .catch(error => { })
             }
             getMeUserStats();
         }
@@ -92,9 +88,7 @@ const PublicProfile = ({ navigation }) => {
                     .then(response => {
                         setUserAchievements(response.data.results);
                     })
-                    .catch(error => {
-                        console.log(error.response.data);
-                    })
+                    .catch(error => { })
             }
             getMeUserAchievements();
         }
@@ -113,9 +107,7 @@ const PublicProfile = ({ navigation }) => {
                         //console.log(response.data);
                         if (response.status == 200) setLevelData(response.data.results[0]);
                     })
-                    .catch(error => {
-                        console.log(error);
-                    })
+                    .catch(error => { })
             }
             getLevelData();
         }
@@ -157,9 +149,7 @@ const PublicProfile = ({ navigation }) => {
                 });
                 console.log(response.data);
             })
-            .catch(error => {
-                console.log(error.response.data);
-            });
+            .catch(error => {});
     }
     const unfollowPressed = async () => {
         const token = (await getUserToken()).token;
@@ -173,9 +163,7 @@ const PublicProfile = ({ navigation }) => {
                 });
                 console.log(response.data);
             })
-            .catch(error => {
-                console.log(error.response.data);
-            });
+            .catch(error => {});
     }
 
     const StatsBox = ({ title, value, iconName }) => (
@@ -235,13 +223,13 @@ const PublicProfile = ({ navigation }) => {
                         {userData && (userData.first_name || userData.last_name) &&
                             <Text style={styles.name}>{`${userData.first_name} ${userData.last_name}`}</Text>
                         }
-                        <Text style={styles.username}>{`@${userData && userData.username}`}</Text>
+                        <Text style={styles.username}>{`@${userData && userData.username || '_foodswapuser'}`}</Text>
                     </View>
                     <View style={styles.levelContainer}>
                         <EntypoIcon name="star" style={styles.levelIcon}></EntypoIcon>
                         <Text style={styles.levelText}>{levelData ? String(levelData.level).padStart(3, '0') : '000'}</Text>
                     </View>
-                    <ProgressBar xp={[userStats ? userStats.xp : 0, levelData ? levelData.xp_end : 1]} width={300} color={colors.background} />
+                    <ProgressBar xp={[userStats ? userStats.xp : 0, levelData ? levelData.xp_end : 199]} width={300} color={colors.background} />
                     {userData && clientUserID && userData.id != clientUserID &&
                         (
                             userData.client_follow_object_id != null ?
@@ -306,12 +294,12 @@ const PublicProfile = ({ navigation }) => {
                                 <View style={styles.detailGroup}>
                                     <EntypoIcon name="add-user" style={styles.icon}></EntypoIcon>
                                     <Text style={styles.detailLabel}>Following:</Text>
-                                    <Text style={styles.detailValue}>{userStats && userStats.following_count}</Text>
+                                    <Text style={styles.detailValue}>{userStats && userStats.following_count || 0}</Text>
                                 </View>
                                 <View style={styles.detailGroup}>
                                     <EntypoIcon name="remove-user" style={styles.icon}></EntypoIcon>
                                     <Text style={styles.detailLabel}>Followers:</Text>
-                                    <Text style={styles.detailValue}>{userStats && userStats.follower_count}</Text>
+                                    <Text style={styles.detailValue}>{userStats && userStats.follower_count || 0}</Text>
                                 </View>
                             </Animated.View>)}
                 </TouchableOpacity>

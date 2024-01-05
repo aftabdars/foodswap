@@ -44,7 +44,6 @@ function Login({ navigation }) {
           }
           catch (error) {
             if (error.response) {
-              console.log(error.response.data);
               removeUserToken(); // For better remove the invalid(expired) token from user's cache and storage
             }
           }
@@ -119,7 +118,7 @@ function Login({ navigation }) {
       .catch(error => {
         hideLoading();
         console.log(error);
-        console.log(error.response.data);
+        
 
         if (error.response.status == 401) { // Unauthorized (Meaning in this case, that user is not verified)
           navigation.navigate('EmailConfirmation', {
@@ -127,7 +126,7 @@ function Login({ navigation }) {
           });
         }
         else {
-          setShowError(extractErrorMessage(error.response.data));
+          setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
         }
       })
   }
