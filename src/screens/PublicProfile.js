@@ -17,6 +17,7 @@ import CustomModal from '../components/CustomModal';
 import CustomModalButton from '../components/CustomModalButton';
 import { formatDateTimeString } from '../utils/Format';
 import UserFoodTabs from '../components/UserFoodTabs';
+import PaginatedFlatList from '../components/PaginatedFlatList';
 
 
 const PublicProfile = ({ navigation }) => {
@@ -81,19 +82,19 @@ const PublicProfile = ({ navigation }) => {
     }, [userData]);
 
     // Gets user's completed achievements
-    useEffect(() => {
-        if (userData) {
-            const getMeUserAchievements = async () => {
-                const token = (await getUserToken()).token;
-                await getUserAchievements(token, { user: userData.id })
-                    .then(response => {
-                        setUserAchievements(response.data.results);
-                    })
-                    .catch(error => { })
-            }
-            getMeUserAchievements();
+    const getMeUserAchievements = async (page) => {
+        const token = (await getUserToken()).token;
+        const params ={
+            user: userData.id,
+            page: page
+        };
+        let response;
+        try {
+            response = await getUserAchievements(token, params);
+            return response.data;
         }
-    }, [userData]);
+        catch(error) {}
+    }
 
     // Gets user level and level's data from user's current XP
     useEffect(() => {
@@ -325,21 +326,22 @@ const PublicProfile = ({ navigation }) => {
                 }
                 <Text style={styles.headingText}>Achievements:</Text>
                 <View style={styles.achievementsContainer}>
-                    {userAchievements && userAchievements.length > 0 ?
-                        <FlatList
-                            data={userAchievements}
-                            keyExtractor={(achievement, index) => index.toString()}
-                            horizontal
+                    {userData &&
+                        <PaginatedFlatList
+                            colors={colors}
+                            loadData={getMeUserAchievements}
+                            horizontal={true}
                             renderItem={({ item }) => (
                                 <AchievementBox
+                                    key={item.id}
                                     name={item.achievement_name}
                                     level={item.achievement_level}
                                     image={item.achievement_image}
                                 />
                             )}
+                            alternativeText={"User hasn't completed any achievements"}
+                            alternativeTextStyle={styles.noAchievementsText}
                         />
-                        :
-                        <Text style={styles.noAchievementsText}>User hasn't completed any achievements</Text>
                     }
                 </View>
                 <Text style={styles.headingText}>Food:</Text>

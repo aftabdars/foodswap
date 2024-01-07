@@ -22,47 +22,47 @@ function SearchedFoodPreview(props) {
     return (
       <TouchableOpacity onPress={handlePress}>
         <View style={styles.container}>
-          <Image source={{uri: item.image}} style={styles.foodImage} />
+          <Image source={{uri: item && item.image}} style={styles.foodImage} />
           <View style={styles.detailsContainer}>
-              <Text style={styles.title}>{item.name}</Text>
-              <Text style={styles.category}>{item.category_name}</Text>
+              <Text style={styles.title}>{item && item.name}</Text>
+              <Text style={styles.category}>{item && item.category_name}</Text>
               <Text style={styles.description}>
-                {item.description.substring(0, DESCRIPTION_MAX_LENGTH)}
-                {item.description.length > DESCRIPTION_MAX_LENGTH? '...' : ''}
+                {item && item.description.substring(0, DESCRIPTION_MAX_LENGTH)}
+                {item && item.description.length > DESCRIPTION_MAX_LENGTH? '...' : ''}
               </Text>
               <View style={styles.infoContainer}>
               <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Uploaded on</Text>
                   <Text style={styles.infoText}>
-                    {formatDateTimeString(item.date_added, {
+                    {item && (formatDateTimeString(item.date_added, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
                       hour: 'numeric',
                       minute: 'numeric',
                       second: 'numeric',
-                    })}
+                    }))}
                   </Text>
               </View>
               <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Expires on</Text>
                   <Text style={styles.infoText}>
-                  {formatDateTimeString(item.expire_time, {
+                  {item && (formatDateTimeString(item.expire_time, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
                       hour: 'numeric',
                       minute: 'numeric',
                       second: 'numeric',
-                    })}
+                    }))}
                   </Text>
               </View>
               <View style={styles.infoItem}>
                   <Text style={styles.infoLabel}>Status</Text>
-                  <Text style={styles.infoText}>{item.status == 'up'? 'Available' : stringCapitalize(item.status)}</Text>
+                  <Text style={styles.infoText}>{item && (item.status == 'up'? 'Available' : stringCapitalize(item.status))}</Text>
               </View>
               </View>
-              <Text style={styles.owner}>{`By: ${item.owner_username}`}</Text>
+              <Text style={styles.owner}>{`By: ${item && item.owner_username}`}</Text>
           </View>
         </View>
       </TouchableOpacity>

@@ -1,22 +1,18 @@
-import React, { useContext, useEffect } from "react";
-import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, RefreshControl } from 'react-native';
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { getLeaderboard } from "../api/backend/Gamification";
 import { getUserToken } from "../storage/UserToken";
 import { ThemeContext, getColors } from "../assets/Theme";
 import { useNavigation } from "@react-navigation/native";
+import PaginatedFlatList from "../components/PaginatedFlatList";
 
 const Leaderboard = () => {
     // Theme
     const theme = useContext(ThemeContext).theme;
     const colors = getColors(theme);
     const styles = createStyles(colors);
-    // States
-    const [refresh, setRefresh] = useState(false);
-    const [refreshCount, setRefreshCount] = useState(0);
-    const [data, setData] = useState();
 
     const navigation = useNavigation();
 
@@ -34,34 +30,21 @@ const Leaderboard = () => {
         { id: '100', username: 'IvyClark', xp: 400 },
     ]; */
 
-    // Gets the data
-    useEffect(() => {
-        let completedCount = 0;
-        const MAX_COUNT = 1;
-
-        const checkAllDataFetched = () => {
-            if (completedCount === MAX_COUNT) {
-                setRefresh(false);
-            }
-        };
-
-        (async () => {
-            const token = (await getUserToken()).token;
-            await getLeaderboard(token, { 'name': 'xp' })
-                .then(response => {
-                    console.log(response.status);
-                    console.log(response.data);
-
-                    // API request to user for Top 3 users' profile pictures here
-
-                    setData(response.data.results);
-
-                    completedCount++;
-                    checkAllDataFetched();
-                })
-                .catch(error => { });
-        })();
-    }, [refreshCount]);
+    // Gets leaderboard data matching params (currently xp)
+    const getMeLeaderboardData = async (page) => {
+        const token = (await getUserToken()).token;
+        const params = {
+            'name': 'xp',
+            'page': page
+        }
+        let response;
+        try {
+            response = await getLeaderboard(token, params);
+            // API request to user for Top 3 users' profile pictures here
+            return response.data;
+        }
+        catch(error) {}
+    };
 
     const renderLeaderboardItem = ({ item, index }) => {
         const isTopThree = index < 3;
@@ -106,29 +89,16 @@ const Leaderboard = () => {
         navigation.navigate('PublicProfile', {userID: item.id});
     };
 
-    const onRefresh = () => {
-        setRefreshCount(refreshCount + 1);
-        setRefresh(true);
-    };
-
     return (
         <View style={styles.container}>
             <View style={styles.titleContainer}>
                 <Text style={styles.titleLeft}>Top 100 - XP</Text>
                 {/*<Text style={styles.titleRight}>Weekly</Text>*/}
             </View>
-            <FlatList
-                data={data}
-                keyExtractor={(item) => item.id}
+            <PaginatedFlatList
+                colors={colors}
+                loadData={getMeLeaderboardData}
                 renderItem={renderLeaderboardItem}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refresh}
-                        onRefresh={onRefresh}
-                        colors={[colors.highlight1, colors.highlight2]}
-                        tintColor={colors.highlight2}
-                    />
-                }
             />
         </View>
     );

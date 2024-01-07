@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 import { ThemeContext, getColors } from '../assets/Theme';
 import { getFoods } from '../api/backend/Food';
@@ -7,28 +7,18 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { getProfile } from "../storage/User";
 import { Icon } from 'react-native-elements';
 import { getUserToken } from '../storage/UserToken';
+import PaginatedFlatList from '../components/PaginatedFlatList';
+
 
 const FoodSwapSelection = () => {
     // Theme
     const theme = useContext(ThemeContext).theme;
     const colors = getColors(theme);
     const styles = createStyles(colors);
-    // States
-    const [userFoods, setUserFoods] = useState([]);
-    const [resultCount, setResultCount] = useState(0);
-
-    const [page, setPage] = useState(1);
-    const [hasNextPage, setHasNextPage] = useState(false);
-    const [loading, setLoading] = useState(false);
 
     const navigation = useNavigation();
     const route = useRoute();
     const foodItem = route.params?.foodItem;
-
-    // Gets user's active food items that are up for swap
-    useEffect(() => {
-        getUserFoodItemsForSwap();
-    }, []);
 
     const FoodPreview = ({ item }) => {
 
@@ -61,7 +51,8 @@ const FoodSwapSelection = () => {
         return <FoodPreview item={item}></FoodPreview>
     }
 
-    const getUserFoodItemsForSwap = async () => {
+    // Get client user's food items that are available and up for swap
+    const getUserFoodItemsForSwap = async (page) => {
         try {
             const token = await getUserToken();
             const response = await getFoods(token.token, {
@@ -70,41 +61,19 @@ const FoodSwapSelection = () => {
                 'owner': (await getProfile()).id,
                 'page': page
             });
-            setUserFoods((prevResults) => [
-                ...prevResults,
-                ...response.data.results,
-            ]);
-            setResultCount(response.data.count);
-            setHasNextPage(response.data.next !== null);
-            setPage(response.data.next !== null ? page + 1 : 1);
+            return response.data;
         }
-        catch (error) {}
-    };
-
-    const handleLoadMore = async () => {
-        if (loading || !hasNextPage) {
-            return;
-        }
-
-        setLoading(true);
-        await getUserFoodItemsForSwap();
-        setLoading(false);
+        catch (error) { }
     };
 
     return (
         <View style={styles.container}>
-            {userFoods ?
-                <FlatList
-                    data={userFoods}
-                    keyExtractor={(item) => item.id}
-                    renderItem={renderItem}
-                    style={styles.flatList}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.2}
-                />
-                :
-                <Text style={styles.noFoodSwapsText}>You don't have any active FoodSwaps</Text>
-            }
+            <PaginatedFlatList
+                colors={colors}
+                loadData={getUserFoodItemsForSwap}
+                renderItem={renderItem}
+                alternativeText={"You don't have any food items up for swap"}
+            />
         </View>
     );
 };
@@ -115,13 +84,6 @@ function createStyles(colors) {
             flex: 1,
             //padding: 10,
             backgroundColor: colors.background,
-        },
-        flatList: {
-            padding: 0,
-        },
-        noFoodSwapsText: {
-            color: colors.foreground,
-            textAlign: 'center',
         },
         foodItem: {
             flexDirection: 'row',

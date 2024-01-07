@@ -11,6 +11,8 @@ import { getProfile } from "../storage/User";
 import { deleteFoodSwapRequest, postFoodSwap } from "../api/backend/Food";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialButtonDanger from "../components/MaterialButtonDanger";
+import PaginatedFlatList from "../components/PaginatedFlatList";
+import { useRef } from "react";
 
 function Notifications() {
     // Theme
@@ -18,47 +20,30 @@ function Notifications() {
     const colors = getColors(theme);
     const styles = createStyles(colors);
 
-    const [refresh, setRefresh] = useState(false);
-    const [refreshCount, setRefreshCount] = useState(0);
-    const [notifications, setNotifications] = useState();
     const [userID, setUserID] = useState();
 
     const navigation = useNavigation();
+    const flatListRef = useRef(null);
 
     // Gets the data
     useEffect(() => {
-        let completedCount = 0;
-        const MAX_COUNT = 2;
-
-        const checkAllDataFetched = () => {
-            if (completedCount === MAX_COUNT) {
-                if (refresh) setRefresh(false);
-            }
-        };
-
         // Get user's ID
         const getMeUserID = async () => {
             setUserID((await getProfile()).id);
-            completedCount++;
-            checkAllDataFetched();
         }
-
-        // Get client's notifications
-        const getMeClientNotifications = async () => {
-            const token = await getUserToken();
-            await getClientNotifications(token.token)
-                .then(response => {
-                    setNotifications(response.data.results);
-                    completedCount++;
-                    checkAllDataFetched();
-                })
-                .catch(error => { })
-        }
-
         getMeUserID();
-        getMeClientNotifications();
+    }, []);
 
-    }, [refreshCount]);
+    // Get client's notifications
+    const getMeClientNotifications = async (page) => {
+        const token = await getUserToken();
+        let response;
+        try {
+            response = await getClientNotifications(token.token, {'page': page});
+            return response.data;
+        }
+        catch(error) {}
+    }
 
     const swapDecline = async (notifcationID, foodSwapRequestID) => {
         try {
@@ -67,7 +52,11 @@ function Notifications() {
             const response = await deleteFoodSwapRequest(foodSwapRequestID, token);
             console.log(response.data);
             // Remove the swap request notification from screen
-            setNotifications(notifications.filter((item) => item.id !== notifcationID));
+            if (flatListRef.current) {
+                flatListRef.current.setDataFromExternal(
+                    flatListRef.current.getData().filter((item) => item.id !== notifcationID)
+                );
+            }
         } catch (error) { }
     };
 
@@ -78,7 +67,11 @@ function Notifications() {
             const response = await deleteFoodSwapRequest(foodSwapRequestID, token, { 'accepted': true });
             console.log(response.data);
             // Remove the swap request notification from screen
-            setNotifications(notifications.filter((item) => item.id !== notifcationID));
+            if (flatListRef.current) {
+                flatListRef.current.setDataFromExternal(
+                    flatListRef.current.getData().filter((item) => item.id !== notifcationID)
+                );
+            }
 
             await postFoodSwap(token, {
                 'food_a': object.food_a,
@@ -103,29 +96,16 @@ function Notifications() {
         }
     };
 
-    const onRefresh = () => {
-        setRefreshCount(refreshCount + 1);
-        setRefresh(true);
-    };
-
     return (
         <View style={styles.container}>
-            {notifications && notifications.length > 0 ?
-                <FlatList
-                    data={notifications}
-                    keyExtractor={(item) => item.id}
+            {userID &&
+                <PaginatedFlatList
+                    ref={flatListRef}
+                    colors={colors}
+                    loadData={getMeClientNotifications}
                     renderItem={renderNotificationItem}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refresh}
-                            onRefresh={onRefresh}
-                            colors={[colors.highlight1, colors.highlight2]}
-                            tintColor={colors.highlight2}
-                        />
-                    }
+                    alternativeText={'No notifications to show'}
                 />
-                :
-                <Text style={styles.noNotificationsText}>No notifications to show</Text>
             }
         </View>
     );
@@ -245,10 +225,6 @@ function createStyles(colors) {
             flex: 1,
             paddingVertical: 10,
             backgroundColor: colors.background,
-        },
-        noNotificationsText: {
-            color: colors.foreground,
-            textAlign: 'center',
         },
         notificationContainer: {
             flexDirection: 'row',

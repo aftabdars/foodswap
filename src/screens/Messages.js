@@ -7,6 +7,8 @@ import { getUserToken } from "../storage/UserToken";
 import { getUserInbox } from "../api/backend/Social";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { formatTimeDifferencePast } from '../utils/Format';
+import PaginatedFlatList from "../components/PaginatedFlatList";
+import { getProfile } from "../storage/User";
 
 
 function Inbox() {
@@ -15,86 +17,114 @@ function Inbox() {
     const colors = getColors(theme);
     const styles = createStyles(colors);
 
-    const [inboxData, setInboxData] = useState();
+    const [userID, setUserID] = useState();
 
+    // Get user id
     useEffect(() => {
-        const getMeUserInbox = async () => {
-            const token = await getUserToken();
-            await getUserInbox(token.token)
-                .then(response => {
-                    setInboxData(response.data);
-                })
-                .catch(error => { })
-        };
-        getMeUserInbox();
+        (async () => {
+            setUserID((await getProfile()).id);
+        })();
     }, []);
+
+    const getMeUserInbox = async (page) => {
+        const token = await getUserToken();
+        let response;
+        try {
+            response = await getUserInbox(token.token, { 'page': page });
+            return response.data;
+        }
+        catch (error) { }
+    };
 
     return (
         <View style={styles.container}>
-            {inboxData && inboxData.length > 0 ?
-                inboxData.map((data, index) => (
-                    <ChatPreview key={data.id} data={data} index={index} dataLength={inboxData.length} styles={styles} />
-                ))
-                :
-                <Text style={[styles.message, { 'textAlign': 'center' }]}>No chats to show</Text>
+            {userID &&
+                <PaginatedFlatList
+                    colors={colors}
+                    loadData={getMeUserInbox}
+                    renderItem={({ item }) => (
+                        <ChatPreview
+                            key={item.id}
+                            userID={userID}
+                            data={item}
+                            dataLength={item.length}
+                            colors={colors}
+                            styles={styles}
+                        />
+                    )}
+                    alternativeText={'No chats to show'}
+                />
             }
         </View>
     )
 };
 
 function ChatPreview(props) {
-    const colors = getColors(theme);
+    const colors = props.colors;
     const styles = props.styles;
 
     const navigation = useNavigation();
 
+    // Decide the other user and last message by whom
+    const otherUserID = props.data.sender === props.userID? props.data.receiver : props.data.sender;
+    const otherUserProfilePicture = otherUserID === props.data.sender? props.data.sender_profile_picture : props.data.receiver_profile_picture;
+    const otherUserUsername = otherUserID === props.data.sender? props.data.sender_username : props.data.receiver_username;
+    const otherUserFirstName = otherUserID === props.data.sender? props.data.sender_first_name : props.data.receiver_first_name;
+    const otherUserLastName = otherUserID === props.data.sender? props.data.sender_last_name : props.data.receiver_last_name;
+    const lastMessageByClient = props.userID === props.data.sender? true : false;
+
     const handleDataPress = (data) => {
-        navigation.navigate('Chat', { chatPreviewMessage: data });
+        navigation.navigate('Chat', { chatPreviewMessage: {
+            clientUserID: props.userID,
+            otherUserID: otherUserID,
+            otherUserProfilePicture: otherUserProfilePicture,
+            otherUserUsername: otherUserUsername,
+            otherUserFirstName: otherUserFirstName,
+            otherUserLastName: otherUserLastName,
+        } });
     };
 
     return (
-        <TouchableOpacity key={props.index} onPress={() => handleDataPress(props.data)}>
-            <View>
-                <View style={styles.notificationContainer}>
-                    <Avatar
-                        rounded
-                        source={props.data.sender_profile_picture ? { uri: props.data.sender_profile_picture } : require("../assets/images/default_profile.jpg")}
-                        size="medium"
-                        containerStyle={styles.avatarContainer}
-                    />
-                    <View style={styles.textContainer}>
-                        <Text style={styles.name}>
-                            {props.data.sender_username}
-                        </Text>
-                        <Text style={styles.message}>
-                            {props.data.attachment ?
-                                (<Icon name="paperclip" type="font-awesome" size={16} color="#666" />)
-                                : ""
-                            }
-                            {props.data.message ?
-                                (props.data.message.substring(0, 100) + (props.data.message.length > 100 ? '...' : ''))
-                                : ''
-                            }
-                        </Text>
+        <TouchableOpacity onPress={() => handleDataPress(props.data)}>
+            <View style={styles.notificationContainer}>
+                <Avatar
+                    rounded
+                    source={otherUserProfilePicture ? { uri: otherUserProfilePicture } : require("../assets/images/default_profile.jpg")}
+                    size="medium"
+                    containerStyle={styles.avatarContainer}
+                />
+                <View style={styles.textContainer}>
+                    <Text style={styles.name}>
+                        {otherUserUsername}
+                    </Text>
+                    <Text style={styles.message}>
+                        {props.data.attachment ?
+                            (<Icon name="paperclip" type="font-awesome" size={16} color="#666" />)
+                            : ""
+                        }
+                        {props.data.message ?
+                            (lastMessageByClient? 'You: ': '') +
+                            (props.data.message.substring(0, 100) + 
+                            (props.data.message.length > 100 ? '...' : ''))
+                            : ''
+                        }
+                    </Text>
 
-                        <Text style={styles.time}>
-                            {formatTimeDifferencePast(props.data.timestamp)} ago
-                        </Text>
-                    </View>
-                    <Icon
-                        name='arrow-right'
-                        type='feather'
-                        color={colors.highlight2}
-                        size={24}
-                    />
+                    <Text style={styles.time}>
+                        {formatTimeDifferencePast(props.data.timestamp)} ago
+                    </Text>
                 </View>
-                {props.index < props.dataLength - 1 && <View style={styles.notificationBorder} />}
+                <Icon
+                    name='arrow-right'
+                    type='feather'
+                    color={colors.highlight2}
+                    size={24}
+                />
             </View>
+            {props.index < props.dataLength - 1 && <View style={styles.notificationBorder} />}
         </TouchableOpacity>
     )
 }
-
-
 
 function createStyles(colors) {
     return StyleSheet.create({
@@ -103,11 +133,10 @@ function createStyles(colors) {
             padding: 16,
             backgroundColor: colors.background,
         },
-
         notificationContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginTop: 0,
+            marginBottom: 10,
             paddingHorizontal: 16,
             backgroundColor: colors.background2,
             borderRadius: 10,
@@ -123,7 +152,6 @@ function createStyles(colors) {
         },
         textContainer: {
             flex: 1,
-
         },
         name: {
             fontSize: 16,
@@ -136,19 +164,16 @@ function createStyles(colors) {
             color: colors.foreground,
             marginBottom: 4,
         },
-
         time: {
             color: colors.foreground,
             fontSize: 12,
         },
-
         notificationBorder: {
             height: 1,
             borderBottomColor: '#ddd',
             marginVertical: 10,
         }
-    }
-    )
+    });
 }
 
 export default Inbox;

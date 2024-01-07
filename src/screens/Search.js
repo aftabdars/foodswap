@@ -9,6 +9,7 @@ import { getUsers } from '../api/backend/User';
 import SearchedUserPreview from '../components/SearchedUserPreview';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { getUserToken } from '../storage/UserToken';
+import PaginatedFlatList from '../components/PaginatedFlatList';
 
 const Search = () => {
   // Theme
@@ -17,61 +18,54 @@ const Search = () => {
   const styles = createStyles(colors);
   // States
   const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [resultCount, setResultCount] = useState(0);
   const [searchTimer, setSearchTimer] = useState(null);
 
-  const [page, setPage] = useState(1);
-  const [hasNextPage, setHasNextPage] = useState(false);
-  const [loading, setLoading] = useState(false);
-  
+  const flatListRef = useRef(null);
+
   // What is the search for (Food or User)? Default is for Food
   const route = useRoute();
   const userSearch = route.params?.userSearch;
 
   const navigation = useNavigation();
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     if (userSearch) {
-      return <SearchedUserPreview userData={item} colors={colors} navigation={navigation}/>
+      return <SearchedUserPreview userData={item} colors={colors} navigation={navigation} />
     }
-    return <SearchedFoodPreview foodData={item} colors={colors} navigation={navigation}/>
+    return <SearchedFoodPreview foodData={item} colors={colors} navigation={navigation} />
   }
 
   // Perform the search after a delay
-  const delayedSearch = async (text) => {
-    if(text.length > 0) {
+  const delayedSearch = async (page) => {
+    if (query.length > 0) {
       // Get search results from API
       let response = undefined;
       const token = (await getUserToken()).token;
+      const params = {
+        'search': query,
+        'page': page
+      }
       try {
-        if(userSearch) {
-          response = await getUsers(token, {'search': text, 'page': page});
+        if (userSearch) {
+          response = await getUsers(token, params);
         }
         else {
-          response = await getFoods(token, {'search': text, 'page': page});
+          response = await getFoods(token, params);
         }
-        setSearchResults((prevResults) => [
-          ...prevResults,
-          ...response.data.results,
-        ]);
         setResultCount(response.data.count);
-        setHasNextPage(response.data.next !== null);
-        setPage(response.data.next !== null? page + 1 : 1);
+        return response.data; // Returned data will be used in the PaginatedFlatList component
       }
-      catch(error) { }
+      catch (error) { }
     }
     else {
-      setSearchResults(undefined);
       setResultCount(0);
     }
   };
 
   const handleSearch = (text) => {
     setQuery(text);
-    setPage(1);
-    setHasNextPage(false);
-    setSearchResults([]);
+    setResultCount(0);
 
     // Clears timer if there already was one
     if (searchTimer && searchTimer !== null) {
@@ -80,19 +74,11 @@ const Search = () => {
     // Set a timeout to trigger the search after 500ms
     setSearchTimer(
       setTimeout(() => {
-        delayedSearch(text);
+        if (flatListRef.current && flatListRef.current.resetAndLoadData) {
+          flatListRef.current.resetAndLoadData();
+        }
       }, 500) // 500ms delay before triggering the search
-    ); 
-  };
-
-  const handleLoadMore = async () => {
-    if (loading || !hasNextPage) {
-      return;
-    }
-
-    setLoading(true);
-    await delayedSearch(query);
-    setLoading(false);
+    );
   };
 
   return (
@@ -100,27 +86,24 @@ const Search = () => {
       <View style={styles.headerContainer}>
         <CupertinoSearchBarBasic
           style={styles.searchInput}
-          inputStyle={userSearch? 'Search for user' : 'Search for food'}
+          inputStyle={userSearch ? 'Search for user' : 'Search for food'}
           value={query}
           onChangeText={(text) => handleSearch(text)}
           autoFocus={true}
         />
-        {query && searchResults &&
+        {query &&
           <Text style={styles.queryText}>
             Searched '{query}' with {resultCount} results
           </Text>
         }
       </View>
-      {searchResults && 
-        <FlatList
-          data={searchResults}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          style={styles.flatList}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.2}
-        />
-      }
+      <PaginatedFlatList
+        ref={flatListRef}
+        colors={colors}
+        loadData={delayedSearch}
+        loadDataInitially={false}
+        renderItem={renderItem}
+      />
     </View>
   );
 };
@@ -146,9 +129,6 @@ function createStyles(colors) {
     queryText: {
       marginBottom: 5,
       color: colors.foreground
-    },
-    flatList: {
-      padding: 0,
     },
   });
 }

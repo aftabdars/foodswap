@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 //import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
@@ -15,6 +15,7 @@ import { WSChat } from '../api/backend/WebSocket';
 import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
 import CustomModal from '../components/CustomModal';
 import CustomModalButton from '../components/CustomModalButton';
+import PaginatedFlatList from '../components/PaginatedFlatList';
 
 
 function Chat() {
@@ -25,13 +26,11 @@ function Chat() {
 
     const navigation = useNavigation();
     const route = useRoute(); // Use useRoute to access route parameters
-    const messagesScrollRef = useRef();
+    const messagesFlatListRef = useRef();
 
     const chatPreviewMessage = route.params?.chatPreviewMessage;
     const [newMessage, setNewMessage] = useState('');
     const [attachment, setAttachment] = useState();
-    const [messages, setMessages] = useState();
-    const [initialScrollDone, setInitialScrollDone] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     // WebSocket
     const [socket, setSocket] = useState(null);
@@ -39,10 +38,10 @@ function Chat() {
     // Initiate a websocket connection
     useEffect(() => {
         let chatRoom = null;
-        if (chatPreviewMessage.sender < chatPreviewMessage.receiver)
-            chatRoom = `${chatPreviewMessage.sender}_${chatPreviewMessage.receiver}`
+        if (chatPreviewMessage.otherUserID < chatPreviewMessage.clientUserID)
+            chatRoom = `${chatPreviewMessage.otherUserID}_${chatPreviewMessage.clientUserID}`
         else
-            chatRoom = `${chatPreviewMessage.receiver}_${chatPreviewMessage.sender}`
+            chatRoom = `${chatPreviewMessage.clientUserID}_${chatPreviewMessage.otherUserID}`
         const ws = WSChat(chatRoom);
 
         ws.onopen = () => {
@@ -51,7 +50,11 @@ function Chat() {
 
         ws.onmessage = (event) => {
             const receivedMessage = JSON.parse(JSON.parse(event.data)['message']);
-            setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
+            if (messagesFlatListRef.current) {
+                messagesFlatListRef.current.setDataFromExternal([
+                    receivedMessage, ...(messagesFlatListRef.current.getData())
+                ]);
+            }
         };
 
         ws.onclose = () => {
@@ -67,42 +70,33 @@ function Chat() {
     }, []);
 
     // Get chat messages
-    useEffect(() => {
-        const getMeMessages = async () => {
-            const token = (await getUserToken()).token;
-            const params = {
-                'sender': chatPreviewMessage.sender,
-                'receiver': chatPreviewMessage.receiver,
-                'or_sender': chatPreviewMessage.receiver,
-                'or_receiver': chatPreviewMessage.sender,
-            }
-            await getMessages(token, params)
-                .then(response => {
-                    setMessages(response.data.results);
-                })
-                .catch(error => { })
-        };
-        getMeMessages();
-    }, []);
-
-    // Scroll to bottom once messages are loaded initially
-    useEffect(() => {
-        if (!initialScrollDone && messages && messages.length > 0) {
-            scrollToBottom();
-            setInitialScrollDone(true);
+    const getMeMessages = async (page) => {
+        const token = (await getUserToken()).token;
+        const params = {
+            'sender': chatPreviewMessage.clientUserID,
+            'receiver': chatPreviewMessage.otherUserID,
+            'or_sender': chatPreviewMessage.otherUserID,
+            'or_receiver': chatPreviewMessage.clientUserID,
+            'page': page,
         }
-    }, [messages]);
+        let response;
+        try {
+            response = await getMessages(token, params);
+            return response.data;
+        }
+        catch (error) { }
+    };
 
     const handleSend = async () => {
         if (newMessage.trim() !== '' || attachment) {
             // Post the message to database (API post request)
             const token = await getUserToken();
             const data = new FormData();
-            data.append('receiver', chatPreviewMessage.sender);
+            data.append('receiver', chatPreviewMessage.otherUserID);
             if (newMessage)
                 data.append('message', newMessage);
             if (attachment)
-                data.append('attachment', SerializeImage(attachment, `chat-photo-${chatPreviewMessage.receiver}-${chatPreviewMessage.sender}`));
+                data.append('attachment', SerializeImage(attachment, `chat-photo-${chatPreviewMessage.clientUserID}-${chatPreviewMessage.otherUserID}`));
             await postMessage(token.token, data)
                 .then(response => {
                     console.log(response.data);
@@ -114,15 +108,17 @@ function Chat() {
                     // Update user's screen with the message user has typed if no socket
                     // This way the user will still see their own message even if socket connection is not on or it is lost
                     else {
-                        setMessages([{
-                            id: messages[0].id + 1,
-                            sender: chatPreviewMessage.receiver,
-                            receiver: chatPreviewMessage.sender,
-                            message: newMessage,
-                            attachment: attachment && attachment.uri
-                        }, ...messages]);
+                        if (messagesFlatListRef.current) {
+                            const prevMessages = messagesFlatListRef.current.getData();
+                            messagesFlatListRef.current.setDataFromExternal([{
+                                id: prevMessages[0].id + 1,
+                                sender: chatPreviewMessage.clientUserID,
+                                receiver: chatPreviewMessage.otherUserID,
+                                message: newMessage,
+                                attachment: attachment && attachment.uri
+                            }, ...prevMessages]);
+                        }
                     }
-                    scrollToBottom();
                 })
                 .catch(error => { })
 
@@ -155,10 +151,6 @@ function Chat() {
         }
     };
 
-    const scrollToBottom = () => {
-        messagesScrollRef.current.scrollToEnd({ animated: true });
-    };
-
     const backPressed = () => {
         if (navigation.canGoBack()) {
             navigation.goBack();
@@ -170,23 +162,22 @@ function Chat() {
     };
 
     const viewProfilePressed = () => {
-        navigation.navigate('PublicProfile', { userID: chatPreviewMessage.sender });
+        navigation.navigate('PublicProfile', { userID: chatPreviewMessage.otherUserID });
     }
 
     return (
         <View style={styles.container}>
-            <View style={styles.headerExtraSpaceTop} />
             <View style={styles.header}>
                 <View style={styles.headerBackAndProfile}>
                     <TouchableOpacity onPress={backPressed}>
                         <EntypoIcon name="chevron-thin-left" style={styles.icon}></EntypoIcon>
                     </TouchableOpacity>
-                    <Image source={chatPreviewMessage.sender_profile_picture ? { uri: chatPreviewMessage.sender_profile_picture } : require("../assets/images/default_profile.jpg")} style={styles.profilePic} />
+                    <Image source={chatPreviewMessage.otherUserProfilePicture ? { uri: chatPreviewMessage.otherUserProfilePicture } : require("../assets/images/default_profile.jpg")} style={styles.profilePic} />
                     <Text style={styles.senderName}>
                         {
-                            chatPreviewMessage.sender_first_name ? (chatPreviewMessage.sender_last_name ? chatPreviewMessage.sender_first_name + chatPreviewMessage.sender_last_name : chatPreviewMessage.sender_username)
+                            chatPreviewMessage.otherUserFirstName ? (chatPreviewMessage.otherUserLastName ? chatPreviewMessage.otherUserFirstName + chatPreviewMessage.otherUserLastName : chatPreviewMessage.otherUserUsername)
                                 :
-                                chatPreviewMessage.sender_username
+                                chatPreviewMessage.otherUserUsername
                         }
                     </Text>
                 </View>
@@ -206,16 +197,20 @@ function Chat() {
                     </CustomModalButton>
                 </CustomModal>
             </View>
-            <ScrollView
+            <PaginatedFlatList
+                ref={messagesFlatListRef}
+                colors={colors}
                 style={styles.messagesContainer}
-                ref={messagesScrollRef}
-            >
-                {messages && messages.slice().reverse().map((msg, index) => (
-                    <Message key={msg.id && msg.id} index={index} msg={msg} isYourMessage={msg.sender === chatPreviewMessage.receiver} styles={styles} />
-                ))}
-
-                <Text styles={{ "marginVertican": 10 }} />
-            </ScrollView>
+                loadData={getMeMessages}
+                renderItem={({ item }) => (
+                    <Message
+                        key={item.id}
+                        msg={item}
+                        isYourMessage={item.sender === chatPreviewMessage.clientUserID}
+                        styles={styles} />
+                )}
+                inverted={true}
+            />
             <View style={styles.inputContainer}>
                 <TouchableOpacity style={styles.imagePickerButton} onPress={handleImagePick}>
                     <Icon name="camera" size={20} color={colors.foreground} />
@@ -258,20 +253,14 @@ function createStyles(colors) {
     return StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: colors.highlight1,
-        },
-        headerExtraSpaceTop: {
-            marginVertical: 10
+            backgroundColor: colors.background,
         },
         header: {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
             backgroundColor: colors.highlight1,
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1,
+            paddingTop: 20
         },
         headerBackAndProfile: {
             flexDirection: 'row',
@@ -297,7 +286,7 @@ function createStyles(colors) {
         },
         messagesContainer: {
             flex: 1,
-            padding: 15,
+            padding: 10,
             backgroundColor: colors.background,
         },
         yourMessage: {
@@ -307,7 +296,7 @@ function createStyles(colors) {
             maxWidth: '75%',
             paddingHorizontal: 8,
             paddingVertical: 5,
-            marginBottom: 8,
+            marginVertical: 4,
         },
         otherMessage: {
             alignSelf: 'flex-start',
@@ -316,10 +305,7 @@ function createStyles(colors) {
             maxWidth: '75%',
             paddingHorizontal: 8,
             paddingVertical: 5,
-            marginBottom: 8,
-        },
-        messageContainer: {
-            marginBottom: 16,
+            marginVertical: 4,
         },
         sender: {
             fontSize: 16,

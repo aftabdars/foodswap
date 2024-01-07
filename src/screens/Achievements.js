@@ -6,6 +6,7 @@ import { getColors, ThemeContext } from '../assets/Theme';
 import { getAchievements } from "../api/backend/Gamification";
 import { getUserToken } from "../storage/UserToken";
 import { getStats } from "../storage/User";
+import PaginatedFlatList from "../components/PaginatedFlatList";
 
 
 const Achievements = () => {
@@ -14,22 +15,8 @@ const Achievements = () => {
     const colors = getColors(theme);
     const styles = createStyles(colors);
 
-    const [achievements, setAchievements] = useState();
     const [totalAchhivements, setTotalAchievements] = useState(1);
     const [completedAchievements, setCompletedAchievements] = useState(0);
-
-    // Get achievements data
-    useEffect(() => {
-        (async () => {
-            const token = (await getUserToken()).token;
-            getAchievements(token)
-                .then(response => {
-                    setTotalAchievements(response.data.count);
-                    setAchievements(response.data.results);
-                })
-                .catch(error => { });
-        })();
-    }, []);
 
     // Get user's completed achievements
     useEffect(() => {
@@ -38,6 +25,19 @@ const Achievements = () => {
         })();
     }, []);
 
+    // Gets achievement's data
+    const getAchievementsData = async (page) => {
+        const token = (await getUserToken()).token;
+        let response;
+        try {
+            response = await getAchievements(token, {'page': page});
+            setTotalAchievements(response.data.count);
+            return response.data;
+        }
+        catch(error) {}
+    }
+
+    // Render achievement component item
     const renderItem = ({ item }) => (
         <View style={styles.achievementItem}>
             {/*Using default achievement image for now since there are not achivement pictures in database*/}
@@ -49,9 +49,9 @@ const Achievements = () => {
                 <Text style={styles.detailText}>{item.description}</Text>
                 <Text style={styles.rewardText}>Rewards: {item.xp && `+${item.xp} XP`} {item.foodiez && `+${item.foodiez} Foodiez`}</Text>
             </View>
-            {item.has_client_completed?
+            {item.has_client_completed ?
                 <EntypoIcon name="check" style={styles.iconCheck}></EntypoIcon>
-            : 
+                :
                 <EntypoIcon name="cross" style={styles.iconCross}></EntypoIcon>
             }
         </View>
@@ -61,14 +61,14 @@ const Achievements = () => {
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                 <Text style={styles.headerText}>
-                    Completed {" "} 
+                    Completed {" "}
                     {completedAchievements && completedAchievements} / {totalAchhivements && totalAchhivements}
                 </Text>
                 <Text>Filter</Text>
             </View>
-            <FlatList
-                data={achievements}
-                keyExtractor={(item) => item.id}
+            <PaginatedFlatList
+                colors={colors}
+                loadData={getAchievementsData}
                 renderItem={renderItem}
             />
         </View>
