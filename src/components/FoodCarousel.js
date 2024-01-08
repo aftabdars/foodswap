@@ -31,7 +31,7 @@ function FoodCarousel(props) {
         sliderWidth={300}
         itemWidth={330}
         renderItem={({ item, index }) => (
-          <MemoizedFoodPreview item={item} index={index} />
+          <MemoizedFoodPreview key={item.id} item={item} index={index} />
         )}
         onSnapToItem={handleSnapToItem}
       />

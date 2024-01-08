@@ -80,7 +80,7 @@ function Home(props) {
           completedCount++;
           checkAllDataFetched();
 
-          getLevelData(); // Get level data now
+          getLevelData(stats.xp); // Get level data now
         }
       }
       catch (error) {
@@ -89,10 +89,10 @@ function Home(props) {
     }
 
     // Gets user level and level's data from user's current XP
-    const getLevelData = async () => {
+    const getLevelData = async (xp) => {
       const params = { // Retrieves level row having xp_start >= user_xp <= xp_end
-        'xp_start__lte': userStats ? userStats.xp : 0,
-        'xp_end__gte': userStats ? userStats.xp : 199
+        'xp_start__lte': xp || 0,
+        'xp_end__gte': xp || 199
       }
       await getLevels(params)
         .then(response => {

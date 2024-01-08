@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { getColors, ThemeContext } from '../assets/Theme';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { useSharedValue, withTiming } from 'react-native-reanimated';
 import EntypoIcon from "react-native-vector-icons/Entypo";
 
 import ProgressBar from "../components/ProgressBar";
@@ -15,7 +15,7 @@ import { getLevels, getUserAchievements } from '../api/backend/Gamification';
 import { deleteFollow, postFollow } from '../api/backend/Social';
 import CustomModal from '../components/CustomModal';
 import CustomModalButton from '../components/CustomModalButton';
-import { formatDateTimeString } from '../utils/Format';
+import { formatDateTimeString, formatNumberMetricPrefix } from '../utils/Format';
 import UserFoodTabs from '../components/UserFoodTabs';
 import PaginatedFlatList from '../components/PaginatedFlatList';
 
@@ -33,7 +33,6 @@ const PublicProfile = ({ navigation }) => {
     const [isContainerOpen, setContainerOpen] = useState(false);
     const [clientUserID, setClientUserID] = useState();
     const [userData, setUserData] = useState(route.params?.userData);
-    const [userAchievements, setUserAchievements] = useState();
     const [userStats, setUserStats] = useState();
     const [levelData, setLevelData] = useState();
 
@@ -81,7 +80,7 @@ const PublicProfile = ({ navigation }) => {
         }
     }, [userData]);
 
-    // Gets user's completed achievements
+    // Gets user's completed achievements (PaginatedFlatList will handle the calling to this function)
     const getMeUserAchievements = async (page) => {
         const token = (await getUserToken()).token;
         const params ={
@@ -320,7 +319,7 @@ const PublicProfile = ({ navigation }) => {
                         <StatsBox title='Food Swapped' value={userStats.foodswap_count} iconName='swap' />
                         <StatsBox title='Food Shared' value={userStats.foodshare_count} iconName='level-down' />
                         <StatsBox title='Food Taken' value={userStats.food_taken_count} iconName='level-up' />
-                        <StatsBox title='Total Foodiez Earned' value={userStats.total_foodiez} iconName='bowl' />
+                        <StatsBox title='Total Foodiez Earned' value={formatNumberMetricPrefix(userStats.total_foodiez)} iconName='bowl' />
                         <StatsBox title='Achievements Completed' value={userStats.achievements_completed} iconName='trophy' />
                     </View>
                 }

@@ -1,5 +1,20 @@
 
 
+export function formatNumberMetricPrefix(num) {
+  const parsedNum = parseFloat(num);
+  const FIXED_DECIMAL = 2;
+
+  if (parsedNum >= 1e9) {
+    return (parsedNum / 1e9).toFixed(FIXED_DECIMAL) + 'B';
+  } else if (parsedNum >= 1e6) {
+    return (parsedNum / 1e6).toFixed(FIXED_DECIMAL) + 'M';
+  } else if (parsedNum >= 1e3) {
+    return (parsedNum / 1e3).toFixed(FIXED_DECIMAL) + 'K';
+  } else {
+    return parsedNum.toString();
+  }
+}
+
 export function formatDateTimeString(inputDateTime, options) {
     const date = new Date(inputDateTime);
     const theOptions = options? options : 

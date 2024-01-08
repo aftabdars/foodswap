@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
@@ -8,6 +8,8 @@ import { getUserToken } from "../storage/UserToken";
 import { getUsers } from "../api/backend/User";
 import { useNavigation } from "@react-navigation/native";
 import { extractErrorMessage } from "../api/backend/utils/Utils";
+import { formatNumberMetricPrefix } from "../utils/Format";
+import { getStats } from "../storage/User";
 
 
 const TransferFoodiez = () => {
@@ -16,11 +18,26 @@ const TransferFoodiez = () => {
   const colors = getColors(theme);
   const styles = createStyles(colors);
 
+  const [userFoodiez, setUserFoodiez] = useState(0.0);
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [showError, setShowError] = useState("");
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    // Get client user's current foodiez
+    const getMeUserFoodiez = async () => {
+      try {
+        const stats = await getStats();
+        if (stats && stats !== null) {
+          setUserFoodiez(stats.foodiez);
+        }
+      }
+      catch (error) { }
+    }
+    getMeUserFoodiez();
+  }, []);
 
   const handleTransfer = async () => {
     if (!recipient) {
@@ -62,10 +79,10 @@ const TransferFoodiez = () => {
             setShowError("");
             console.log(response.status, response.data);
 
-            navigation.navigate('TransferFoodiezSuccess', {amount: parseFloat(amount)});
+            navigation.navigate('TransferFoodiezSuccess', { amount: parseFloat(amount) });
           })
-          .catch(error => {  
-            setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
+          .catch(error => {
+            setShowError(extractErrorMessage(error.response ? error.response.data : 'Network Error'));
           })
       }
     }
@@ -73,36 +90,44 @@ const TransferFoodiez = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Transfer Foodiez</Text>
+      <View style={styles.header}>
+        <Text style={styles.amountText}>Your Foodiez:</Text>
+        <View style={styles.amountBox}>
+          <Text style={styles.amountText}>{userFoodiez && formatNumberMetricPrefix(userFoodiez)}</Text>
+        </View>
+      </View>
+      <View style={styles.bodyContainer}>
+        <Text style={styles.title}>Transfer Foodiez</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Recipient's Username"
-        value={recipient}
-        onChangeText={(text) => setRecipient(text)}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Recipient's Username"
+          value={recipient}
+          onChangeText={(text) => setRecipient(text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Amount (e.g 10.00)"
-        keyboardType="numeric"
-        value={amount}
-        onChangeText={(text) => setAmount(text)}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Amount (e.g 10.00)"
+          keyboardType="numeric"
+          value={amount}
+          onChangeText={(text) => setAmount(text)}
+        />
 
-      {showError && (
-        <Text style={styles.errormsg}>
-          {showError}
-        </Text>
-      )}
+        {showError && (
+          <Text style={styles.errormsg}>
+            {showError}
+          </Text>
+        )}
 
-      <MaterialButtonSuccess
-        title="Transfer"
-        onPress={handleTransfer}
-        style={styles.transferButton}
-      >
-        Send
-      </MaterialButtonSuccess>
+        <MaterialButtonSuccess
+          title="Transfer"
+          onPress={handleTransfer}
+          style={styles.transferButton}
+        >
+          Send
+        </MaterialButtonSuccess>
+      </View>
     </View>
   );
 }
@@ -112,8 +137,28 @@ function createStyles(colors) {
     container: {
       flex: 1,
       padding: 16,
-      justifyContent: "center",
       backgroundColor: colors.background
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center'
+    },
+    amountBox: {
+      backgroundColor: colors.background2,
+      padding: 5,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginLeft: 5
+    },
+    amountText: {
+      // Your styles for the amount text inside the box
+      fontSize: 14,
+      color: colors.foreground,
+      fontWeight: 'bold',
+    },
+    bodyContainer: {
+      flex: 1,
+      justifyContent: "center",
     },
     title: {
       fontSize: 24,

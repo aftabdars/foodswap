@@ -58,7 +58,6 @@ const UserFoodTabs = (props) => {
                     ||
                     <Text style={styles.alternativeText}>No data</Text>
                 }
-
             </View>
         );
     };
