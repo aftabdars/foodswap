@@ -54,7 +54,7 @@ const TransferFoodiez = () => {
       // Get recipient user id
       let recipientID = undefined;
       try {
-        const recipientData = (await getUsers({ 'username': recipient })).data
+        const recipientData = (await getUsers(token, { 'username': recipient })).data
         console.log(recipientData);
         if (recipientData && recipientData.count == 1) {
           recipientID = recipientData.results[0].id;
