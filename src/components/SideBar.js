@@ -92,7 +92,14 @@ const SideBar = (props) => {
         <SidebarButton
           title="Active FoodSwaps"
           onPress={() => buttonPressed('ActiveFoodSwaps')}
-          icon="check"
+          icon="swap"
+          iconType="entypo"
+        />
+        <SidebarButton
+          title="Active FoodShares"
+          onPress={() => buttonPressed('ActiveFoodShares')}
+          icon="level-down"
+          iconType="entypo"
         />
         <SidebarButton
           title="Leaderboard"

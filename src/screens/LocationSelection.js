@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 
 import { ThemeContext, getColors } from '../assets/Theme';
 import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
-import { postFoodSwapRequest, updateFoodSwapRequest } from '../api/backend/Food';
+import { deleteFoodShareRequest, postFoodShare, postFoodSwapRequest, updateFoodSwapRequest } from '../api/backend/Food';
 import { getUserToken } from '../storage/UserToken';
 import { animateToNewCoordinates } from '../utils/Map';
 import CustomMap from '../components/CustomMap';
@@ -24,11 +24,16 @@ function LocationSelection() {
     const navigation = useNavigation();
 
     const route = useRoute();
+    // Route params if initital swap request location selection
     const foodA = route.params?.foodA;
     const foodB = route.params?.foodB;
-
+    // Route params if location reproposal of swap request
     const rePropose = route.params?.rePropose;
-    const requestID = route.params?.requestID;
+    const swapRequestID = route.params?.swapRequestID;
+    // Route params if location selection for accepting share request
+    const food = route.params?.food;
+    const taker = route.params?.taker;
+    const shareRequestID = route.params?.shareRequestID;
 
     // Location permissions and map's initial location set to user's current location if permissions provided
     useEffect(() => {
@@ -61,18 +66,18 @@ function LocationSelection() {
 
     const handleSend = async () => {
         // Make the foodswap request
-        const token = await getUserToken();
+        const token = (await getUserToken()).token;
         // Round latitude and longitude to 6 decimal places
         const roundedLatitude = location.latitude.toFixed(6);
         const roundedLongitude = location.longitude.toFixed(6);
 
-        if (rePropose) { // If it is the reporposal of the location (currently for FoodSwap only)
+        if (rePropose && swapRequestID) { // If it is the reporposal of the location (currently for FoodSwap only)
             body = {
                 'proposed_location_latitude': parseFloat(roundedLatitude),
                 'proposed_location_longitude': parseFloat(roundedLongitude),
                 'is_location_reproposed': true
             }
-            updateFoodSwapRequest(requestID, token.token, body)
+            await updateFoodSwapRequest(swapRequestID, token, body)
                 .then(response => {
                     console.log(response.data);
                     navigation.navigate('Home');
@@ -81,20 +86,39 @@ function LocationSelection() {
                     setShowError('Error sending request');
                 })
         }
-        else { // else it is the initial request
+        else if (foodA && foodB) { // or it is the initial swap request location selection
             body = {
                 'food_a': foodA.id,
                 'food_b': foodB.id,
                 'proposed_location_latitude': parseFloat(roundedLatitude),
                 'proposed_location_longitude': parseFloat(roundedLongitude),
             }
-            postFoodSwapRequest(token.token, body)
+            await postFoodSwapRequest(token, body)
                 .then(response => {
                     console.log(response.data);
                     navigation.navigate('Home');
                 })
                 .catch(error => {
                     setShowError('Error making swap request');
+                })
+        }
+        else if (food && taker && shareRequestID) { // or it is the foodshare request accept location selection
+            body = {
+                'food': food,
+                'taker': taker,
+                'location_latitude': parseFloat(roundedLatitude),
+                'location_longitude': parseFloat(roundedLongitude),
+            }
+            await postFoodShare(token, body)
+                .then(async (response) => {
+                    console.log(response.data);
+                    // Delete share request from backend
+                    await deleteFoodShareRequest(shareRequestID, token, { 'accepted': true });
+
+                    navigation.navigate('FoodSwapRoom', { shareID: response.data.id });
+                })
+                .catch(error => {
+                    setShowError('Error accepting share request');
                 })
         }
     }

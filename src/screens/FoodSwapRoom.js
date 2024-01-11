@@ -1,29 +1,36 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigation, useRoute, CommonActions } from "@react-navigation/native";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import EntypoIcon from "react-native-vector-icons/Entypo";
 import { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import { getProfile } from "../storage/User";
 import { ThemeContext, getColors } from "../assets/Theme";
 import { animateToNewCoordinates, calculateDistance, renderPolyline } from '../utils/Map';
-import { addHoursToTimestamp, formatDateTimeString, formatTimeDifferenceFuture } from '../utils/Format';
+import { formatDateTimeString, formatTimeDifferenceFuture } from '../utils/Format';
 import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
 import MaterialButtonDanger from '../components/MaterialButtonDanger';
 import CircularMarker from '../components/CircularMarker';
 import { WSFoodSwap } from '../api/backend/WebSocket';
-import { getFoodSwap, updateFoodSwap } from '../api/backend/Food';
+import { getFoodShare, getFoodSwap, updateFoodShare, updateFoodSwap } from '../api/backend/Food';
 import { getUserToken } from '../storage/UserToken';
 import { extractErrorMessage } from '../api/backend/utils/Utils';
 import CustomMap from '../components/CustomMap';
+import { useLoading } from '../assets/LoadingContext';
 
+/*
+    Note: FoodSwapRoom is for both FoodSwap and FoodShare, not to get confused because of name
+*/
 
 function FoodSwapRoom() {
     // Theme
     const theme = useContext(ThemeContext).theme;
     const colors = getColors(theme);
     const styles = createStyles(colors);
+    // Loading
+    const { showLoading, hideLoading } = useLoading();
 
     const navigation = useNavigation();
     const route = useRoute();
@@ -47,36 +54,31 @@ function FoodSwapRoom() {
     const [socket, setSocket] = useState(null);
     const [timer, setTimer] = useState(null);
 
-    /* data = {
-            "id": 2,
-            "food_a": 8,
-            "food_a_owner": 12,
-            "food_a_owner_username": "asfandsoomro",
-            "food_a_owner_profile_pic": null,
-            "food_a_image": "http://192.168.18.7:8000/media/food/Few-nuts.jpeg",
-            "food_b": 10,
-            "food_b_owner": 1,
-            "food_b_owner_username": "admin",
-            "food_b_owner_profile_pic": "http://192.168.18.7:8000/media/profile_pics/admin.jpeg",
-            "food_b_image": "http://192.168.18.7:8000/media/food/Chicken-Handi_White.jpeg",
-            "timestamp": "2023-12-25T16:09:39.558133Z",
-            "location_latitude": "25.392482",
-            "location_longitude": "68.332274",
-            "status": "in_progress"
-        } */
+    const swapID = route.params?.swapID; // for FoodSwap
+    const shareID = route.params?.shareID; // for FoodShare
 
-    // Get swap data either from route or API call if swapID is passed
+    // Get swap/share data either from route or API call if swapID/shareID is passed
     useEffect(() => {
-        const swapID = route.params?.swapID;
-        if (swapID) {
-            const getMeSwapData = async () => {
+        if (shareID) {
+            const getMeShareData = async () => {
                 const token = (await getUserToken()).token;
-                await getFoodSwap(swapID, token.token)
+                await getFoodShare(shareID, token.token)
                     .then(response => {
                         console.log(response.data);
                         setData(response.data);
                     })
-                    .catch(error => {})
+                    .catch(error => { })
+            }
+            getMeShareData();
+        }
+        else if (swapID) {
+            const getMeSwapData = async () => {
+                const token = (await getUserToken()).token;
+                await getFoodSwap(swapID, token.token)
+                    .then(response => {
+                        setData(response.data);
+                    })
+                    .catch(error => { })
             }
             getMeSwapData();
         }
@@ -84,8 +86,8 @@ function FoodSwapRoom() {
     // Extra formating in data
     useEffect(() => {
         if (data) {
-            const FOODSWAP_END_TIME = addHoursToTimestamp(data.timestamp, 3);
-            setFormatSwapEndTime(formatTimeDifferenceFuture(FOODSWAP_END_TIME));
+            const END_TIME = data.expire_time;
+            setFormatSwapEndTime(formatTimeDifferenceFuture(END_TIME));
         }
     }, [data]);
 
@@ -130,15 +132,29 @@ function FoodSwapRoom() {
     // Decide other user data, is it userA or userB
     useEffect(() => {
         if (data && userID) {
-            if (data.food_a_owner !== userID) {
-                setOtherUserID(data.food_a_owner);
-                setOtherUserUsername(data.food_a_owner_username);
-                setOtherUserProfilePic(data.food_a_owner_profile_pic);
+            if (shareID) { // If room is for FoodShare
+                if (data.taker === userID) {
+                    setOtherUserID(data.food_owner);
+                    setOtherUserUsername(data.food_owner_username);
+                    setOtherUserProfilePic(data.food_owner_profile_picture);
+                }
+                else {
+                    setOtherUserID(data.taker);
+                    setOtherUserUsername(data.taker_username);
+                    setOtherUserProfilePic(data.taker_profile_picture);
+                }
             }
-            else {
-                setOtherUserID(data.food_b_owner);
-                setOtherUserUsername(data.food_b_owner_username);
-                setOtherUserProfilePic(data.food_b_owner_profile_pic);
+            else { // else it is for FoodSwap
+                if (data.food_a_owner !== userID) {
+                    setOtherUserID(data.food_a_owner);
+                    setOtherUserUsername(data.food_a_owner_username);
+                    setOtherUserProfilePic(data.food_a_owner_profile_pic);
+                }
+                else {
+                    setOtherUserID(data.food_b_owner);
+                    setOtherUserUsername(data.food_b_owner_username);
+                    setOtherUserProfilePic(data.food_b_owner_profile_pic);
+                }
             }
         }
     }, [data, userID]);
@@ -156,32 +172,42 @@ function FoodSwapRoom() {
         }
     }, [data]);
 
+    // For FoodSwap
     const foodAImagePressed = () => {
-        navigation.navigate('FoodInfo', { foodID: data.food_a })
+        navigation.navigate('FoodInfo', { foodID: data.food_a });
     };
-
     const foodBImagePressed = () => {
-        navigation.navigate('FoodInfo', { foodID: data.food_b })
+        navigation.navigate('FoodInfo', { foodID: data.food_b });
+    };
+    // For FoodShare
+    const foodImagePressed = () => {
+        navigation.navigate('FoodInfo', { foodID: data.food });
+    };
+    const takerImagePressed = () => {
+        navigation.navigate('PublicProfile', { userID: data.taker });
     };
 
     const donePressed = async () => { // For now done button ends the foodswap by updating the status of foodswap to done
         const token = (await getUserToken()).token;
-        updateFoodSwap(data.id, token, {
-            'status': 'done'
-        })
-            .then(response => {
-                console.log(response.data);
-                if (socket && socket.readyState === WebSocket.OPEN) socket.close();
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [{ name: 'Main' }],
-                    })
-                );
-            })
-            .catch(error => {
-                setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
-            })
+        const body = { 'status': 'done' };
+        let response;
+        try {
+            if (shareID) response = await updateFoodShare(data.id, token, body); // for FoodShare
+            else response = await updateFoodSwap(data.id, token, body); // for FoodSwap
+            console.log(response.data);
+
+            showLoading(); // Showing loading here
+            if (socket && socket.readyState === WebSocket.OPEN) socket.close();
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'Main' }],
+                })
+            );
+        }
+        catch (error) {
+            setShowError(extractErrorMessage(error.response ? error.response.data : 'Network Error'));
+        }
     };
 
     const connectPressed = () => {
@@ -235,7 +261,7 @@ function FoodSwapRoom() {
         };
 
         ws.onclose = () => {
-            if(!socket || socket === null) setShowErrorConnect('Could not connect');
+            if (!socket || socket === null) setShowErrorConnect('Could not connect');
             console.log(`WebSocket disconnected, swaproom: ${swapRoom}`);
             setSocket(null);
             // Stop the timer when socket is disconnected
@@ -264,7 +290,9 @@ function FoodSwapRoom() {
             <View style={styles.infoContainer}>
                 <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Status:</Text>
-                    <Text style={styles.infoText}>{data && data.status === 'in_progress' ? "In Progress" : "Swapped"}</Text>
+                    <Text style={styles.infoText}>
+                        {data && data.status === 'in_progress' ? "In Progress" : (shareID ? "Shared" : "Swapped")}
+                    </Text>
                 </View>
                 <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Start date:</Text>
@@ -275,8 +303,13 @@ function FoodSwapRoom() {
                     <Text style={styles.infoText}>{data && formatSwapEndTime && formatSwapEndTime.difference}</Text>
                 </View>
                 <View style={styles.otherInfoItem}>
-                    <Text style={styles.infoLabel}>Swapped it? Press</Text>
+                    <Text style={styles.infoLabel}>
+                        {shareID && data && (data.taker === userID ? 'Took it?' : 'Shared it?')
+                            || 'Swapped it?'} Press
+                    </Text>
                     <MaterialButtonSuccess style={styles.button} onPress={donePressed}>Done</MaterialButtonSuccess>
+                    <Text style={styles.infoLabel}>Or</Text>
+                    <MaterialButtonDanger style={styles.button}>Cancel</MaterialButtonDanger>
                 </View>
                 {showError && (
                     <Text style={styles.errormsg}>
@@ -284,24 +317,44 @@ function FoodSwapRoom() {
                     </Text>
                 )}
             </View>
-            <Text style={styles.headingText}>Food Items</Text>
-            <View style={styles.foodImagesContainer}>
-                <TouchableOpacity onPress={foodBImagePressed}>
-                    <Text style={styles.foodImageHeading}>{data && data.food_b_owner_username}'s Food</Text>
-                    <Image
-                        source={data && data.food_b_image ? { uri: data.food_b_image } : require("../assets/images/default_food.png")}
-                        style={styles.foodImage}
-                    />
-                </TouchableOpacity>
-                <Icon name="exchange" size={24} color={colors.highlight2} style={styles.swapIcon} />
-                <TouchableOpacity onPress={foodAImagePressed}>
-                    <Text style={styles.foodImageHeading}>{data && data.food_a_owner_username}'s Food</Text>
-                    <Image
-                        source={data && data.food_a_image ? { uri: data.food_a_image } : require("../assets/images/default_food.png")}
-                        style={styles.foodImage}
-                    />
-                </TouchableOpacity>
-            </View>
+            <Text style={styles.headingText}>Food Item{!shareID && 's'}</Text>
+            {shareID &&
+                <View style={styles.foodImagesContainer}>
+                    <TouchableOpacity onPress={foodImagePressed}>
+                        <Text style={styles.foodImageHeading}>{data && data.food_owner_username}'s Food</Text>
+                        <Image
+                            source={data && data.food_image ? { uri: data.food_image } : require("../assets/images/default_food.png")}
+                            style={styles.foodImage}
+                        />
+                    </TouchableOpacity>
+                    <EntypoIcon name="level-down" style={styles.swapIcon}></EntypoIcon>
+                    <TouchableOpacity onPress={takerImagePressed}>
+                        <Text style={styles.foodImageHeading}>{data && data.taker_username}</Text>
+                        <Image
+                            source={data && data.taker_profile_picture ? { uri: data.taker_profile_picture } : require("../assets/images/default_profile.jpg")}
+                            style={styles.userIcon}
+                        />
+                    </TouchableOpacity>
+                </View>
+                ||
+                <View style={styles.foodImagesContainer}>
+                    <TouchableOpacity onPress={foodBImagePressed}>
+                        <Text style={styles.foodImageHeading}>{data && data.food_b_owner_username}'s Food</Text>
+                        <Image
+                            source={data && data.food_b_image ? { uri: data.food_b_image } : require("../assets/images/default_food.png")}
+                            style={styles.foodImage}
+                        />
+                    </TouchableOpacity>
+                    <Icon name="exchange" size={24} color={colors.highlight2} style={styles.swapIcon} />
+                    <TouchableOpacity onPress={foodAImagePressed}>
+                        <Text style={styles.foodImageHeading}>{data && data.food_a_owner_username}'s Food</Text>
+                        <Image
+                            source={data && data.food_a_image ? { uri: data.food_a_image } : require("../assets/images/default_food.png")}
+                            style={styles.foodImage}
+                        />
+                    </TouchableOpacity>
+                </View>
+            }
             <Text style={styles.headingText}>Map</Text>
             <CustomMap
                 ref={mapRef}
@@ -310,8 +363,8 @@ function FoodSwapRoom() {
                 {swapLocation && (
                     <Marker
                         coordinate={{ latitude: swapLocation.latitude, longitude: swapLocation.longitude }}
-                        title="Swap Location"
-                        description="Location for foodswap"
+                        title={`${shareID && 'Share' || 'Swap'} Location`}
+                        description={`Location for ${shareID && 'foodshare' || 'foodswap'}`}
                     />
                 )}
                 {userLocation && (
@@ -351,10 +404,10 @@ function FoodSwapRoom() {
                     }
                 </View>
                 {showErrorConnect && (
-                        <Text style={styles.errormsg}>
-                            {showErrorConnect}
-                        </Text>
-                    )}
+                    <Text style={styles.errormsg}>
+                        {showErrorConnect}
+                    </Text>
+                )}
                 {socket && socket.readyState === WebSocket.OPEN &&
                     <View style={styles.infoRealTimeContainerContainer}>
                         <View style={styles.infoRealTimeContainer}>
@@ -480,6 +533,12 @@ function createStyles(colors) {
             resizeMode: 'cover',
             borderRadius: 5,
         },
+        userIcon: {
+            width: 150,
+            height: 150,
+            resizeMode: 'cover',
+            borderRadius: 150,
+        },
         foodImageHeading: {
             textAlign: 'center',
             fontWeight: 'bold',
@@ -487,7 +546,7 @@ function createStyles(colors) {
             color: colors.foreground
         },
         swapIcon: {
-            fontSize: 30,
+            fontSize: 40,
             color: colors.highlight2,
             marginHorizontal: 5
         },

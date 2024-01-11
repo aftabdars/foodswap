@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import EntypoIcon from "react-native-vector-icons/Entypo";
+import { Icon as IconE } from 'react-native-elements';
 
 import { ThemeContext, getColors } from '../assets/Theme';
 import { getFoodSwaps } from '../api/backend/Food';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { getProfile } from "../storage/User";
-import { Icon as IconE } from 'react-native-elements';
 import { getUserToken } from '../storage/UserToken';
 
 const ActiveFoodSwaps = () => {
@@ -33,7 +33,7 @@ const ActiveFoodSwaps = () => {
     const FoodSwapPreview = ({ item }) => {
 
         const handlePress = () => {
-            navigation.navigate('FoodSwapRoom', { data: item });
+            navigation.navigate('FoodSwapRoom', { swapID: item.id });
         }
 
         return (
@@ -44,7 +44,7 @@ const ActiveFoodSwaps = () => {
                             source={item.food_b_image ? { uri: item.food_b_image } : require("../assets/images/default_food.png")}
                             style={styles.foodImage}
                         />
-                        <Icon name="exchange" size={24} color={colors.highlight2} style={styles.swapIcon} />
+                        <EntypoIcon name="swap" style={styles.swapIcon}></EntypoIcon>
                         <Image
                             source={item.food_a_image ? { uri: item.food_a_image } : require("../assets/images/default_food.png")}
                             style={styles.foodImage}
@@ -150,7 +150,7 @@ function createStyles(colors) {
         foodImagesContainer: {
             flex: 1,
             flexDirection: 'row',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-around',
             margin: 3,
             alignItems: 'center',
             verticalAlign: 'middle',
@@ -163,7 +163,7 @@ function createStyles(colors) {
             marginHorizontal: 5
         },
         swapIcon: {
-            fontSize: 20,
+            fontSize: 40,
             color: colors.highlight2,
         },
     });

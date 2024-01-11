@@ -15,9 +15,23 @@ export function formatNumberMetricPrefix(num) {
   }
 }
 
+export function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+  if (diffInDays === 0) {
+    return 'Today';
+  } else if (diffInDays === 1) {
+    return 'Yesterday';
+  } else {
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  }
+}
+
 export function formatDateTimeString(inputDateTime, options) {
-    const date = new Date(inputDateTime);
-    const theOptions = options? options : 
+  const date = new Date(inputDateTime);
+  const theOptions = options ? options :
     {
       weekday: 'long',
       year: 'numeric',
@@ -28,7 +42,7 @@ export function formatDateTimeString(inputDateTime, options) {
       second: 'numeric',
       //timeZoneName: 'short'
     };
-    return date.toLocaleString('en-US', theOptions);
+  return date.toLocaleString('en-US', theOptions);
 };
 
 export function formatTimeDifferencePast(timestamp) {

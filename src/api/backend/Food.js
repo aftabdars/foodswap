@@ -109,3 +109,39 @@ export async function deleteFoodSwapRequest(id, token, body) {
     const url = `/food/foodswap-requests/${id}`;
     return await makeDeleteRequest(url, token, body);
 }
+
+// Posts foodshare
+export async function postFoodShare(token, body) {
+    const url = `/food/foodshare/`;
+    return await makePostRequest(url, token, body);
+}
+
+// Get foodshares
+export async function getFoodShares(token, params) {
+    const url = `/food/foodshare/`;
+    return await makeGetRequest(url, token, params);
+}
+
+// Gets foodshare
+export async function getFoodShare(id, token) {
+    const url = `/food/foodshare/${id}`;
+    return await makeGetRequest(url, token);
+}
+
+// Updates the foodshare
+export async function updateFoodShare(id, token, body) {
+    const url = `/food/foodshare/${id}`;
+    return await makePutRequest(url, token, body);
+}
+
+// Posts foodshare request (Does not expect client user id as taker in body)
+export async function postFoodShareRequest(token, body) {
+    const url = `/food/foodshare-requests/`;
+    return await makePostRequest(url, token, body);
+}
+
+// Deletes the foodshare request
+export async function deleteFoodShareRequest(id, token, body) {
+    const url = `/food/foodshare-requests/${id}`;
+    return await makeDeleteRequest(url, token, body);
+}

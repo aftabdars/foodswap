@@ -20,10 +20,10 @@ function FoodPreview(props) {
  
   const handlePress = () => {
     if (navigationPreviousScreenName(navigation) === 'FoodInfo') {
-      navigation.push('FoodInfo', { foodItem: foodData });
+      navigation.push('FoodInfo', { foodID: foodData.id });
     }
     else{
-      navigation.navigate('FoodInfo', { foodItem: foodData });
+      navigation.navigate('FoodInfo', { foodID: foodData.id });
     }
   }
 

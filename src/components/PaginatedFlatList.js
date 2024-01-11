@@ -132,6 +132,7 @@ function createStyles(colors) {
         alternativeText: {
             color: colors.foreground,
             textAlign: 'center',
+            margin: 10
         },
     });
 }

@@ -22,6 +22,7 @@ import FoodSwapSelection from './FoodSwapSelection';
 import TransferFoodiezSuccess from './TransferFoodiezSuccess';
 import FoodSwapRoom from './FoodSwapRoom';
 import ActiveFoodSwaps from './ActiveFoodSwaps';
+import ActiveFoodShares from './ActiveFoodShares';
 import Leaderboard from './Leaderboard';
 import Achievements from './Achievements';
 import PublicProfile from './PublicProfile';
@@ -61,6 +62,7 @@ const Main = () => {
       <Stack.Screen name="TransferFoodiezSuccess" component={TransferFoodiezSuccess} options={{ title: 'Transfer Foodiez' }} />
       <Stack.Screen name="Leaderboard" component={Leaderboard} options={{ title: 'Leaderboard' }} />
       <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{ title: 'Active FoodSwaps' }} />
+      <Stack.Screen name="ActiveFoodShares" component={ActiveFoodShares} options={{ title: 'Active FoodShares' }} />
       <Stack.Screen name="Achievements" component={Achievements} options={{ title: 'Achievements' }} />
     </Stack.Navigator>
   )

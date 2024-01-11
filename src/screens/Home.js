@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { StyleSheet, View, Text, ScrollView, Image, RefreshControl, Dimensions } from "react-native";
+import { StyleSheet, View, Text, ScrollView, RefreshControl, Dimensions } from "react-native";
 import MaterialButtonProfile from "../components/MaterialButtonProfile";
 import CupertinoSearchBarBasic from "../components/CupertinoSearchBarBasic";
 import Categorybutton from "../components/Categorybutton";
@@ -52,7 +52,7 @@ function Home(props) {
 
     const checkAllDataFetched = () => {
       if (completedCount === MAX_COUNT) {
-        hideLoading(); // Hiding loading it may have been showing after Login Screen
+        hideLoading(); // Hiding loading it may have been showing after Login Screen or other screens
         if (refresh) setRefresh(false);
       }
     };
@@ -168,6 +168,7 @@ function Home(props) {
   };
 
   const onRefresh = () => {
+    showLoading();
     setRefreshCount(refreshCount + 1);
     setRefresh(true);
   };

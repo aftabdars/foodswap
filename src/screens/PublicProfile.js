@@ -177,8 +177,8 @@ const PublicProfile = ({ navigation }) => {
         </View>
     )
 
-    const AchievementBox = ({ name, level, image }) => (
-        <TouchableOpacity>
+    const AchievementBox = ({ key, name, level, image }) => (
+        <TouchableOpacity key={key}>
             <View style={styles.achievementBox}>
                 <Image
                     source={require("../assets/images/default_achievement.png")}

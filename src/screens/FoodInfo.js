@@ -8,7 +8,7 @@ import { stringCapitalize } from '../utils/Utils';
 import { getFoodFeedbacks, postFeedback } from '../api/backend/Social';
 import { getUserToken } from '../storage/UserToken';
 import { getProfile } from '../storage/User';
-import { getFood } from '../api/backend/Food';
+import { getFood, postFoodShareRequest } from '../api/backend/Food';
 import MaterialButtonSuccess from '../components/MaterialButtonSuccess';
 
 
@@ -42,7 +42,6 @@ const FoodInfo = () => {
         const token = await getUserToken();
         await getFood(foodID, token.token)
           .then(response => {
-            console.log(response.data);
             setFoodItem(response.data);
           })
           .catch(error => { })
@@ -67,9 +66,26 @@ const FoodInfo = () => {
       .catch(error => {})
   }
 
-  const handleRequest = () => {
-    console.log('Sending swap request...');
-    navigation.navigate('FoodSwapSelection', { foodItem: foodItem });
+  const handleRequest = async () => {
+    if (foodItem.up_for === 'share') {
+      const token = (await getUserToken()).token;
+      await postFoodShareRequest(token, {food: foodItem.id})
+      .then(response => {
+        console.log(response.data);
+        if (response.status === 201) { // 201 Created
+          setFoodItem({
+            ...foodItem,
+            'has_client_already_made_request': true
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    }
+    else {
+      navigation.navigate('FoodSwapSelection', { foodItem: foodItem });
+    }
   };
 
   const handleOwnerClick = () => {
@@ -323,6 +339,7 @@ function createStyles(colors) {
       color: colors.error,
       marginVertical: 6,
       alignSelf: 'center',
+      textAlign: 'center'
     },
     feedbackContainer: {
       marginTop: 10,
