@@ -92,6 +92,7 @@ function FoodUploadForm() {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 console.log('Location permissions denied');
+                navigation.navigate('Home'); // Back to home if user does not give GeoLocation Permission
                 return;
             }
 

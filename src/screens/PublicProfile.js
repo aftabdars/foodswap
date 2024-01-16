@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { getColors, ThemeContext } from '../assets/Theme';
-import Animated, { useSharedValue, withTiming } from 'react-native-reanimated';
 import EntypoIcon from "react-native-vector-icons/Entypo";
 
 import ProgressBar from "../components/ProgressBar";
@@ -27,10 +26,8 @@ const PublicProfile = ({ navigation }) => {
     const styles = createStyles(colors);
 
     const route = useRoute();
-    const containerHeight = useSharedValue(0);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [isContainerOpen, setContainerOpen] = useState(false);
     const [clientUserID, setClientUserID] = useState();
     const [userData, setUserData] = useState(route.params?.userData);
     const [userStats, setUserStats] = useState();
@@ -83,7 +80,7 @@ const PublicProfile = ({ navigation }) => {
     // Gets user's completed achievements (PaginatedFlatList will handle the calling to this function)
     const getMeUserAchievements = async (page) => {
         const token = (await getUserToken()).token;
-        const params ={
+        const params = {
             user: userData.id,
             page: page
         };
@@ -92,7 +89,7 @@ const PublicProfile = ({ navigation }) => {
             response = await getUserAchievements(token, params);
             return response.data;
         }
-        catch(error) {}
+        catch (error) { }
     }
 
     // Gets user level and level's data from user's current XP
@@ -114,20 +111,6 @@ const PublicProfile = ({ navigation }) => {
         }
     }, [userStats]);
 
-    const toggleContainerAnimation = () => {
-        containerHeight.value = withTiming(isContainerOpen ? 0 : 1);
-    };
-
-    /*const containerStyle = useAnimatedStyle(() => {
-        return {
-            height: `${containerHeight.value * 22}%`,
-        };
-    });*/
-
-    const toggleContainer = () => {
-        setContainerOpen(!isContainerOpen);
-    };
-
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
@@ -136,7 +119,22 @@ const PublicProfile = ({ navigation }) => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
-    }
+    };
+
+    const messagePressed = () => {
+        if (userData && clientUserID) {
+            navigation.navigate('Chat', {
+                chatPreviewMessage: {
+                    clientUserID: clientUserID,
+                    otherUserID: userData.id,
+                    otherUserProfilePicture: userData.profile_picture,
+                    otherUserUsername: userData.username,
+                    otherUserFirstName: userData.first_name,
+                    otherUserLastName: userData.last_name,
+                }
+            });
+        }
+    };
 
     const followPressed = async () => {
         const token = (await getUserToken()).token;
@@ -177,8 +175,8 @@ const PublicProfile = ({ navigation }) => {
         </View>
     )
 
-    const AchievementBox = ({ key, name, level, image }) => (
-        <TouchableOpacity key={key}>
+    const AchievementBox = ({ id, name, level, image }) => (
+        <TouchableOpacity key={id}>
             <View style={styles.achievementBox}>
                 <Image
                     source={require("../assets/images/default_achievement.png")}
@@ -209,7 +207,7 @@ const PublicProfile = ({ navigation }) => {
                             onRequestClose={toggleModal}
                             colors={colors}
                         >
-                            <CustomModalButton colors={colors} onPress={() => { console.log('Message') }}>
+                            <CustomModalButton colors={colors} onPress={messagePressed}>
                                 Message
                             </CustomModalButton>
                             <CustomModalButton colors={colors} onPress={() => { console.log('Block pressed') }}>
@@ -265,62 +263,41 @@ const PublicProfile = ({ navigation }) => {
                         <Text style={styles.detailabout}>{userData.about}</Text>
                     </View>
                 }
-                <Text style={styles.headingText}>Details:</Text>
-                <TouchableOpacity style={styles.sectionContainer} onPress={() => { toggleContainer(); toggleContainerAnimation(); }}>
-                    {!isContainerOpen ?
-                        <Text style={styles.closedContainerText}>Tap to view</Text>
-                        : (
-                            <Animated.View styles={styles.sectionAnimatedContainer}>
-                                <View style={styles.detailGroup}>
-                                    <EntypoIcon name="phone" style={styles.icon}></EntypoIcon>
-                                    <Text style={styles.detailLabel}>Phone:</Text>
-                                    <Text style={styles.detailValue}>{userData && userData.phone || 'Hidden'}</Text>
-                                </View>
-                                <View style={styles.detailGroup}>
-                                    <EntypoIcon name="location-pin" style={styles.icon}></EntypoIcon>
-                                    <Text style={styles.detailLabel}>Location:</Text>
-                                    <Text style={styles.detailValue}>{userData && userData.location || 'Hidden'}</Text>
-                                </View>
-                                <View style={styles.detailGroup}>
-                                    <EntypoIcon name="email" style={styles.icon}></EntypoIcon>
-                                    <Text style={styles.detailLabel}>Email:</Text>
-                                    <Text style={styles.detailValue}>{userData && userData.email || 'Hidden'}</Text>
-                                </View>
-                                <View style={styles.detailGroup}>
-                                    <EntypoIcon name="calendar" style={styles.icon}></EntypoIcon>
-                                    <Text style={styles.detailLabel}>Member Since:</Text>
-                                    <Text style={styles.detailValue}>
-                                        {userData && userData.date_joined &&
-                                            formatDateTimeString(userData.date_joined, {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric',
-                                            })
-                                            || 'Hidden'}
-                                    </Text>
-                                </View>
-                                <View style={styles.detailGroup}>
-                                    <EntypoIcon name="add-user" style={styles.icon}></EntypoIcon>
-                                    <Text style={styles.detailLabel}>Following:</Text>
-                                    <Text style={styles.detailValue}>{userStats && userStats.following_count || 0}</Text>
-                                </View>
-                                <View style={styles.detailGroup}>
-                                    <EntypoIcon name="remove-user" style={styles.icon}></EntypoIcon>
-                                    <Text style={styles.detailLabel}>Followers:</Text>
-                                    <Text style={styles.detailValue}>{userStats && userStats.follower_count || 0}</Text>
-                                </View>
-                            </Animated.View>)}
-                </TouchableOpacity>
+                <View style={{ paddingLeft: 20, marginBottom: 10 }}>
+                    <View style={styles.detailGroup}>
+                        <EntypoIcon name="calendar" style={styles.icon}></EntypoIcon>
+                        <Text style={styles.detailLabel}>Member Since:</Text>
+                        <Text style={styles.detailValue}>
+                            {userData && userData.date_joined &&
+                                formatDateTimeString(userData.date_joined, {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })
+                                || 'Hidden'}
+                        </Text>
+                    </View>
+                    <View style={styles.detailGroup}>
+                        <EntypoIcon name="add-user" style={styles.icon}></EntypoIcon>
+                        <Text style={styles.detailLabel}>Following:</Text>
+                        <Text style={styles.detailValue}>{userStats && userStats.following_count || 0}</Text>
+                    </View>
+                    <View style={styles.detailGroup}>
+                        <EntypoIcon name="remove-user" style={styles.icon}></EntypoIcon>
+                        <Text style={styles.detailLabel}>Followers:</Text>
+                        <Text style={styles.detailValue}>{userStats && userStats.follower_count || 0}</Text>
+                    </View>
+                </View>
 
                 <Text style={styles.headingText}>Stats:</Text>
                 {userStats &&
                     <View style={styles.statsContainer}>
-                        <StatsBox title='Food Uploaded' value={userStats.food_count} iconName='arrow-bold-up' />
-                        <StatsBox title='Food Swapped' value={userStats.foodswap_count} iconName='swap' />
-                        <StatsBox title='Food Shared' value={userStats.foodshare_count} iconName='level-down' />
-                        <StatsBox title='Food Taken' value={userStats.food_taken_count} iconName='level-up' />
-                        <StatsBox title='Total Foodiez Earned' value={formatNumberMetricPrefix(userStats.total_foodiez)} iconName='bowl' />
-                        <StatsBox title='Achievements Completed' value={userStats.achievements_completed} iconName='trophy' />
+                        <StatsBox key={0} title='Food Uploaded' value={userStats.food_count} iconName='arrow-bold-up' />
+                        <StatsBox key={1} title='Food Swapped' value={userStats.foodswap_count} iconName='swap' />
+                        <StatsBox key={2} title='Food Shared' value={userStats.foodshare_count} iconName='level-down' />
+                        <StatsBox key={3} title='Food Taken' value={userStats.food_taken_count} iconName='level-up' />
+                        <StatsBox key={4} title='Total Foodiez Earned' value={formatNumberMetricPrefix(userStats.total_foodiez)} iconName='bowl' />
+                        <StatsBox key={5} title='Achievements Completed' value={userStats.achievements_completed} iconName='trophy' />
                     </View>
                 }
                 <Text style={styles.headingText}>Achievements:</Text>
@@ -333,6 +310,7 @@ const PublicProfile = ({ navigation }) => {
                             renderItem={({ item }) => (
                                 <AchievementBox
                                     key={item.id}
+                                    id={item.id}
                                     name={item.achievement_name}
                                     level={item.achievement_level}
                                     image={item.achievement_image}
@@ -411,6 +389,7 @@ function createStyles(colors) {
             width: '100%',
             flexDirection: "row",
             justifyContent: "space-between",
+            marginTop: 10
         },
         backButton: {
             color: '#fff',
@@ -447,23 +426,6 @@ function createStyles(colors) {
             fontWeight: 'bold',
             marginTop: 10,
             marginLeft: 20,
-        },
-        sectionContainer: {
-            flexGrow: 1,
-            marginBottom: 20,
-            marginLeft: 10,
-            marginRight: 10,
-            borderRadius: 10,
-            padding: 20,
-            elevation: 3,
-        },
-        sectionAnimatedContainer: {
-
-        },
-        closedContainerText: {
-            textAlign: 'center',
-            fontSize: 16,
-            color: colors.foreground,
         },
         detailGroup: {
             flexDirection: "row",

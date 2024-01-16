@@ -130,7 +130,7 @@ function createStyles(colors) {
     return StyleSheet.create({
         container: {
             flex: 1,
-            padding: 16,
+            paddingVertical: 16,
             backgroundColor: colors.background,
         },
         notificationContainer: {

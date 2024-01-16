@@ -59,7 +59,7 @@ const AdminManageFood = () => {
         const { isEditing } = itemStates[item.id] || {};
 
         return (
-            <View style={styles.container}>
+            <View style={styles.itemContainer}>
                 <Image source={item.imageUrl} style={styles.foodImage} />
                 <View style={styles.detailsContainer}>
                     <View style={styles.editableContainer}>
@@ -113,11 +113,12 @@ function createStyles(colors) {
     return StyleSheet.create({
         flatList: {
             padding: 10,
+            backgroundColor: colors.background
         },
-        container: {
+        itemContainer: {
             flex: 1,
             flexDirection: 'row',
-            backgroundColor: colors.background,
+            backgroundColor: colors.background2,
             borderRadius: 16,
             top: 5,
             overflow: 'hidden',
