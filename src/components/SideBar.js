@@ -122,6 +122,13 @@ const SideBar = (props) => {
           onPress={() => buttonPressed('TransferFoodiez')}
           icon="credit-card"
         />
+        {userData && userData.is_staff === true &&
+          < SidebarButton
+            title="Admin Panel"
+            onPress={() => buttonPressed('AdminPanel')}
+            icon="dashboard"
+          />
+        }
         <SidebarButton
           title="Logout"
           onPress={() => buttonPressed('Logout')}

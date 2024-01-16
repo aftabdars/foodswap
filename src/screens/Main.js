@@ -26,6 +26,9 @@ import ActiveFoodShares from './ActiveFoodShares';
 import Leaderboard from './Leaderboard';
 import Achievements from './Achievements';
 import PublicProfile from './PublicProfile';
+import AdminPanel from './admin/Panel';
+import AdminManageUser from './admin/ManageUser';
+import AdminManageFood from './admin/ManageFood';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -64,6 +67,11 @@ const Main = () => {
       <Stack.Screen name="ActiveFoodSwaps" component={ActiveFoodSwaps} options={{ title: 'Active FoodSwaps' }} />
       <Stack.Screen name="ActiveFoodShares" component={ActiveFoodShares} options={{ title: 'Active FoodShares' }} />
       <Stack.Screen name="Achievements" component={Achievements} options={{ title: 'Achievements' }} />
+
+      {/* Admin Panel Screens*/}
+      <Stack.Screen name="AdminPanel" component={AdminPanel} options={{ title: 'Admin Panel' }} />
+      <Stack.Screen name="AdminManageUser" component={AdminManageUser} options={{ title: 'Manage User' }} />
+      <Stack.Screen name="AdminManageFood" component={AdminManageFood} options={{ title: 'Manage Food' }} />
     </Stack.Navigator>
   )
 };
