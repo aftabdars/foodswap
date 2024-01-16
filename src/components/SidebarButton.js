@@ -32,7 +32,6 @@ function createStyles(colors) {
       borderRadius: 8,
       flexDirection: "row",
       marginBottom: 0,
-      marginRight: 125,
       width: '100%'
     },
     buttonContent: {

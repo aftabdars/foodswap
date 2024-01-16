@@ -5,10 +5,8 @@ import { Avatar } from "react-native-elements";
 
 import ProgressBar from './ProgressBar';
 import SidebarButton from "./SidebarButton";
-import { removeProfile, removeStats } from "../storage/User";
-import { getUserToken, removeUserToken } from "../storage/UserToken";
-import { postLogout } from "../api/backend/Auth";
 import { useLoading } from "../assets/LoadingContext";
+import { logoutUser } from "../utils/Auth";
 
 const SideBar = (props) => {
   //Theme
@@ -27,35 +25,12 @@ const SideBar = (props) => {
   const userStats = props.userStats;
   const levelData = props.levelData;
 
-  const handleLogout = async () => {
-    showLoading();
-    const token = (await getUserToken()).token;
-    await postLogout(token)
-      .then(response => { // Response status 204 if deleted
-        console.log(response.status);
-        console.log(response.data);
-
-        // Clears some data from user storage
-        removeProfile();
-        removeStats();
-        removeUserToken();
-        //removeUserTheme();
-
-        // Navigate to initial page like Login
-        navigation.navigate('Login');
-      })
-      .catch(error => {
-        console.log(error);
-        hideLoading();
-      })
-  }
-
   const buttonPressed = (name, routeParams = {}) => {
     if (!isButtonDisabled) {
       setIsButtonDisabled(true);
 
       if (name.toLowerCase() === 'logout') {
-        handleLogout();
+        logoutUser(navigation, showLoading, hideLoading);
       }
       else {
         navigation.navigate(name, routeParams);
