@@ -50,7 +50,7 @@ const UserFoodTabs = (props) => {
         return results;
     };
 
-    const TabBody = ({ colors, data }) => {
+    const TabBody = ({ tabID, colors, data }) => {
         return (
             <View style={styles.tabBody}>
                 {data && data.length > 0 &&
@@ -63,15 +63,15 @@ const UserFoodTabs = (props) => {
     };
 
     const FirstRoute = ({ colors }) => (
-        <TabBody colors={colors} data={foodItemsUp} />
+        <TabBody tabID={0} colors={colors} data={foodItemsUp} />
     )
 
     const SecondRoute = ({ colors }) => (
-        <TabBody colors={colors} data={foodItemsSwapped} />
+        <TabBody tabID={1} colors={colors} data={foodItemsSwapped} />
     )
 
     const ThirdRoute = ({ colors }) => (
-        <TabBody colors={colors} data={foodItemsShared} />
+        <TabBody tabID={2} colors={colors} data={foodItemsShared} />
     )
 
     const renderScene = SceneMap({

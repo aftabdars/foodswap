@@ -24,8 +24,16 @@ function MaterialButtonSuccess(props) {
   };
 
   return (
-    <TouchableOpacity style={[styles.container, props.style]} onPress={handlePress}>
-      <Text style={[styles.caption, props.captionStyle && props.captionStyle]}>{props.children}</Text>
+    <TouchableOpacity
+      style={[styles.container, props.disabled && { backgroundColor: colors.background2 } || { backgroundColor: colors.highlight2 }, props.style]}
+      onPress={handlePress}
+      disabled={props.disabled}
+    >
+      <Text 
+        style={[styles.caption, props.disabled && {color: colors.background} || {color: colors.foreground}, props.captionStyle]}
+      >
+        {props.children}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -52,6 +60,7 @@ function createStyles(colors) {
     },
     caption: {
       color: colors.foreground,
+      fontWeight: 'bold',
       fontSize: 14
     }
   })

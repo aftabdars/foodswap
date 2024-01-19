@@ -31,23 +31,23 @@ function Settings() {
     setUserTheme(toTheme);
     // Updates user theme in real-time by changing the theme State
     setTheme(toTheme);
-  }
+  };
 
   const helpPressed = () => {
     console.log('Help Pressed');
-  }
+  };
 
   const feedbackPressed = () => {
-    console.log('Feedback Pressed');
-  }
+    navigation.navigate('UserFeedback');
+  };
 
   const bugReportPressed = () => {
-    console.log('Bug Report Pressed');
-  }
+    navigation.navigate('BugReport');
+  };
 
   const logoutPressed = () => {
     logoutUser(navigation, showLoading, hideLoading);
-  }
+  };
 
   const SettingsBox = (props) => {
     return (
@@ -56,7 +56,7 @@ function Settings() {
         {props.children}
       </View>
     )
-  }
+  };
 
   const SettingsRow = (props) => {
     return (
