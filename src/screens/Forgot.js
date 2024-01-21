@@ -46,27 +46,29 @@ function Forgot({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <Image
-        source={require("../assets/images/lock.png")}
-        resizeMode="contain"
-        style={styles.locklogo}
-      ></Image>
-      <Text style={styles.loremIpsum}>Forgot Your Password?</Text>
-      <Text style={styles.loremIpsum2}>Please enter your email below</Text>
-      <MaterialFixedLabelTextbox
-        placeholder="Email@xyz.com"
-        style={styles.emailinput}
-        onChangeText={(text) => setEmail(text)}
-      ></MaterialFixedLabelTextbox>
-      {showError &&
-        <Text style={styles.errormsg}>
-          {showError}
-        </Text>
-      }
-      <MaterialButtonSuccess
-        style={styles.nextbtn}
-        onPress={handlePress}
-      >Next</MaterialButtonSuccess>
+      <View style={styles.container2}>
+        <Image
+          source={require("../assets/images/lock.png")}
+          resizeMode="contain"
+          style={styles.locklogo}
+        ></Image>
+        <Text style={styles.loremIpsum}>Forgot Your Password?</Text>
+        <Text style={styles.loremIpsum2}>Please enter your email below</Text>
+        <MaterialFixedLabelTextbox
+          placeholder="Email@xyz.com"
+          style={styles.emailinput}
+          onChangeText={(text) => setEmail(text)}
+        ></MaterialFixedLabelTextbox>
+        {showError &&
+          <Text style={styles.errormsg}>
+            {showError}
+          </Text>
+        }
+        <MaterialButtonSuccess
+          style={styles.nextbtn}
+          onPress={handlePress}
+        >Next</MaterialButtonSuccess>
+      </View>
     </KeyboardAwareScrollView>
   );
 }
@@ -77,11 +79,18 @@ function createStyles(colors) {
       flex: 1,
       backgroundColor: colors.background
     },
+    container2: {
+      flex: 1,
+      backgroundColor: colors.background,
+      width: '100%',
+      alignItems: 'center'
+
+    },
     locklogo: {
       width: 219,
       height: 219,
       marginTop: 97,
-      marginLeft: 78
+      // marginLeft: 78
     },
     loremIpsum: {
       fontFamily: "abeezee-regular",
@@ -94,7 +103,7 @@ function createStyles(colors) {
       fontFamily: "roboto-regular",
       color: colors.foreground,
       marginTop: 14,
-      marginLeft: 95
+      // marginLeft: 95
     },
     emailinput: {
       height: 43,
@@ -103,14 +112,14 @@ function createStyles(colors) {
       color: colors.foreground,
       borderRadius: 9,
       marginTop: 47,
-      marginLeft: 49
+      // marginLeft: 49
     },
     nextbtn: {
       height: 36,
       width: 100,
       borderRadius: 9,
       marginTop: 49,
-      marginLeft: 138
+      // marginLeft: 138
     },
     errormsg: {
       fontFamily: "roboto-regular",

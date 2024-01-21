@@ -136,8 +136,8 @@ function Login({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.container}>
-        <View>
+      <View style={styles.container2}>
+        <View style={styles.container2}>
           <Image
             source={require("../assets/images/logo.png")}
             resizeMode="contain"
@@ -188,6 +188,12 @@ function createStyles(colors) {
       flexDirection: 'column',
       backgroundColor: colors.background
     },
+    container2: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%'
+    },
     foodswaplogo: {
       width: 375,
       height: 375,
@@ -200,14 +206,14 @@ function createStyles(colors) {
       color: colors.foreground,
       borderRadius: 9,
       marginTop: 37,
-      marginLeft: 49
+      // marginLeft: 49
     },
     loginbtn: {
       height: 36,
       width: 100,
       borderRadius: 9,
       marginTop: 68,
-      marginLeft: 138
+      // marginLeft: 138
     },
     passwordinput: {
       height: 43,
@@ -216,30 +222,33 @@ function createStyles(colors) {
       backgroundColor: colors.background2,
       color: colors.foreground,
       marginTop: -93,
-      marginLeft: 49
+      // marginLeft: 49
     },
     forgotpasswordbtn: {
       height: 36,
       width: 200,
       marginTop: 50,
-      marginLeft: 88,
+      // marginLeft: 88,
       color: colors.highlight2
     },
     notAUser: {
       fontFamily: "roboto-regular",
       color: colors.foreground,
-      marginTop: 9
+      // marginTop: 9
     },
     signupbtn: {
       height: 36,
       width: 100
     },
     notAUserRow: {
-      alignSelf: 'center',
+      // alignSelf: 'center',
       height: 36,
+      width: '100%',
       flexDirection: "row",
       margin: 5,
-      marginLeft: 14,
+      justifyContent: 'center',
+      alignItems: 'center'
+      // marginLeft: 14,
     },
     errormsg: {
       fontFamily: "roboto-regular",

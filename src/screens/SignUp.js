@@ -100,11 +100,12 @@ function SignUp({ navigation }) {
           style={styles.input}
           onChangeText={(text) => setRePassword(text)}
         ></MaterialRightIconTextbox>
-      </View>
-      <MaterialButtonSuccess
+        <MaterialButtonSuccess
         style={styles.materialButtonSuccess1}
         onPress={onPressSignup}
       >Sign Up</MaterialButtonSuccess>
+      </View>
+      
 
       {showError && (
         <Text style={styles.errormsg}>
@@ -113,12 +114,12 @@ function SignUp({ navigation }) {
       )}
 
       <View style={styles.alreadyContainer}>
+        <Text style={styles.notAUser1}>Already have an account?</Text>
         <MaterialButtonWithOrangeText
           caption="Sign In"
           style={styles.materialButtonWithVioletText1}
           onPress={() => { navigation.navigate('Login') }}
         ></MaterialButtonWithOrangeText>
-        <Text style={styles.notAUser1}>Already have an account?</Text>
       </View>
     </ScrollView>
   );
@@ -128,7 +129,7 @@ function createStyles(colors) {
   return StyleSheet.create({
     container: {
       flexGrow: 1,
-      backgroundColor: colors.background
+      backgroundColor: colors.background,
     },
     text: {
       fontFamily: "roboto-700",
@@ -138,11 +139,12 @@ function createStyles(colors) {
       marginLeft: 49
     },
     group: {
-      width: 278,
-      height: 306,
+      width: '100%',
+      height: 400,
       justifyContent: "space-between",
       marginTop: 64,
-      marginLeft: 49
+      alignItems: 'center'
+      // marginLeft: 49
     },
     input: {
       height: 43,
@@ -156,28 +158,30 @@ function createStyles(colors) {
       width: 100,
       borderRadius: 9,
       marginTop: 46,
-      marginLeft: 138
+      // marginLeft: 138
     },
     materialButtonWithVioletText1: {
       height: 36,
       width: 100,
-      position: "absolute",
-      left: 138,
-      top: 0
+      // position: "absolute",
+      // left: 138,
+      // top: 0
     },
     notAUser1: {
-      top: 9,
-      left: 0,
-      position: "absolute",
+      // top: 9,
+      // left: 0,
+      // position: "absolute",
       fontFamily: "roboto-regular",
       color: colors.foreground,
     },
     alreadyContainer: {
-      width: 238,
+      width: '100%',
       height: 36,
       marginTop: 76,
-      marginLeft: 79,
-      flexDirection: "column",
+      justifyContent: 'space-around',
+      alignItems: 'center'
+      // marginLeft: 79,
+      // flexDirection: "column",
     },
     errormsg: {
       fontFamily: "roboto-regular",
