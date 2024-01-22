@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Avatar, Icon } from 'react-native-elements';
+//import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { getUserToken } from "../storage/UserToken";
 import { getUserInbox } from "../api/backend/Social";
@@ -18,6 +19,7 @@ function Inbox() {
     const styles = createStyles(colors);
 
     const [userID, setUserID] = useState();
+    const navigation = useNavigation();
 
     // Get user id
     useEffect(() => {
@@ -55,6 +57,11 @@ function Inbox() {
                     alternativeText={'No chats to show'}
                 />
             }
+            <TouchableOpacity onPress={()=> {navigation.navigate('Search', { userSearch: true, message:true })}}>
+                <View style={styles.newMessage}>
+                    <Icon name='message'></Icon>
+                </View>
+            </TouchableOpacity>
         </View>
     )
 };
@@ -132,6 +139,17 @@ function createStyles(colors) {
             flex: 1,
             paddingVertical: 16,
             backgroundColor: colors.background,
+        },
+        newMessage: {
+            width: 60,
+            height: 60,
+            backgroundColor: colors.highlight1,
+            borderRadius: 50,
+            alignItems: "center",
+            justifyContent: "center",
+            position: "absolute",
+            bottom: 30,
+            right: 30,
         },
         notificationContainer: {
             flexDirection: 'row',

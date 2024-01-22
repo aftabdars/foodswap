@@ -26,12 +26,13 @@ const Search = () => {
   // What is the search for (Food or User)? Default is for Food
   const route = useRoute();
   const userSearch = route.params?.userSearch;
+  const message = route.params?.message;
 
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => {
     if (userSearch) {
-      return <SearchedUserPreview userData={item} colors={colors} navigation={navigation} />
+      return <SearchedUserPreview userData={item} colors={colors} navigation={navigation} message={message}/>
     }
     return <SearchedFoodPreview foodData={item} colors={colors} navigation={navigation} />
   }

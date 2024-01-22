@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
-import  React from "react";
+import  React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { getProfile } from "../storage/User";
 
 function SearchedUserPreview(props) {
     //Theme
@@ -14,9 +15,39 @@ function SearchedUserPreview(props) {
     const handlePress = () => {
       navigation.navigate('PublicProfile', {userID: item.id});
     }
+    const [clientUserID, setClientUserID] = useState();
+
+    const messagePressed = () => {
+      let userData = props.userData;
+      if (userData && clientUserID) {
+          navigation.navigate('Chat', {
+              chatPreviewMessage: {
+                  clientUserID: clientUserID,
+                  otherUserID: userData.id,
+                  otherUserProfilePicture: userData.profile_picture,
+                  otherUserUsername: userData.username,
+                  otherUserFirstName: userData.first_name,
+                  otherUserLastName: userData.last_name,
+              }
+          });
+      }
+    };
+
+    // Gets client user profile ID
+    useEffect(() => {
+      const getClientUserProfile = async () => {
+          try {
+              setClientUserID((await getProfile()).id);
+          }
+          catch (error) {
+              console.log(error);
+          }
+      }
+      getClientUserProfile();
+    }, []);
 
     return (
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity onPress={props.message? messagePressed : handlePress}>
         <View style={styles.userItem}>
           <Image 
             source={item.profile_picture? {uri: item.profile_picture} : require('../assets/images/default_profile.jpg')} 
