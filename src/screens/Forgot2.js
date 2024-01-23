@@ -42,6 +42,7 @@ function Forgot2({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <View style={styles.container2}>
       <Image
         source={require("../assets/images/key.png")}
         resizeMode="contain"
@@ -65,6 +66,7 @@ function Forgot2({ navigation }) {
         style={styles.nextbtn}
         onPress={handlePress}
       >Next</MaterialButtonSuccess>
+      </View>
     </KeyboardAwareScrollView>
   );
 }
@@ -74,6 +76,13 @@ function createStyles(colors) {
     container: {
       flex: 1,
       backgroundColor: colors.background
+    },
+    container2: {
+      flex: 1,
+      backgroundColor: colors.background,
+      width: '100%',
+      alignItems: 'center'
+
     },
     keylogo: {
       width: 244,
@@ -92,7 +101,7 @@ function createStyles(colors) {
       fontFamily: "roboto-regular",
       color: colors.foreground,
       marginTop: 16,
-      marginLeft: 57
+      // marginLeft: 57
     },
     materialFixedLabelTextbox1: {
       height: 43,
@@ -101,14 +110,14 @@ function createStyles(colors) {
       color: colors.foreground,
       borderRadius: 9,
       marginTop: 45,
-      marginLeft: 49
+      // marginLeft: 49
     },
     nextbtn: {
       height: 36,
       width: 100,
       borderRadius: 9,
       marginTop: 49,
-      marginLeft: 138
+      // marginLeft: 138
     },
     errormsg: {
       fontFamily: "roboto-regular",

@@ -27,7 +27,7 @@ function Login({ navigation }) {
 
   // States
   const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [password2, setPassword2] = useState();
   const [showError, setShowError] = useState();
 
   // Check if user already has a token in storage, if so then route to Home otherwise Login
@@ -155,7 +155,7 @@ function Login({ navigation }) {
           <MaterialRightIconTextbox
             placeholder="Password"
             style={styles.passwordinput}
-            onChangeText={(text) => setPassword(text)}
+            onChangeText={(text) => setPassword2(text)}
           ></MaterialRightIconTextbox>
           <MaterialButtonWithVioletText
             caption="Forgot Password?"

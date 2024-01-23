@@ -56,6 +56,7 @@ function EmailConfirmation({navigation}) {
     style={styles.container}
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   >
+      <View style={styles.container2}>
       <Image
         source={require("../assets/images/key.png")}
         resizeMode="contain"
@@ -88,6 +89,7 @@ function EmailConfirmation({navigation}) {
       {showError &&
         <Text style={styles.errormsg}>{ showError }</Text>
       }
+      </View>
     </KeyboardAwareScrollView>
   );
 }
@@ -98,6 +100,13 @@ function createStyles(colors) {
         flex: 1,
         backgroundColor: colors.background,
         padding: 5
+      },
+      container2: {
+        flex: 1,
+        backgroundColor: colors.background,
+        width: '100%',
+        alignItems: 'center'
+  
       },
       keylogo: {
         width: 244,
@@ -126,14 +135,14 @@ function createStyles(colors) {
         color: colors.foreground,
         borderRadius: 9,
         marginTop: 45,
-        marginLeft: 49
+        // marginLeft: 49
       },
       nextbtn: {
         height: 36,
         width: 100,
         borderRadius: 9,
         marginTop: 49,
-        marginLeft: 138
+        // marginLeft: 138
       },
       errormsg: {
         fontFamily: "roboto-regular",

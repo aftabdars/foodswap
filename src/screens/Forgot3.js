@@ -55,6 +55,7 @@ function Forgot3({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <View style={styles.container2}>
       <Image
         source={require("../assets/images/unlock.png")}
         resizeMode="contain"
@@ -83,6 +84,7 @@ function Forgot3({ navigation }) {
         style={styles.nextbtn}
         onPress={handlePress}
       >Next</MaterialButtonSuccess>
+      </View>
     </KeyboardAwareScrollView>
   );
 }
@@ -93,12 +95,19 @@ function createStyles(colors) {
       flex: 1,
       backgroundColor: colors.background
     },
+    container2: {
+      flex: 1,
+      backgroundColor: colors.background,
+      width: '100%',
+      alignItems: 'center'
+
+    },
     congratulations: {
       fontFamily: "abeezee-regular",
       color: colors.foreground,
       fontSize: 24,
       marginTop: 40,
-      marginLeft: 93
+      // marginLeft: 93
     },
     errormsg: {
       fontFamily: "roboto-regular",
@@ -111,26 +120,26 @@ function createStyles(colors) {
       width: 100,
       borderRadius: 9,
       marginTop: 30,
-      marginLeft: 135
+      // marginLeft: 135
     },
     loremIpsum3: {
       fontFamily: "roboto-regular",
       color: colors.foreground,
       marginTop: 20,
-      marginLeft: 90
+      // marginLeft: 90
     },
     image2: {
       width: 223,
       height: 223,
       marginTop: 100,
-      marginLeft: 74
+      // marginLeft: 74
     },
     group: {
       width: 283,
       height: 96,
       justifyContent: "space-between",
       marginTop: 30,
-      marginLeft: 44
+      // marginLeft: 44
     },
     passinput: {
       height: 43,
