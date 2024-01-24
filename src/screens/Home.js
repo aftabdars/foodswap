@@ -177,6 +177,13 @@ function Home(props) {
     navigation.navigate('Notifications');
   }
 
+  const categoryBtnPressed = (category) => {
+    navigation.navigate('Search', {
+      categorySearch: true,
+      category: category
+    });
+  }
+
   const findMePressed = (location) => {
     console.log(location)
     setLocation(location);
@@ -220,7 +227,12 @@ function Home(props) {
           <Text style={styles.categoriesHeading}>Categories</Text>
           <ScrollView horizontal={true} style={styles.categoryButtonsContainer}>
             {foodCategories && foodCategories.map(foodCategory => (
-              <Categorybutton key={foodCategory.id} style={styles.categorybutton} categoryData={foodCategory} />
+              <Categorybutton
+                key={foodCategory.id}
+                style={styles.categorybutton}
+                categoryData={foodCategory}
+                onPress={() => categoryBtnPressed(foodCategory)}
+              />
             ))}
           </ScrollView>
 
