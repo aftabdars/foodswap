@@ -27,25 +27,28 @@ const Search = () => {
   const route = useRoute();
   const userSearch = route.params?.userSearch;
   const message = route.params?.message;
+  const category = route.params?.category;
+  const categorySearch = route.params?.categorySearch;
 
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => {
     if (userSearch) {
-      return <SearchedUserPreview userData={item} colors={colors} navigation={navigation} message={message}/>
+      return <SearchedUserPreview userData={item} colors={colors} navigation={navigation} message={message} />
     }
     return <SearchedFoodPreview foodData={item} colors={colors} navigation={navigation} />
   }
 
   // Perform the search after a delay
   const delayedSearch = async (page) => {
-    if (query.length > 0) {
+    if (query.length > 0 || categorySearch) {
       // Get search results from API
       let response = undefined;
       const token = (await getUserToken()).token;
       const params = {
         'search': query,
-        'page': page
+        'page': page,
+        'category': categorySearch && category.id,
       }
       try {
         if (userSearch) {
@@ -90,20 +93,24 @@ const Search = () => {
           inputStyle={userSearch ? 'Search for user' : 'Search for food'}
           value={query}
           onChangeText={(text) => handleSearch(text)}
-          autoFocus={true}
+          autoFocus={categorySearch ? false : true}
         />
         {query &&
           <Text style={styles.queryText}>
             Searched '{query}' with {resultCount} results
           </Text>
         }
+        {categorySearch &&
+          <Text style={styles.queryText}>Category: {category.name}</Text>
+        }
       </View>
       <PaginatedFlatList
         ref={flatListRef}
         colors={colors}
         loadData={delayedSearch}
-        loadDataInitially={false}
+        loadDataInitially={categorySearch || false}
         renderItem={renderItem}
+        alternativeText={'No results'}
       />
     </View>
   );
