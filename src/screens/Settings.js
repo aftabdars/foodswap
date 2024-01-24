@@ -91,20 +91,23 @@ function Settings() {
           />
         </SettingsRow>
         <SettingsRow>
-          <Text style={styles.settingText}>Theme</Text>
-          <Picker
-            placeholder='Select Theme'
-            style={styles.themePicker}
-            dropdownIconColor={colors.foreground}
-            dropdownIconRippleColor={colors.highlight2}
-            selectedValue={theme}
-            onValueChange={(itemValue, itemIndex) => handleSwitchTheme(itemValue)}
-          >
-            <Picker.Item label="System" value={"auto"} style={styles.pickerItem} />
-            <Picker.Item label="Light" value={"light"} style={styles.pickerItem} />
-            <Picker.Item label="Dark" value={"dark"} style={styles.pickerItem} />
-            <Picker.Item label="Christmas" value={"christmas"} style={styles.pickerItem} />
-          </Picker>
+          <View style={{width: '100%', flex:1, alignItems: 'center', justifyContent:'space-between', flexDirection: 'row', padding:5}}>
+            <Text style={styles.settingText}>Theme</Text>
+            <Picker
+              itemStyle={{color: colors.foreground}}
+              placeholder='Select Theme'
+              style={styles.themePicker}
+              dropdownIconColor={colors.foreground}
+              dropdownIconRippleColor={colors.highlight2}
+              selectedValue={theme}
+              onValueChange={(itemValue, itemIndex) => handleSwitchTheme(itemValue)}
+            >
+              <Picker.Item label="System" value={"auto"} style={styles.pickerItem} />
+              <Picker.Item label="Light" value={"light"} style={styles.pickerItem} />
+              <Picker.Item label="Dark" value={"dark"} style={styles.pickerItem} />
+              <Picker.Item label="Christmas" value={"christmas"} style={styles.pickerItem} />
+            </Picker>
+          </View>
         </SettingsRow>
       </SettingsBox>
 
@@ -184,7 +187,7 @@ function createStyles(colors) {
     themePicker: {
       height: '40%',
       width: '50%',
-      backgroundColor: colors.background,
+      backgroundColor: colors.background2,
       color: colors.foreground,
     },
     pickerItem: {
