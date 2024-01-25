@@ -70,14 +70,14 @@ function Login({ navigation }) {
 
   const handleLogin = () => {
     // Check if all of the fields are not empty
-    if (!username || !password) {
+    if (!username || !password2) {
       setShowError("Please fill out all the fields");
       return;
     }
 
     body = {
       'username': username,
-      'password': password
+      'password': password2
     }
     postLogin(body)
       .then(response => {
