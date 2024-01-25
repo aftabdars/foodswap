@@ -218,8 +218,7 @@ const PublicProfile = ({ navigation }) => {
                     <View style={styles.profileImageAndNameContainer}>
                         <Image
                             source={userData && userData.profile_picture ? { uri: userData.profile_picture } : require("../assets/images/default_profile.jpg")}
-                            style={styles.profileImage}
-                            resizeMode='contain'
+                            style={styles.profileImage} 
                         />
                         {userData && (userData.first_name || userData.last_name) &&
                             <Text style={styles.name}>{`${userData.first_name} ${userData.last_name}`}</Text>
@@ -404,13 +403,13 @@ function createStyles(colors) {
         profileImage: {
             width: 155,
             height: 155,
-            position: "relative",
             borderRadius: 100
         },
         name: {
             color: colors.foreground,
             fontSize: 22,
             textAlign: "center",
+            marginTop: 5
         },
         username: {
             fontSize: 16,

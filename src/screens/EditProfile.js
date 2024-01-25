@@ -116,7 +116,6 @@ function EditProfile() {
           <View style={styles.imageStack}>
             <Image
               source={profilePicture ? { uri: profilePicture } : require("../assets/images/default_profile.jpg")}
-              resizeMode="contain"
               style={styles.image}
             ></Image>
           </View>
@@ -184,7 +183,6 @@ function createStyles(colors) {
     editProfilePicture: {
       height: 44,
       width: 44,
-      position: "relative",
       top: 20,
       left: 50
     },
