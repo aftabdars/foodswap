@@ -91,7 +91,6 @@ function Profile(props) {
         <View style={styles.imageStack}>
           <Image
             source={userData && userData.profile_picture ? { uri: userData.profile_picture } : require("../assets/images/default_profile.jpg")}
-            resizeMode="contain"
             style={styles.image}
           ></Image>
           <Editbutton style={styles.editProfilePicture} onPress={handleEditProfile} colors={colors}></Editbutton>
