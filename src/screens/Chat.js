@@ -260,7 +260,7 @@ function createStyles(colors) {
             alignItems: 'center',
             justifyContent: 'space-between',
             backgroundColor: colors.highlight1,
-            paddingTop: 20
+            paddingTop: 40
         },
         headerBackAndProfile: {
             flexDirection: 'row',

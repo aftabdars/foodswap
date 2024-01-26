@@ -203,6 +203,13 @@ function Home(props) {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <MaterialButtonProfile style={styles.profileIcon} userData={userData} onPress={() => { props.bar.setIsOpenState(true) }} />
+          <CupertinoSearchBarBasic
+            editable={false}
+            inputStyle="Search for food"
+            inputBox="rgba(255,255,255,1)"
+            style={styles.foodsearch}
+            onPressFirst={() => { navigation.navigate('Search') }}
+          ></CupertinoSearchBarBasic>
           <MaterialNotificationIcon style={styles.notificationIcon} onPress={notificationButtonPressed}></MaterialNotificationIcon>
         </View>
 
@@ -216,13 +223,7 @@ function Home(props) {
             />
           }
         >
-          <CupertinoSearchBarBasic
-            editable={false}
-            inputStyle="Search for food"
-            inputBox="rgba(255,255,255,1)"
-            style={styles.foodsearch}
-            onPressFirst={() => { navigation.navigate('Search') }}
-          ></CupertinoSearchBarBasic>
+          
 
           <Text style={styles.categoriesHeading}>Categories</Text>
           <ScrollView horizontal={true} style={styles.categoryButtonsContainer}>
@@ -327,56 +328,62 @@ function createStyles(colors) {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors.background,
+      backgroundColor: colors.highlight1,
       paddingVertical: 20,
       //paddingBottom: 50 + 5, // This is the height of Footer + 5
     },
     profileIcon: {
-      position: 'absolute',
-      left: 20
+      // position: 'absolute',
+      // left: 20
     },
     notificationIcon: {
-      position: 'absolute',
-      right: 20,
+      // position: 'absolute',
+      // right: 20,
     },
     header: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.highlight1,
       height: 45,
       flexDirection: "row",
-      left: 0,
-      right: 0,
+      width: '100%',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      paddingLeft: 10,
+      paddingRight: 10,
+      marginBottom: 20,
     },
     body: {
       backgroundColor: colors.background,
+      minHeight: '105%'
     },
     foodsearch: {
       height: 44,
-      width: 323,
-      backgroundColor: colors.background,
+      width: 240,
+      backgroundColor: colors.highlight1,
       borderRadius: 18,
-      marginTop: 9,
-      marginLeft: 29
+      // marginTop: 9,
+      // marginLeft: 29
     },
     categoriesHeading: {
       fontFamily: "roboto-700",
       color: colors.foreground,
       fontSize: 22,
-      marginTop: 23,
+      marginTop: 50,
       marginLeft: 29
     },
     categoryButtonsContainer: {
-      width: 323,
+      width: '100%',
       height: 61,
       flexDirection: "row",
+      marginTop: 20
       //justifyContent: "space-between",
-      marginLeft: 26
+      // marginLeft: 26
     },
     categorybutton: {
       height: 61,
       width: 68,
       marginRight: 25,
       color: colors.foreground,
-      backgroundColor: colors.background
+      backgroundColor: colors.background2,
     },
     heading: {
       fontFamily: "roboto-700",

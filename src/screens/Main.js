@@ -87,13 +87,14 @@ const MainTabs = () => {
 
   return (
     <Tab.Navigator tabBarPosition='bottom'
+    initialRouteName='Home'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
           switch (route.name) {
-            case 'Home': iconName = 'home-minus'; break;
             case 'Profile': iconName = 'account-circle'; break;
+            case 'Home': iconName = 'home-minus'; break;
             case 'Camera': iconName = 'camera'; break;
             case 'Messages': iconName = 'message-processing'; break;
             case 'Settings': iconName = 'cog'; break;
@@ -108,15 +109,19 @@ const MainTabs = () => {
         tabBarLabelStyle: { fontSize: 11 },
         tabBarLabel: () => {
           let label = route.name
-          return <Text style={{ color: colors.foreground }}>{label}</Text>
+          // return <Text style={{ color: colors.foreground }}>{label}</Text>
         },
         tabBarItemStyle: { padding: 0, margin: 0 },
         tabBarStyle: {
           backgroundColor: colors.background2,
+          paddingBottom: 8,
+          shadowOffset: -100,
+          shadowOpacity: 100,
+          shadowRadius: 3
         }
       })}
     >
-      <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
+      <Tab.Screen name="Home" component={Home} options={{ headerShown: true }} />
       <Tab.Screen name="Profile" component={Profile} options={{ headerShown: true }} />
       <Tab.Screen name="Camera" component={CameraStack} options={{ headerShown: true }} />
       <Tab.Screen name="Messages" component={MessagesStack} options={{ headerShown: true }} />

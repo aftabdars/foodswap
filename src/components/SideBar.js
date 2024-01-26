@@ -118,9 +118,9 @@ const SideBar = (props) => {
 function createStyles(colors) {
   return StyleSheet.create({
     container: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.background2,
       flex: 1,
-      paddingTop: 50,
+      paddingTop: 90,
     },
     header: {
       flexDirection: "row",
