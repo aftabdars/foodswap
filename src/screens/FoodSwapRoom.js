@@ -550,10 +550,10 @@ function createStyles(colors) {
             borderRadius: 5,
         },
         userIcon: {
-            width: 150,
-            height: 150,
+            width: 80,
+            height: 80,
             resizeMode: 'cover',
-            borderRadius: 150,
+            borderRadius: 60,
         },
         foodImageHeading: {
             textAlign: 'center',
