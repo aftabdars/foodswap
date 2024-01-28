@@ -57,7 +57,7 @@ function Inbox() {
                     alternativeText={'No chats to show'}
                 />
             }
-            <TouchableOpacity onPress={()=> {navigation.navigate('Search', { userSearch: true, message:true })}}>
+            <TouchableOpacity onPress={()=> {console.log('bagar billo'); navigation.navigate('Search', { userSearch: true, message:true })}}>
                 <View style={styles.newMessage}>
                     <Icon name='message'></Icon>
                 </View>

@@ -17,9 +17,10 @@ const TransferFoodiezSuccess = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (timer < transactionAmount) {
-                setTimer((prevTimer) => prevTimer + 1);
+            if (timer < 20 && timer < transactionAmount) {
+                    setTimer((prevTimer) => prevTimer + 1);
             } else {
+                setTimer(transactionAmount);
                 clearInterval(interval);
             }
         }, -30);
@@ -35,7 +36,7 @@ const TransferFoodiezSuccess = () => {
     useEffect(() => {
         Animated.timing(animatedValue, {
             toValue: 1,
-            duration: 400,
+            duration: 0,
             easing: Easing.inOut(Easing.ease),
             useNativeDriver: false,
         }).start();
