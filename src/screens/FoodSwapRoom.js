@@ -286,6 +286,7 @@ function FoodSwapRoom() {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.sectionContainer}>
             <Text style={styles.headingText}>Information</Text>
             <View style={styles.infoContainer}>
                 <View style={styles.infoItem}>
@@ -317,8 +318,10 @@ function FoodSwapRoom() {
                     </Text>
                 )}
             </View>
+            </View>
+            <View style={styles.sectionContainer}>
             <Text style={styles.headingText}>Food Item{!shareID && 's'}</Text>
-            {shareID &&
+            {shareID ? (
                 <View style={styles.foodImagesContainer}>
                     <TouchableOpacity onPress={foodImagePressed}>
                         <Text style={styles.foodImageHeading}>{data && data.food_owner_username}'s Food</Text>
@@ -336,7 +339,7 @@ function FoodSwapRoom() {
                         />
                     </TouchableOpacity>
                 </View>
-                ||
+                ) : (
                 <View style={styles.foodImagesContainer}>
                     <TouchableOpacity onPress={foodBImagePressed}>
                         <Text style={styles.foodImageHeading}>{data && data.food_b_owner_username}'s Food</Text>
@@ -354,42 +357,8 @@ function FoodSwapRoom() {
                         />
                     </TouchableOpacity>
                 </View>
-            }
-            <Text style={styles.headingText}>Map</Text>
-            <CustomMap
-                ref={mapRef}
-                colors={colors}
-            >
-                {swapLocation && (
-                    <Marker
-                        coordinate={{ latitude: swapLocation.latitude, longitude: swapLocation.longitude }}
-                        title={`${shareID && 'Share' || 'Swap'} Location`}
-                        description={`Location for ${shareID && 'foodshare' || 'foodswap'}`}
-                    />
-                )}
-                {userLocation && (
-                    <CircularMarker
-                        coordinate={userLocation}
-                        image={userProfilePic ? { uri: userProfilePic } : require("../assets/images/default_profile.jpg")}
-                        color="green"
-                        title="Your Location"
-                        description="Your current location"
-                        colors={colors}
-                    />
-                )}
-                {otherUserLocation && (
-                    <CircularMarker
-                        coordinate={otherUserLocation}
-                        image={otherUserProfilePic ? { uri: otherUserProfilePic } : require("../assets/images/default_profile.jpg")}
-                        color="blue"
-                        title={otherUserUsername + "'s Location"}
-                        description={otherUserUsername + "'s current location"}
-                        colors={colors}
-                    />
-                )}
-                {swapLocation && userLocation && renderPolyline(swapLocation, userLocation, "green")}
-                {swapLocation && otherUserLocation && renderPolyline(swapLocation, otherUserLocation)}
-            </CustomMap>
+            )}
+            </View>
             <View style={styles.infoContainer}>
                 <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Connect real-time:</Text>
@@ -441,6 +410,46 @@ function FoodSwapRoom() {
                     </View>
                 }
             </View>
+            <View style={styles.sectionContainer}>
+            <Text style={styles.headingText}>Map</Text>
+            <CustomMap
+                ref={mapRef}
+                colors={colors}
+            >
+                {swapLocation && (
+                    <Marker
+                        coordinate={{ latitude: swapLocation.latitude, longitude: swapLocation.longitude }}
+                        title={`${shareID && 'Share' || 'Swap'} Location`}
+                        description={`Location for ${shareID && 'foodshare' || 'foodswap'}`}
+                    />
+                )}
+                {userLocation && (
+                    <CircularMarker
+                        coordinate={userLocation}
+                        image={userProfilePic ? { uri: userProfilePic } : require("../assets/images/default_profile.jpg")}
+                        color="green"
+                        title="Your Location"
+                        description="Your current location"
+                        colors={colors}
+                    />
+                )}
+                {otherUserLocation && (
+                    <CircularMarker
+                        coordinate={otherUserLocation}
+                        image={otherUserProfilePic ? { uri: otherUserProfilePic } : require("../assets/images/default_profile.jpg")}
+                        color="blue"
+                        title={otherUserUsername + "'s Location"}
+                        description={otherUserUsername + "'s current location"}
+                        colors={colors}
+                    />
+                )}
+                {swapLocation && userLocation && renderPolyline(swapLocation, userLocation, "green")}
+                {swapLocation && otherUserLocation && renderPolyline(swapLocation, otherUserLocation)}
+            </CustomMap>
+            </View>
+
+           
+        
         </ScrollView>
     );
 }
@@ -451,20 +460,29 @@ function createStyles(colors) {
         container: {
             flexGrow: 1,
             backgroundColor: colors.background,
-            padding: 10,
+            padding: 20,
+        },
+        sectionContainer:{
+            marginBottom:15,
+            backgroundColor:colors.background,
+            borderRadius:15,
+            padding:5,
+            elevation:5,
         },
         headingText: {
             fontWeight: 'bold',
-            fontSize: 25,
-            marginVertical: 5,
+            fontSize: 22,
+            marginVertical: 10,
             color: colors.foreground
         },
         infoContainer: {
-            marginBottom: 10,
+            marginBottom: 15,
         },
         infoItem: {
             flexDirection: 'row',
-            justifyContent: 'flex-start'
+            justifyContent: "space-between",
+            alignItems:'center',
+            marginBottom:10,
         },
         otherInfoItem: {
             marginTop: 20,
@@ -472,25 +490,25 @@ function createStyles(colors) {
             justifyContent: 'flex-start'
         },
         infoLabel: {
-            fontSize: 16,
+            fontSize: 15,
             color: colors.foreground,
             marginHorizontal: 5,
         },
         infoText: {
             flex: 1,
             flexWrap: 'wrap',
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: 'bold',
             color: colors.foreground,
         },
         infoRealTimeContainerContainer: {
-            marginTop: 20,
+            marginTop: 10,
+            right:11,
             flexDirection: 'row',
             justifyContent: 'space-between'
         },
         infoRealTimeContainer: {
-            padding: 5,
-            marginBottom: 10,
+            padding: 2,
             borderWidth: 2,
             borderColor: colors.foreground,
             flexDirection: 'column',
@@ -509,7 +527,7 @@ function createStyles(colors) {
         infoRealTimeLabel: {
             fontSize: 14,
             color: colors.foreground,
-            marginHorizontal: 3,
+            marginHorizontal: 1,
         },
         infoRealTimeText: {
             fontSize: 14,
@@ -518,18 +536,16 @@ function createStyles(colors) {
         },
         button: {
             padding: 2,
+            borderRadius:10,
         },
         foodImagesContainer: {
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-            alignItems: 'center',
-            verticalAlign: 'middle',
+         flexDirection:"row",
+         justifyContent:'space-evenly',
+         marginBottom:10,
         },
         foodImage: {
-            width: 150,
-            height: 150,
+            width: 80,
+            height: 80,
             resizeMode: 'cover',
             borderRadius: 5,
         },
@@ -542,18 +558,18 @@ function createStyles(colors) {
         foodImageHeading: {
             textAlign: 'center',
             fontWeight: 'bold',
-            fontSize: 15,
+            fontSize: 10,
             color: colors.foreground
         },
         swapIcon: {
-            fontSize: 40,
+            fontSize: 30,
             color: colors.highlight2,
             marginHorizontal: 5
         },
         errormsg: {
             fontFamily: "roboto-regular",
             color: colors.error,
-            marginTop: 20,
+            marginTop: 1,
             textAlign: "center"
         },
     });
