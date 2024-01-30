@@ -6,6 +6,11 @@ import {
 } 
 from "./Api";
 
+// Get bug reports matching params
+export async function getBugReports(token, params) {
+    const url = `/insight/bug-reports/`;
+    return await makeGetRequest(url, token, params);
+}
 
 // Posts a bug report
 export async function postBugReport(token, body) {

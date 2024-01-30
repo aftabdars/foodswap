@@ -29,6 +29,7 @@ import PublicProfile from './PublicProfile';
 import AdminPanel from './admin/Panel';
 import AdminManageUser from './admin/ManageUser';
 import AdminManageFood from './admin/ManageFood';
+import BugReports from './admin/BugReports';
 import BugReport from './BugReport';
 import UserFeedback from './UserFeedback';
 
@@ -76,6 +77,7 @@ const Main = () => {
       <Stack.Screen name="AdminPanel" component={AdminPanel} options={{ title: 'Admin Panel' }} />
       <Stack.Screen name="AdminManageUser" component={AdminManageUser} options={{ title: 'Manage User' }} />
       <Stack.Screen name="AdminManageFood" component={AdminManageFood} options={{ title: 'Manage Food' }} />
+      <Stack.Screen name="AdminBugReports" component={BugReports} options={{ title: 'Manage Food' }} />
     </Stack.Navigator>
   )
 };
