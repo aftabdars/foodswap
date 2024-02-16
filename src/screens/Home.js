@@ -111,7 +111,12 @@ function Home(props) {
     const getFoodItems = async () => {
       const token = await getUserToken();
       if (token && token !== null) {
-        await getFoods(token.token) // Some params will be added here in future
+        const location = await getMeLocationAndAnimate();
+        await getFoods(token.token, {
+          "status": "up",
+          "user_location_latitude": location.latitude,
+          "user_location_longitude": location.longitude
+        })
           .then(response => {
             setFoodItems(response.data.results);
             completedCount++;
@@ -148,7 +153,7 @@ function Home(props) {
     getMeLocationAndAnimate();
   }, []);
 
-  // Location permissions and map's initial location set to user's current location if permissions provided
+  // Location permissions and map's initial location set to user's current location if permissions provided and also return the location
   const getMeLocationAndAnimate = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -165,6 +170,8 @@ function Home(props) {
     }
     setLocation(location);
     animateToNewCoordinates(mapRef, location.latitude, location.longitude, true);
+
+    return location
   };
 
   const onRefresh = () => {
@@ -238,7 +245,7 @@ function Home(props) {
           </ScrollView>
 
           <Text style={styles.heading}>Near You</Text>
-          <FoodCarousel foodItems={foodItems} />
+          <FoodCarousel foodItems={foodItems} colors={colors} />
 
           <View style={styles.findInMapHeadingContainer}>
             <Text style={styles.heading}>Find in map</Text>

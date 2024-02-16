@@ -57,10 +57,8 @@ function Inbox() {
                     alternativeText={'No chats to show'}
                 />
             }
-            <TouchableOpacity onPress={()=> {console.log('bagar billo'); navigation.navigate('Search', { userSearch: true, message:true })}}>
-                <View style={styles.newMessage}>
-                    <Icon name='message'></Icon>
-                </View>
+            <TouchableOpacity style={styles.newMessage} onPress={() => { navigation.navigate('Search', { userSearch: true, message: true }) }}>
+                <Icon name='message'></Icon>
             </TouchableOpacity>
         </View>
     )
@@ -73,22 +71,24 @@ function ChatPreview(props) {
     const navigation = useNavigation();
 
     // Decide the other user and last message by whom
-    const otherUserID = props.data.sender === props.userID? props.data.receiver : props.data.sender;
-    const otherUserProfilePicture = otherUserID === props.data.sender? props.data.sender_profile_picture : props.data.receiver_profile_picture;
-    const otherUserUsername = otherUserID === props.data.sender? props.data.sender_username : props.data.receiver_username;
-    const otherUserFirstName = otherUserID === props.data.sender? props.data.sender_first_name : props.data.receiver_first_name;
-    const otherUserLastName = otherUserID === props.data.sender? props.data.sender_last_name : props.data.receiver_last_name;
-    const lastMessageByClient = props.userID === props.data.sender? true : false;
+    const otherUserID = props.data.sender === props.userID ? props.data.receiver : props.data.sender;
+    const otherUserProfilePicture = otherUserID === props.data.sender ? props.data.sender_profile_picture : props.data.receiver_profile_picture;
+    const otherUserUsername = otherUserID === props.data.sender ? props.data.sender_username : props.data.receiver_username;
+    const otherUserFirstName = otherUserID === props.data.sender ? props.data.sender_first_name : props.data.receiver_first_name;
+    const otherUserLastName = otherUserID === props.data.sender ? props.data.sender_last_name : props.data.receiver_last_name;
+    const lastMessageByClient = props.userID === props.data.sender ? true : false;
 
     const handleDataPress = (data) => {
-        navigation.navigate('Chat', { chatPreviewMessage: {
-            clientUserID: props.userID,
-            otherUserID: otherUserID,
-            otherUserProfilePicture: otherUserProfilePicture,
-            otherUserUsername: otherUserUsername,
-            otherUserFirstName: otherUserFirstName,
-            otherUserLastName: otherUserLastName,
-        } });
+        navigation.navigate('Chat', {
+            chatPreviewMessage: {
+                clientUserID: props.userID,
+                otherUserID: otherUserID,
+                otherUserProfilePicture: otherUserProfilePicture,
+                otherUserUsername: otherUserUsername,
+                otherUserFirstName: otherUserFirstName,
+                otherUserLastName: otherUserLastName,
+            }
+        });
     };
 
     return (
@@ -110,9 +110,9 @@ function ChatPreview(props) {
                             : ""
                         }
                         {props.data.message ?
-                            (lastMessageByClient? 'You: ': '') +
-                            (props.data.message.substring(0, 100) + 
-                            (props.data.message.length > 100 ? '...' : ''))
+                            (lastMessageByClient ? 'You: ' : '') +
+                            (props.data.message.substring(0, 100) +
+                                (props.data.message.length > 100 ? '...' : ''))
                             : ''
                         }
                     </Text>

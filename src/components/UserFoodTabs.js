@@ -54,7 +54,7 @@ const UserFoodTabs = (props) => {
         return (
             <View style={styles.tabBody}>
                 {data && data.length > 0 &&
-                    <FoodCarousel foodItems={data} />
+                    <FoodCarousel foodItems={data} colors={colors}/>
                     ||
                     <Text style={styles.alternativeText}>No data</Text>
                 }
@@ -62,15 +62,15 @@ const UserFoodTabs = (props) => {
         );
     };
 
-    const FirstRoute = ({ colors }) => (
+    const FirstRoute = () => (
         <TabBody tabID={0} colors={colors} data={foodItemsUp} />
     )
 
-    const SecondRoute = ({ colors }) => (
+    const SecondRoute = () => (
         <TabBody tabID={1} colors={colors} data={foodItemsSwapped} />
     )
 
-    const ThirdRoute = ({ colors }) => (
+    const ThirdRoute = () => (
         <TabBody tabID={2} colors={colors} data={foodItemsShared} />
     )
 
