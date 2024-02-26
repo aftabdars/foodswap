@@ -2,7 +2,7 @@ import { Polyline } from 'react-native-maps';
 
 export const animateToNewCoordinates = (mapReference, latitude, longitude, withDelta = false) => {
     const DEFAULT_DELTA = 0.003;
-
+    
     if (mapReference && mapReference.current) {
         mapReference.current.animateToRegion(
             {

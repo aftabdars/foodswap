@@ -40,7 +40,7 @@ const CustomMap = React.forwardRef((props, ref) => {
     };
 
     return (
-        <View style={[styles.mapContainer, props.styles]}>
+        <View style={[styles.mapContainer, props.style]}>
             <MapView
                 style={styles.map}
                 ref={ref}
