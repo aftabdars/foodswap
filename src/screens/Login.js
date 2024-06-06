@@ -6,6 +6,7 @@ import MaterialButtonSuccess from "../components/MaterialButtonSuccess";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialButtonWithVioletText from "../components/MaterialButtonWithVioletText";
 import MaterialButtonWithOrangeText from "../components/MaterialButtonWithOrangeText";
+import * as Notifications from 'expo-notifications'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getTokenValidation, postLogin } from "../api/backend/Auth";
@@ -68,6 +69,14 @@ function Login({ navigation }) {
     hideLoading(); // After logout loading may be shown or the above token may raise error
   }, []);
 
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log(notification);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   const handleLogin = () => {
     // Check if all of the fields are not empty
     if (!username || !password2) {
@@ -118,7 +127,7 @@ function Login({ navigation }) {
       .catch(error => {
         hideLoading();
         console.log(error);
-        
+
 
         if (error.response.status == 401) { // Unauthorized (Meaning in this case, that user is not verified)
           navigation.navigate('EmailConfirmation', {
@@ -126,7 +135,7 @@ function Login({ navigation }) {
           });
         }
         else {
-          setShowError(extractErrorMessage(error.response? error.response.data: 'Network Error'));
+          setShowError(extractErrorMessage(error.response ? error.response.data : 'Network Error'));
         }
       })
   }

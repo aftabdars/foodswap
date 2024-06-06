@@ -8,6 +8,10 @@ import { setUserTheme } from "../storage/UserSettings";
 import { Button } from "react-native-elements";
 import { logoutUser } from "../utils/Auth";
 import { useLoading } from "../assets/LoadingContext";
+import { requestNotificationPermission, saveTokenToFirestore } from "../fcm/utils"
+import { getUserToken } from "../storage/UserToken";
+import { postTogglePushNotification } from "../api/backend/User";
+import { getExpoPushToken } from "../utils/Notification";
 
 
 function Settings() {
@@ -31,6 +35,38 @@ function Settings() {
     setUserTheme(toTheme);
     // Updates user theme in real-time by changing the theme State
     setTheme(toTheme);
+  };
+
+  const handleTogglePushNotification = async () => {
+    const userToken = await getUserToken(); // Your method of obtaining the authenticated user's token
+  
+    if (!notificationEnabled) {
+      const enabled = await requestNotificationPermission();
+      if (enabled) {
+        const expoPushToken = await getExpoPushToken();
+  
+        // Save the Expo Push Token to your database
+        await saveTokenToFirestore(userToken, expoPushToken)
+          .then(response => {
+            console.log('Expo Push Token saved to server:', response);
+          })
+          .catch(error => {
+            console.error('Failed to save Expo Push Token:', error);
+          });
+      }
+    }
+  
+    // Update user's notification settings in backend database
+    await postTogglePushNotification(userToken, {
+      push_notifications_enabled: !notificationEnabled
+    })
+      .then(response => {
+        console.log('User notification settings updated:', response);
+        setNotificationEnabled(!notificationEnabled);
+      })
+      .catch(error => {
+        console.error('Failed to update user notification settings:', error);
+      });
   };
 
   const helpPressed = () => {
@@ -87,14 +123,14 @@ function Settings() {
           <Text style={styles.settingText}>Push Notifications</Text>
           <Switch
             value={notificationEnabled}
-            onValueChange={() => setNotificationEnabled(!notificationEnabled)}
+            onValueChange={handleTogglePushNotification}
           />
         </SettingsRow>
         <SettingsRow>
-          <View style={{width: '100%', flex:1, alignItems: 'center', justifyContent:'space-between', flexDirection: 'row', padding:5}}>
+          <View style={{ width: '100%', flex: 1, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', padding: 5 }}>
             <Text style={styles.settingText}>Theme</Text>
             <Picker
-              itemStyle={{color: colors.foreground}}
+              itemStyle={{ color: colors.foreground }}
               placeholder='Select Theme'
               style={styles.themePicker}
               dropdownIconColor={colors.foreground}

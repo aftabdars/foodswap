@@ -75,8 +75,21 @@ export async function updateUserSettings(id, token, body) {
     return await makePutRequest(url, token, body);
 }
 
+// Toggle client user's push-notification setting
+export async function postTogglePushNotification(token, body) {
+    const url = `/accounts/profile-settings/toggle/push-notifications`;
+    return await makePostRequest(url, token, body);
+}
+
+
 // Gets client user's notifications
 export async function getClientNotifications(token, params) {
     const url = `/accounts/notifications/`;
     return await makeGetRequest(url, token, params);
+}
+
+// Creates or Updates user push notification token
+export async function postFCMToken(token, body) {
+    const url = `/accounts/fcm-token/`;
+    return await makePostRequest(url, token, body);
 }
