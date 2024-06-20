@@ -1,13 +1,15 @@
 
 const ASFAND_HOST = 'http://192.168.18.7:8000';
-const AFTAB_HOST = 'http://192.168.10.57:8000'
+const AFTAB_HOST = 'http://192.168.10.57:8000';
+const MMG_HOST = 'http://192.168.18.68:8000';
 const KOYEB_HOST = 'https://backend-foodswap.koyeb.app';
 
 const ASFAND_WS_HOST = 'ws://192.168.18.7:8000';
+const MMG_WS_HOST = 'ws://192.168.18.68:8000';
 const AFTAB_WS_HOST = 'ws://192.168.10.57:8000';
 
-export const BACKEND_API_ENDPOINT = `${AFTAB_HOST}/api`;
-export const BACKEND_WS_ENDPOINT = `${AFTAB_WS_HOST}/ws`;
+export const BACKEND_API_ENDPOINT = `${KOYEB_HOST}/api`;
+export const BACKEND_WS_ENDPOINT = `${MMG_WS_HOST}/ws`;
 
 export const TOKEN_KEYWORD = 'Token';
 

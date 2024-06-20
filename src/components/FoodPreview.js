@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, TouchableOpacity, View, Image, Text, ImageBackground } from "react-native";
+import { StyleSheet, TouchableOpacity, View,Text, ImageBackground } from "react-native";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { formatTimeDifferenceFuture } from "../utils/Format";
 import { navigationPreviousScreenName, stringCapitalize } from "../utils/Utils";

@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useContext } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Image, Text, Platform } from "react-native";
+import { StyleSheet, View, Image, Text, Platform } from "react-native";
 import { CommonActions } from '@react-navigation/native';
 import MaterialFixedLabelTextbox from "../components/MaterialFixedLabelTextbox";
 import MaterialButtonSuccess from "../components/MaterialButtonSuccess";

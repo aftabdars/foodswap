@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import { postVerifyAccount } from "../api/backend/Auth";
 import { ThemeContext, getColors } from '../assets/Theme';
 import { useRoute } from "@react-navigation/native";
+import { Platform } from 'react-native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 
