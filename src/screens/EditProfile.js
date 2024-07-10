@@ -74,7 +74,7 @@ function EditProfile() {
       });
 
       if (!picture.canceled) {
-        setProfilePicture(picture.uri);
+        setProfilePicture(picture.assets[0].uri);
       }
 
     } catch (error) {

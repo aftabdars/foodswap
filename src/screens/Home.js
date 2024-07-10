@@ -6,6 +6,7 @@ import Categorybutton from "../components/Categorybutton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SideMenu from 'react-native-side-menu-updated';
 import * as Location from 'expo-location';
+import { CheckBox } from "react-native-elements";
 
 import { getProfile, getStats } from "../storage/User.js";
 import { getFoodCategories, getFoods } from "../api/backend/Food.js";
@@ -20,7 +21,6 @@ import { getLevels } from "../api/backend/Gamification.js";
 import { animateToNewCoordinates } from "../utils/Map.js";
 import CustomMap from "../components/CustomMap.js";
 import CircularMarker from "../components/CircularMarker.js";
-import { CheckBox } from "react-native-elements";
 
 
 function Home(props) {

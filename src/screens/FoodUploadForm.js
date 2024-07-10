@@ -80,12 +80,16 @@ function FoodUploadForm() {
             );
         }
     }
+
     const handleConfirm = async () => {
         if (category == -1) {
             setShowError("Please select category");
         }
         else if (!title) {
             setShowError("Title cannot be empty");
+        }
+        else if (!image || !image.assets[0].uri) {
+            setShowError("Somme error with image");
         }
         else {
             // Location permissions

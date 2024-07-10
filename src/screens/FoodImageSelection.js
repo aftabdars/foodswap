@@ -70,7 +70,7 @@ function FoodImageSelection() {
         <View style={styles.container}>
             {selectedImage && 
                 <Image 
-                    source={{ uri: selectedImage.uri }} 
+                    source={{ uri: selectedImage.assets[0].uri }} 
                     style={styles.image} 
                 />
             }

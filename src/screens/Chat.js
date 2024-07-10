@@ -115,7 +115,7 @@ function Chat() {
                                 sender: chatPreviewMessage.clientUserID,
                                 receiver: chatPreviewMessage.otherUserID,
                                 message: newMessage,
-                                attachment: attachment && attachment.uri
+                                attachment: attachment && attachment.assets[0].uri
                             }, ...prevMessages]);
                         }
                     }
