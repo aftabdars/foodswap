@@ -217,7 +217,7 @@ function Home(props) {
             style={styles.foodsearch}
             onPressFirst={() => { navigation.navigate('Search') }}
           ></CupertinoSearchBarBasic>
-          <MaterialNotificationIcon style={styles.notificationIcon} onPress={notificationButtonPressed}></MaterialNotificationIcon>
+          <MaterialNotificationIcon style={styles.notificationIcon} onPress={notificationButtonPressed} refresh={refreshCount}></MaterialNotificationIcon>
         </View>
 
         <ScrollView style={styles.body}

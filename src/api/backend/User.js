@@ -75,8 +75,19 @@ export async function updateUserSettings(id, token, body) {
     return await makePutRequest(url, token, body);
 }
 
+// Update user notification partially
+export async function partialUpdateUserNotification(id, token, body) {
+    // TODO: To be implemented (need backend API route)
+}
+
 // Gets client user's notifications
 export async function getClientNotifications(token, params) {
     const url = `/accounts/notifications/`;
+    return await makeGetRequest(url, token, params);
+}
+
+// Gets client user's new notification information
+export async function getClientIsNewNotification(token, params) {
+    const url = `/accounts/notifications/new`;
     return await makeGetRequest(url, token, params);
 }

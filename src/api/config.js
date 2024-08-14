@@ -1,5 +1,5 @@
 
-const ASFAND_HOST = 'http://192.168.18.7:8000';
+const ASFAND_HOST = 'http://192.168.18.94:8000';
 const AFTAB_HOST = 'http://192.168.10.57:8000';
 const MMG_HOST = 'http://192.168.18.68:8000';
 const KOYEB_HOST = 'https://backend-foodswap.koyeb.app';
