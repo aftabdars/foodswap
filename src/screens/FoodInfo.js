@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView, } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
-import EntypoIcon from "react-native-vector-icons/Entypo";
 
 import { getColors, ThemeContext } from '../assets/Theme';
 import { formatDateTimeString, formatTimeDifferencePast } from '../utils/Format';
@@ -114,20 +112,13 @@ const FoodInfo = () => {
 
   const FeedbackItem = ({ feedbackData }) => (
     <View style={styles.userFeedback}>
-      <View style={styles.feedbackTextContainer}>
-      <Text style={styles.feedbackUsername}>{feedbackData.user_username}:</Text>
+      <Text style={styles.feedbackUsername}>{feedbackData.user_username}</Text>
       <Text style={styles.feedback}>{feedbackData.message}</Text>
-      </View>
       <Text style={styles.feedbackTimestamp}>
         {formatTimeDifferencePast(feedbackData.timestamp)} ago
       </Text>
     </View>
   );
-  const backPressed = () => {
-    if (navigation.canGoBack()) {
-        navigation.goBack();
-    }
-}
 
   // Decides what to render if food item is being shared/swapped or has already been shared/swapped etc
   const RequestButtonOrAlternativeText = () => {
@@ -171,21 +162,10 @@ const FoodInfo = () => {
 
   return (
     <ScrollView style={styles.container}>
-        
       <Image
         source={foodItem && foodItem.image ? { uri: foodItem.image } : require("../assets/images/default_food.png")}
         style={styles.foodImage}
       />
-      <TouchableOpacity onPress={backPressed}>
-                        <EntypoIcon name="chevron-thin-left" style={styles.icon}></EntypoIcon>
-                    </TouchableOpacity>
-      <View style={styles.containerGradient}>
-        <LinearGradient
-        colors={[colors.highlight1,colors.highlight2]}
-        style={styles.gradient}
-        start={{x:0,y:0}}
-        end={{x:1,y:1}}
-        >
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{foodItem && foodItem.name}</Text>
         <Text style={styles.description}>{foodItem && foodItem.description}</Text>
@@ -263,8 +243,6 @@ const FoodInfo = () => {
         >
           <Text style={styles.sendFeedbackButtonText}>Send Feedback</Text>
         </MaterialButtonSuccess>
-        </View>
-        </LinearGradient>
       </View>
     </ScrollView>
   );
@@ -276,98 +254,67 @@ function createStyles(colors) {
       flex: 1,
       backgroundColor: colors.background,
     },
-    icon: {
-      color: colors.highlight1,
-      fontSize: 25,
-      bottom:250,
-      left:20,
-     },
     foodImage: {
       height: 330,
-      width:357,
       resizeMode: 'cover',
-      borderRadius: 60,
-      borderWidth:2,
-      borderColor:colors.foreground,
-      overflow:'hidden',
-      marginBottom: -60,
-      marginTop: 20,
-      shadowColor: colors.foreground,
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.6,
-      shadowRadius: 8,
+      borderRadius: 20,
+      marginBottom: -40,
+      marginTop: 23,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
     },
     detailsContainer: {
       flex: 1,
       borderRadius: 20,
-      backgroundColor:'transparent',
-      overflow:'hidden',
-      elevation: 8,
-      shadowColor: colors.foreground,
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.4,
-      shadowRadius: 10,
-      marginHorizontal:20,
-      marginVertical:10,
-      padding: 24,
-    },
-    containerGradient: {
-      flex: 1,
-      borderRadius: 20,
+      backgroundColor: colors.background2,
       overflow: 'hidden',
-      elevation: 8,
-      marginHorizontal: 10,
-      marginVertical: 10,
-      borderWidth: 1,
-      borderColor: colors.foreground,
-    },
-    gradient: {
-      flex: 1,
-      borderRadius: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      margin: 16,
+      padding: 20,
     },
     title: {
       fontSize: 32,
       fontWeight: 'bold',
       marginBottom: 12,
-      color: colors.foreground,
-      textTransform:'uppercase',
-      textAlign:'center',
+      color: colors.foreground
     },
     category: {
-      fontSize: 24,
+      fontSize: 18,
       fontWeight: 'bold',
-      color: colors.highlight1,
-      marginBottom: 12,
-      textTransform:'capitalize',
+      color: colors.highlight2,
+      marginBottom: 6,
     },
     description: {
-      fontSize: 20,
-      marginBottom: 20,
-      color: colors.foreground,
-      lineHeight:28,
+      fontSize: 18,
+      marginBottom: 12,
+      color: colors.foreground
     },
     uploadDate: {
       fontSize: 16,
       color: colors.foreground,
-      marginBottom: 16,
+      marginBottom: 6,
     },
     expireDate: {
       fontSize: 16,
       color: colors.error,
-      marginBottom: 12,
+      marginBottom: 6,
     },
     owner: {
       fontSize: 18,
       color: colors.foreground,
-      marginBottom: 12,
+      marginBottom: 6,
       //textDecorationLine: 'underline',
     },
     upFor: {
       fontSize: 18,
       color: colors.foreground,
-      marginBottom: 12,
+      marginBottom: 6,
     },
     status: {
       fontSize: 20,
@@ -377,9 +324,8 @@ function createStyles(colors) {
     },
     requestButton: {
       backgroundColor: colors.highlight2,
-      paddingVertical:16,
-      paddingHorizontal:24,
-      borderRadius: 12,
+      padding: 14,
+      borderRadius: 10,
       alignItems: 'center',
       marginTop: 15,
     },
@@ -396,48 +342,39 @@ function createStyles(colors) {
       textAlign: 'center'
     },
     feedbackContainer: {
-      backgroundColor: 'transparent',
+      marginTop: 10,
+      padding: 20,
+      backgroundColor: colors.background2,
       borderRadius: 20,
-      overflow:'hidden',
-      elevation: 8,
-      shadowColor: colors.foreground,
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.4,
-      shadowRadius: 10,
-      marginHorizontal:20,
-      marginVertical:10,
-      padding: 24,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
     },
     feedbackHeader: {
-      fontSize: 25,
+      fontSize: 20,
       fontWeight: 'bold',
       marginBottom: 10,
-      color: colors.highlight,
-      textTransform:'uppercase',
-      
+      color: colors.foreground,
     },
     userFeedback: {
-      padding: 5,
+      padding: 10,
+      borderWidth: 1,
       color: colors.foreground,
-      marginBottom: 5,
-    },
-    feedbackTextContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      flexWrap:'wrap',
+      borderColor: colors.foreground,
+      borderRadius: 8,
+      marginBottom: 10,
     },
     feedbackUsername: {
       fontSize: 16,
       color: colors.foreground,
       marginBottom: 5,
-      fontWeight:'bold',
-      marginRight:5,
+      color: colors.highlight2
     },
     feedback: {
       fontSize: 14,
       color: colors.foreground,
-      marginBottom:5,
-      flexWrap:'wrap',
+      marginBottom: 10,
     },
     feedbackTimestamp: {
       fontSize: 12,
@@ -449,20 +386,18 @@ function createStyles(colors) {
       marginBottom: 10,
     },
     feedbackInput: {
-      height: 48,
+      height: 40,
       backgroundColor: colors.background2,
       color: colors.foreground,
-      borderColor: colors.foreground,
+      borderColor: 'gray',
       borderWidth: 1,
       borderRadius: 8,
-      marginBottom: 16,
-      paddingHorizontal:28,
-      fontSize:16,
+      marginBottom: 10,
+      padding: 10,
     },
     sendFeedbackButton: {
-      backgroundColor: colors.highlight1,
-      paddingVertical:14,
-      paddingHorizontal:20,
+      backgroundColor: colors.highlight2,
+      padding: 10,
       borderRadius: 10,
       alignItems: 'center',
     },
