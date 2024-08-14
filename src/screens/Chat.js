@@ -111,7 +111,7 @@ function Chat() {
                         if (messagesFlatListRef.current) {
                             const prevMessages = messagesFlatListRef.current.getData();
                             messagesFlatListRef.current.setDataFromExternal([{
-                                id: prevMessages[0].id + 1,
+                                id: (prevMessages && prevMessages.length > 0) ? (prevMessages[0].id + 1) : 0,
                                 sender: chatPreviewMessage.clientUserID,
                                 receiver: chatPreviewMessage.otherUserID,
                                 message: newMessage,
