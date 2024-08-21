@@ -2,6 +2,7 @@ import {
     makeGetRequest, 
     makePostRequest,
     makePutRequest,
+    makePatchRequest,
     makeDeleteRequest
 } 
 from "./Api";
@@ -77,7 +78,8 @@ export async function updateUserSettings(id, token, body) {
 
 // Update user notification partially
 export async function partialUpdateUserNotification(id, token, body) {
-    // TODO: To be implemented (need backend API route)
+    const url = `/accounts/notifications/${id}/`;
+    return await makePatchRequest(url, token, body);
 }
 
 // Gets client user's notifications

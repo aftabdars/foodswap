@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from "react-native";
 
 import { ThemeContext, getColors } from "../assets/Theme";
-import { getClientNotifications } from "../api/backend/User";
+import { getClientNotifications, partialUpdateUserNotification } from "../api/backend/User";
 import { getUserToken } from "../storage/UserToken";
 import { useNavigation } from "@react-navigation/native";
 import { getProfile } from "../storage/User";
@@ -39,10 +39,16 @@ function Notifications() {
         const token = await getUserToken();
         let response;
         try {
-            response = await getClientNotifications(token.token, {'page': page});
+            response = await getClientNotifications(token.token, { 'page': page });
+
+            // Update latest notification is_read to true
+            if (response.data.results.length > 0) {
+                await partialUpdateUserNotification(response.data.results[0].id, token.token, { is_read: true });
+            }
+
             return response.data;
         }
-        catch(error) {}
+        catch (error) { }
     }
 
     const swapDecline = async (notifcationID, foodSwapRequestID) => {
@@ -78,7 +84,7 @@ function Notifications() {
                 .catch(error => { })
         } catch (error) { }
     };
-    
+
     const shareDecline = async (notifcationID, foodShareRequestID) => {
         try {
             // Delete share request from backend

@@ -83,6 +83,28 @@ export async function makePutRequest(url, token = undefined, body = {}, contentT
     }
 }
 
+export async function makePatchRequest(url, token = undefined, body = {}, contentType = 'application/json') {
+    const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
+    console.log(`Making API PATCH request to: ${fullUrl}`);
+
+    const headers = {
+        'Content-Type': contentType,
+        'X-CSRFToken': await getCSRFToken(),
+    };
+
+    if (token) {
+        headers['Authorization'] = `${TOKEN_KEYWORD} ${token}`;
+    }
+
+    try {
+        const response = await axios.patch(fullUrl, body, { headers });
+        return response
+    } catch (error) {
+        console.error(`Error making PATCH request to ${BACKEND_API_ENDPOINT}${url}`, error);
+        throw error
+    }
+}
+
 export async function makeDeleteRequest(url, token = undefined, body = {}) {
     const fullUrl = `${BACKEND_API_ENDPOINT}${url}`;
     console.log(`Making API DELETE request to: ${fullUrl}`);
